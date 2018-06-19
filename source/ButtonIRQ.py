@@ -1,69 +1,80 @@
 """
 NI ELVIS III Button Interrupt (ButtonIRQ) Example
-This example illustrates how to trigger an ButtonIRQ on NI ELVIS III. To
-configure and wait on an interrupt triggered, you need to define six
-parameters: irq_handler, irq_number, timeout, interrupt_type_rising,
-interrupt_type_falling, and edge_count. You must use callback function to
-handle interrupt. The callback function contains code that handles interrupts
-and runs when the interrupts triggering occurs. The other parameters are
-optional. The default values of the optional parameters are:
-    irq_number: 1
+This example illustrates how to register button interrupts on the NI ELVIS III.
+To do so, you need to first create a button interrupt session, and then
+configure an interrupt.
+
+To configure an interrupt, you need to define six parameters: irq_handler,
+irq_number, timeout, interrupt_type_rising, interrupt_type_falling, and
+edge_count. irq_handler is a required parameter. It defines the callback
+function which you use to handle interrupts. The callback function executes
+when the interrupt occurs. You can customize the callback function as needed.
+For example, you can write code to make an LED flash as shown in this example,
+or to read from an AI channel. All the other five parameters are optional. The
+default values of the optional parameters are:
+    irq_number: IRQ1
 	timeout: 10000
 	interrupt_type_rising: True
 	interrupt_type_falling: False
 	edge_count: 1
 
-Note: irq_number refers to the irq number of this interrupt event. The valid
-values are within the range [1:7]. You cannot register an I/O interrupt with
-the same IRQ number as a registered I/O interrupt. However, after you closed
-the existing interrupt, you can use the IRQ number to register another
-interrupt.
+Note: irq_number specifies the identifier of the interrupt to register.
+The valid values are from IRQ1 to IRQ7. You cannot register an I/O interrupt
+with the same IRQ number as that of a registered I/O interrupt. However, after
+you close the existing interrupt, you can use the IRQ number to register
+another interrupt.
 
-Output:
-    The interrupt event occurs when the button is clicked.
-    The irq_handler function is called when the interrupt is triggered.
+Result:
+    An interrupt occurs when you press the button.
+    The program calls irq_handler when the interrupt occurs.
 """
 import time
-import NIELVISIIIAcademicIO
-from NIELVISIIIEnum import IRQNumber, Led
+import academicIO
+from enums import IRQNumber, Led
 
 def irq_handler():
     """
-    Contain codes you want to execute when the interrupt is triggered. We make
-    the LED flashing 20 times in this function.
+    irq_handler contains the code you want to execute when the interrupt
+    occurs. Define your own callback function here by rewriting the code. We
+    make an LED flash in thie example.
     """
-    # open an LEDs session
-    with NIELVISIIIAcademicIO.LEDs() as LED:
-        # specfy the led which to turn on and off
+    # open an LED session
+    with academicIO.LEDs() as LED:
+        # specify the LED which you want to control
         led = Led.LED0
-        # specify statuses
+        # specify the LED status
         led_on = True
         led_off = False
-        # The program writes value 20 times
-        for x in range(0, 20):
+        # The program writes values 5 times
+        for x in range(0, 5):
             # turn LED0 on
             LED.write(led, led_on)
-            # delay for 0.5 seconds so that the program does not run too fast
-            time.sleep(0.5)
+            # delay for 2 seconds so that the program does not run too fast
+            time.sleep(1)
             # turn LED0 off
             LED.write(led, led_off)
-            # delay for 0.5 seconds so that the program does not run too fast
-            time.sleep(0.5)
-
-# open an ButtonIRQ session
-with NIELVISIIIAcademicIO.ButtonIRQ() as Button_IRQ:
+            # delay for 2 seconds so that the program does not run too fast
+            time.sleep(1)
+            
+# open a button interrupt session
+with academicIO.ButtonIRQ() as Button_IRQ:
 	# specify the identifier of the interrupt to register
 	irq_number = IRQNumber.IRQ1
-	# specify the amount of time for timeout when interrupt is not triggered
+	# specify the amount of time, in milliseconds , to wait for an interrupt
+    # to occur before timing out
 	timeout= 6000
-	# specify when to register or create an interrupt based on the signal
+	# specify whether to register an interrupt when you press or release the
+    # button. To register an interrupt when you press the button, set
+    # interrupt_type_rising as True and interrupt_type_falling as False
 	interrupt_type_rising = True
 	interrupt_type_falling = False
 	# specify the number of edges of the signal that must occur for this
-    # example to register an interrup
+    # program to register an interrupt. For example, when
+    # interrupt_type_rising is True and edge_count is 2, an interrupt occurs
+    # when you press the button twice
 	edge_count = 2
 
-	# waitting for the interrupt or timeout
+	# wait for the interrupt or timeout
 	Button_IRQ.configure(irq_handler,
 						 irq_number,
 						 timeout,

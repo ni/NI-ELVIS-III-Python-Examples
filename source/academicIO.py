@@ -1,7 +1,7 @@
 import time
 import pyvisa
 from nifpga import Session
-from NIELVISIIIEnum import *
+from enums import *
 
 class ELVISIII(object):
     """ Register NI ELVIS III bitfile. """
@@ -1451,7 +1451,6 @@ def calculate_clock_settings(requested_frequency,
         actual_top (float)
         actual_clock_divisor (int)
     """
-    assert 611 <= base_clock_frequency <= 4000000
     if coerce_range:
         if not (min_frequency < requested_frequency < max_frequency):
             raise ValueError('frequency is out of range: 40 - 4000000 (Hz)')

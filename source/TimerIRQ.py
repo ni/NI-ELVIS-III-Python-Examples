@@ -1,34 +1,39 @@
 """
 NI ELVIS III Timer Interrupt (TimerIRQ) Example
-This example illustrates how to trigger an TimerIRQ on NI ELVIS III.To
-configure and wait on an interrupt triggered, you need to define two
-parameters: irq_interval and timeout. IRQ interval is a required parameter.
-The other parameters are optional. The default values of the optional
-parameters are:
-    timeout: 10000
+This example illustrates how to register a timer interrupt on the NI ELVIS
+III. To do so, you need to first create a timer interrupt session, and then
+configure an interrupt.
 
-Output:
-    The interrupt event occurs when the time interval is reached.
-    The irq_handler function is called when the interrupt is triggered.
+To configure an interrupt, you need to define two parameters: irq_handler,
+and irq_interval. Both irq_handler and irq_interval are required parameters. 
+irq_handler defines the callback function which you use to handle interrupts.
+The callback function executes when the interrupt occurs. You can customize
+the callback function as needed. For example, you can write code to make an
+LED flash as shown in this example, or to read from an AI channel.
+
+Result:
+    An interrupt occurs when the time interval is reached.
+    The program calls irq_handler when the interrupt occurs.
 """
 import time
-import NIELVISIIIAcademicIO
-from NIELVISIIIEnum import Led
+import academicIO
+from enums import Led
 
 def irq_handler():
     """
-    Contain codes you want to execute when the interrupt is triggered. We make
-    the LED flashing in this function.
+    irq_handler contains the code you want to execute when the interrupt
+    occurs. Define your own callback function here by rewriting the code. We
+    make an LED flash in thie example.
     """
-    # open an LEDs session
-    with NIELVISIIIAcademicIO.LEDs() as LED:
-        # specfy the led which to turn on and off
+    # open an LED session
+    with academicIO.LEDs() as LED:
+        # specify the LED which you want to control
         led = Led.LED0
-        # specify statuses
+        # specify the LED status
         led_on = True
         led_off = False
-        # The program writes value 20 times
-        for x in range(0, 20):
+        # The program writes values 5 times
+        for x in range(0, 5):
             # turn LED0 on
             LED.write(led, led_on)
             # delay for 2 seconds so that the program does not run too fast
@@ -38,10 +43,11 @@ def irq_handler():
             # delay for 2 seconds so that the program does not run too fast
             time.sleep(1)
 
-# open an TimerIRQ session
-with NIELVISIIIAcademicIO.TimerIRQ() as Timer_IRQ:
-        # specify the span of time between interrupts in microseconds
+# open a timer interrupt session
+with academicIO.TimerIRQ() as Timer_IRQ:
+        # specify the span of time, in milliseconds, between when the program
+        # starts and when an interrupt occurs
         irq_interval= 5000000    # 5000000us = 5s
 
-        # waitting for the interrupt or timeout
+        # wait for the interrupt or timeout
         Timer_IRQ.configure(irq_handler, irq_interval)

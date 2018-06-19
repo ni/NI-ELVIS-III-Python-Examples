@@ -1,39 +1,39 @@
 """
 NI ELVIS III Universal Asynchronous Receiver/Transmitter (UART) Example
-This example illustrates how to wrties data to or read data from a UART device
-through the UART channels. on NI ELVIS III. To create an UART session, you
-need to define one required parameter: bank.
-To configure the UART VISA, you need to define four parameters: baud rate,
-data bits, stop bits , and parity. The default values of these parameters are:
-    baud_rate: 9600
-    data_bits: 8
-    stop_bits: 10
-    parity: 0
+This example illustrates how to write data to or read data from a UART device
+through the UART channels on the NI ELVIS III. To create a UART session, you
+need to define bank, which is a required parameter, bank. To configure the
+UART communication, you need to define four parameters: baud rate, data bits,
+stop bits, and parity. The default values of these parameters are:
+    baud_rate: RATE9600
+    data_bits: BITS8
+    stop_bits: ONE
+    parity: NO
 
 Hardware setup:
-    1. Connect UART.RX (DIO16) on bank A to UART.TX of a device.
-    2. Connect UART.TX (DIO17) on bank A to UART.RX of a device.
+    1. Connect UART.RX (DIO16) on bank A to UART.TX of a UART device.
+    2. Connect UART.TX (DIO17) on bank A to UART.RX of a UART device.
 
-Output:
-    'Hello World' is written to the UART device and a one bytes value is read
-    from the device through the UART channels.
+Result:
+    The program writes a string to the UART device and reads one byte of data
+    from the device.
 """
 import time
-import NIELVISIIIAcademicIO
-from NIELVISIIIEnum import Bank, UARTBaudRate, UARTDataBits, UARTParity, UARTStopBits
+import academicIO
+from enums import Bank, UARTBaudRate, UARTDataBits, UARTParity, UARTStopBits
 
+# specify the bank
 bank = Bank.A
-# open an UART session, and set initial values for the parameters
-with NIELVISIIIAcademicIO.UART(bank) as uart:
-    # specify the baud rate, data bits, stop bits, and parity for the UART
-    # session:
-    #     baud rate = 9600
-    #     data bits = 8
-    #     stop bits = one
-    #     parity = none
+# open a UART session, and set initial values for the parameters
+with academicIO.UART(bank) as uart:
+    # specifies the baud rate of transmission
     baud_rate = UARTBaudRate.RATE9600
+    # specifies the number of bits in the incoming data
     data_bits = UARTDataBits.BITS8
+    # specifies the number of stop bits this program uses to indicate the end
+    # of a data
     stop_bits = UARTStopBits.ONE
+    # specifies the parity bits to write or read characters
     parity = UARTParity.NO
 
     # configure the UART VISA
@@ -44,16 +44,16 @@ with NIELVISIIIAcademicIO.UART(bank) as uart:
 
     # specify the data to write to the UART device
     value = 'Hello World'
-    # write data to the UART device
+    # write the data to the UART device
     uart.write(value)
 
-    # specify bytes of data to read from the UART device
+    # specify the number of bytes to read from the device
     bytes_to_read = 1
     # The program reads values 20 times
     for x in range(0, 20):
-        # read a one btye data from the UART device
+        # read one byte of data from the device
         return_value = uart.read(bytes_to_read)
-        # print the data read from UART device
+        # print the data read from the UART device
         print return_value
         # delay for 0.001 seconds so that the program does not run too fast
         time.sleep(0.001)

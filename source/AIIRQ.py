@@ -1,52 +1,60 @@
 """
-NI ELVIS III Analog Input Interrupt (AIIRQ) Example
-This example illustrates how to trigger an AIIRQ on NI ELVIS III. To create an
-AIIRQ session, you need to define a required parameter: irq_channel. Since NI
-ELVIS III only provides four Digital Input Interrupt channels: AI0 and AI1 on
-bank A, irq_channel has to be within the range [0:1]. To configure and wait on
-an interrupt triggered, you need to define six parameters: irq_handler,
-irq_number, timeout, threshold, hysteresis, and irq_type. You must use
-callback function to handle interrupt. The callback function contains code
-that handles interrupts and runs when the interrupts triggering occurs. The
-other parameters are optional. The default values of the optional parameters
-are:
-    irq_number: 3
+NI ELVIS III Analog Input Interrupt (AI IRQ) Example
+This example illustrates how to register analog input interrupts on the NI
+ELVIS III. To do so, you need to first create an analog input interrupt
+session, and then configure an interrupt.
+
+To create an analog input interrupt session, you need to define irq_channel,
+which is a required parameter. Since the NI ELVIS III only provides two analog
+input interrupt channels, AI0 and AI1 on bank A, irq_channel must be either
+AIIRQChannel.AI0 or AIIRQChannel.AI1.
+
+To configure an interrupt, you need to define six parameters: irq_handler,
+irq_number, timeout, threshold, hysteresis, and irq_type. irq_handler is a
+required parameter. It defines the callback function which you use to handle
+interrupts. The callback function executes when the interrupt occurs. You can
+customize the callback function as needed. For example, you can write code to
+make an LED flash as shown in this example, or to read from an AI channel. All
+the other five parameters are optional. The default values of the optional
+parameters are:
+    irq_number: IRQ1
     timeout: 10000
     threshold: 2.5
     hysteresis: 0.02
-    irq_type: 'rising'
+    irq_type: RISING
 
-Note: irq_number refers to the irq number of this interrupt event. The valid
-values are within the range [1:7]. You cannot register an I/O interrupt with
-the same IRQ number as a registered I/O interrupt. However, after you closed
-the existing interrupt, you can use the IRQ number to register another
-interrupt.
+Note: irq_number specifies the identifier of the interrupt to register.
+The valid values are from IRQ1 to IRQ7. You cannot register an I/O interrupt
+with the same IRQ number as that of a registered I/O interrupt. However, after
+you close the existing interrupt, you can use the IRQ number to register
+another interrupt.
 
 Hardware setup:
-    1. Connect an analog signal source to AI0 on bank A.
+    Connect an analog signal source to AI0 on bank A.
 
-Output:
-    The interrupt event occurs when an appropriately analog signal is given.
-    The irq_handler function is called when the interrupt is triggered.
+Result:
+    An interrupt occurs when AI0 receives an appropriate analog signal.
+    The program calls irq_handler when the interrupt occurs.
 """
 import time
-import NIELVISIIIAcademicIO
-from NIELVISIIIEnum import AIIRQChannel, IRQNumber, AIIRQType, Led
+import academicIO
+from enums import AIIRQChannel, IRQNumber, AIIRQType, Led
 
 def irq_handler():
     """
-    Contain codes you want to execute when the interrupt is triggered. We make
-    the LED flashing in this function.
+    irq_handler contains the code you want to execute when the interrupt
+    occurs. Define your own callback function here by rewriting the code. We
+    make an LED flash in thie example.
     """
-    # open an LEDs session
-    with NIELVISIIIAcademicIO.LEDs() as LED:
-        # specfy the led which to turn on and off
+    # open an LED session
+    with academicIO.LEDs() as LED:
+        # specify the LED which you want to control
         led = Led.LED0
-        # specify statuses
+        # specify the LED status
         led_on = True
         led_off = False
-        # The program writes value 20 times
-        for x in range(0, 20):
+        # The program writes values 5 times
+        for x in range(0, 5):
             # turn LED0 on
             LED.write(led, led_on)
             # delay for 2 seconds so that the program does not run too fast
@@ -56,24 +64,26 @@ def irq_handler():
             # delay for 2 seconds so that the program does not run too fast
             time.sleep(1)
 
-# specify the AI channel to register and create the AIIRQ
+# specify the AI channel that serves as the interrupt channel
 irq_channel = AIIRQChannel.AI0
-# open an AIIRQ session, and set the initial values for the parameters
-with NIELVISIIIAcademicIO.AIIRQ(irq_channel) as AI_IRQ:
+# open an analog input interrupt session, and set the initial values for the
+# parameters
+with academicIO.AIIRQ(irq_channel) as AI_IRQ:
     # specify the identifier of the interrupt to register
     irq_number = IRQNumber.IRQ1
-    # specify the amount of time for timeout when interrupt is not triggered
+    # specify the amount of time, in milliseconds, to wait for an interrupt to
+    # occur before timing out
     timeout = 6000
     # specify the value, in volts, that the signal must cross for this example
-    # to register an interrupt
     threshold = 4.0
-    # specify the value that used to avoid false triggering due to noise or
-    # jitter in the signal
+    # specify a window, in volts, above or below threshold. This program uses
+    # hysteresis to prevent false interrupt registration
     hysteresis = 0.02
-    # specify when to register or create an interrupt based on the signal
+    # specify whether to register an interrupt on the falling edge or rising
+    # edge of the analog input signal
     irq_type = AIIRQType.RISING
 
-    # waitting for the interrupt or timeout
+    # wait for the interrupt or timeout
     AI_IRQ.configure(irq_handler,
                      irq_number,
                      timeout,

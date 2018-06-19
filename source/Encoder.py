@@ -1,46 +1,50 @@
 """
 NI ELVIS III Encoder Example
 This example illustrates how to read and decode signals from an encoder
-through the encoder channels on NI ELVIS III. To create an Encoder session,
-you need to define two parameters: bank and channel. To read and decode to the
-encoder device, you need to define one parameter: reset_counter. This is an
-optional parameter. The default values of the optional parameter is:
-    reset_counte: False
+through the encoder channels on the NI ELVIS III. To create an encoder session,
+you need to define three parameters: bank, channel and mode. mode is an
+optional parameter. The default value of mode is QUADRATURE. To read and
+decode signals from the encoder device, you need to define one parameter,
+reset_counter. The default value of reset_counter is False.
 
 Hardware setup:
-	1. Connect connector A phase A (default is DIO0) to ENC.A of a device.
-	2. Connect connector A phase B (default is DIO1) to ENC.B of a device.
+	1. Connect phase A (default is DIO0) on bank A to ENC.A of a encoder
+       device.
+	2. Connect phase B (default is DIO1) on bank A to ENC.B of a encoder
+       device.
 
-Output:
-	The program reads the counter value and the counter direction from the device.
+Result:
+	The program reads the counter value and the counter direction from the
+    encoder device.
 """
 import time
-import NIELVISIIIAcademicIO
-from NIELVISIIIEnum import Bank, EncoderChannel, EncoderMode
+import academicIO
+from enums import Bank, EncoderChannel, EncoderMode
 
-# specify bank and channel to read and decode signals from the encoder
+# specify the bank and the encoder channel
 bank = Bank.A
 channel = EncoderChannel.ENC0
-# Encoder: specify the mode of operation for communicating with the UART
-# device
+# specify the mode of operation for communicating with the encoder device
 mode = EncoderMode.QUADRATURE
 
-# open an Encoder session, and set initial values for the parameters
-with NIELVISIIIAcademicIO.Encoder(bank, channel, mode) as encoder:
-    # specify whether to reset the encoder tick counter to zero, True = reset
+# open an encoder session, and set initial values for the parameters
+with academicIO.Encoder(bank, channel, mode) as encoder:
+    # specify whether to reset the encoder device. To reset the encoder, set
+    # reset_counter to True
     reset_counter = True
-    # reset the counter
+    # reset the counter value and counter direction of the the encoder device
     encoder.read(reset_counter)
 
-    # specify whether to reset the encoder tick counter to zero, False = not reset
+    # specify not to reset the encoder in order to keep the counter value and
+    # the counter direction since last counter reset
     reset_counter = False
-    # The program reads values 20 times
+    # The program generates and reads values 20 times
     for x in range(0, 20):
-        # read the number of ticks and direction of the counter that this
-        # example read from the encoder since last counter reset
+        # read the counter value and direction of the counter from the encoder
+        # since last counter read
         counter_value, counter_direction_decrease = encoder.read(reset_counter)
-        # print the counter value
-        # the counter value must be in the range [-2,147,483,648:2,147,483,647]
+        # print the counter value. The counter value must be in the range
+        # -2,147,483,648 to 2,147,483,647
         print counter_value,
         # print the counter direction
         if counter_direction_decrease:
