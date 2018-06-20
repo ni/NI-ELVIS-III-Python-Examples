@@ -76,12 +76,12 @@ class AIMode(Enum):
 
     Values:
         NONE:
-            Use normal mode where read from the specificed channels.
+            Determines the voltage of a channel.
         DIFFERENTIAL:
-            Use differential mode where read from the specificed channels and
-            get the diff value of it.
+            Determines the "differential" voltage between two separate
+            channels.
     """
-    NONE = False
+    SINGLE_ENDED = False
     DIFFERENTIAL = True
 
 class EncoderChannel(IntEnum):

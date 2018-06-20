@@ -63,10 +63,10 @@ class AnalogInput(ELVISIII):
 
             # give default values for mode
             if 'mode' not in configuration_details:
-                configuration_details['mode'] = AIMode.NONE
+                configuration_details['mode'] = AIMode.SINGLE_ENDED
 
             # check that user inputted channel is correct
-            if configuration_details['mode'] == AIMode.NONE:
+            if configuration_details['mode'] == AIMode.SINGLE_ENDED:
                 assert AIOChannel.AI0 <= configuration_details['channel'] <= AIOChannel.AI7
             elif configuration_details['mode'] == AIMode.DIFFERENTIAL:   # differential mode
                 assert AIOChannel.AI0 <= configuration_details['channel'] <= AIOChannel.AI3, 'the valid range for channel is AI0 to AI3 in differential mode'
