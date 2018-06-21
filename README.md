@@ -1,6 +1,8 @@
-How to use the Python FPGA API with the NI ELVIS III
+How to use NI ELVIS III with Python
 =======
-In this document we will walk you through setup, transfer of files, and the use of a Python program. There are a total of 14 Examples included which illustrate the use of the NI ELVIS III Academic IO helper library.
+Overview
+--------
+In this document we will walk you through setup, transfer of files, and the use of a Python program. There are a total of 14 Examples included which illustrate the use of the NI ELVIS III AcademicIO helper library.
 
 Time Configuration Setup
 --------
