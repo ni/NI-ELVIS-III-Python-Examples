@@ -42,11 +42,11 @@ frame_length = 8
 
 # open an SPI session, and set initial values for the parameters
 with academicIO.SPI(frequency,
-                              bank,
-                              clock_phase,
-                              clock_polarity,
-                              data_direction,
-                              frame_length) as SPI:
+                    bank,
+                    clock_phase,
+                    clock_polarity,
+                    data_direction,
+                    frame_length) as SPI:
 
     # The program writes and reads values 5 times
     for x in range(0, 5):

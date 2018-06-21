@@ -9,6 +9,11 @@ and the last bit represents the mode of operation. For this kind of I2C
 devices, you must specify the slave address(7-bit) using the seven most
 significant bits.
 
+slave_device_address is an address which refers to the slave device. In this
+example, slave_device_address is 0x53 which specifies to the I2C connection
+address of ADXL345. You might need to change the slave_device_address depends
+on the device you have.
+
 Hardware setup:
     1. Connect an I2C.SCL of a slave device to DIO14 on bank A.
     2. Connect an I2C.SDA of a slave device to DIO15 on bank A.
