@@ -197,7 +197,7 @@ class AnalogInput(ELVISIII):
                 configuration['value'] = self.session.registers['AI.DIFF_' + channel['bank'] + '_' + str(channel['channel']) + '.VAL']
                 configuration['cnfgval'] = int(bin(channel['channel']), 2) | int('1000', 2) | channel['cnfgval']
             else:
-                # none differential mode
+                # single ended mode
                 configuration['channel'] = 7 + channel['channel']
                 configuration['value'] = self.session.registers['AI.' + channel['bank'] + '_' + str(channel['channel']) + '.VAL']
                 configuration['cnfgval'] = int(bin(channel['channel']), 2) | int('1000', 2) | channel['cnfgval']
