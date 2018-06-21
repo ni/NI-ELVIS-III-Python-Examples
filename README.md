@@ -67,38 +67,27 @@ cd /home/admin
 python filename.py
 ```
 
-Open a Session 
---------
-Session, a convenient wrapper around the NI ELVIS III controlling APIs.
-Example session usage:
-```
-with academicIO.AnalogInput({'bank': bank,
-                             'channel': channel,
-                             'mode': mode}) as AI_single_channel:
-```
-It is always recommended that you use a Session with a context manager (with). Opening a Session without a context manager could cause you to leak the session if : `Session.close` is not called.
-
 Function Select Register 
 --------
-| NI ELVIS III | DIO | PWM | Encoder | SPI | I2C | UART | 
-|:------------:|:-----------:|:-----------:|:---------------:|:-----------:|:------------------------:|:----------:| 
-| DIO 0        | DIO 0       | PWM 0       | ENC.A 0         |             |                          |            | 
-| DIO 1        | DIO 1       | PWM 1       | ENC.B 0         |             |                          |            | 
-| DIO 2        | DIO 2       | PWM 2       | ENC.A 1         |             |                          |            | 
-| DIO 3        | DIO 3       | PWM 3       | ENC.B 1         |             |                          |            | 
-| DIO 4        | DIO 4       | PWM 4       | ENC.A 2         |             |                          |            | 
-| DIO 5        | DIO 5       | PWM 5       | ENC.B 2         | SPI.CLK     |                          |            | 
-| DIO 6        | DIO 6       | PWM 6       | ENC.A 3         | SPI.MISO    |                          |            | 
-| DIO 7        | DIO 7       | PWM 7       | ENC.B 3         | SPI.MOSI    |                          |            | 
-| DIO 8        | DIO 8       | PWM 8       | ENC.A 4         |             |                          |            | 
-| DIO 9        | DIO 9       | PWM 9       | ENC.B 4         |             |                          |            | 
-| DIO 10       | DIO 10      | PWM 10      | ENC.A 5         |             |                          |            | 
-| DIO 11       | DIO 11      | PWM 11      | ENC.B 5         |             |                          |            | 
-| DIO 12       | DIO 12      | PWM 12      | ENC.A 6         |             |                          |            | 
-| DIO 13       | DIO 13      | PWM 13      | ENC.B 6         |             |                          |            | 
-| DIO 14       | DIO 14      | PWM 14      | ENC.A 7         |             | I2C.SCL                  |            | 
-| DIO 15       | DIO 15      | PWM 15      | ENC.B 7         |             | I2C.SDA                  |            | 
-| DIO 16       | DIO 16      | PWM 16      | ENC.A 8         |             |                          | UART.RX    | 
-| DIO 17       | DIO 17      | PWM 17      | ENC.B 8         |             |                          | UART.TX    | 
-| DIO 18       | DIO 18      | PWM 18      | ENC.A 9         |             |                          |            | 
-| DIO 19       | DIO 19      | PWM 19      | ENC.B 9         |             |                          |            |
+|**NI ELVIS III**| DIO | PWM | Encoder | SPI | I2C | UART | 
+|:--------------:|:-----------:|:-----------:|:---------------:|:-----------:|:------------------------:|:----------:| 
+| **DIO 0**      | DIO 0       | PWM 0       | ENC.A 0         |             |                          |            | 
+| **DIO 1**      | DIO 1       | PWM 1       | ENC.B 0         |             |                          |            | 
+| **DIO 2**      | DIO 2       | PWM 2       | ENC.A 1         |             |                          |            | 
+| **DIO 3**      | DIO 3       | PWM 3       | ENC.B 1         |             |                          |            | 
+| **DIO 4**      | DIO 4       | PWM 4       | ENC.A 2         |             |                          |            | 
+| **DIO 5**      | DIO 5       | PWM 5       | ENC.B 2         | SPI.CLK     |                          |            | 
+| **DIO 6**      | DIO 6       | PWM 6       | ENC.A 3         | SPI.MISO    |                          |            | 
+| **DIO 7**      | DIO 7       | PWM 7       | ENC.B 3         | SPI.MOSI    |                          |            | 
+| **DIO 8**      | DIO 8       | PWM 8       | ENC.A 4         |             |                          |            | 
+| **DIO 9**      | DIO 9       | PWM 9       | ENC.B 4         |             |                          |            | 
+| **DIO 10**     | DIO 10      | PWM 10      | ENC.A 5         |             |                          |            | 
+| **DIO 11**     | DIO 11      | PWM 11      | ENC.B 5         |             |                          |            | 
+| **DIO 12**     | DIO 12      | PWM 12      | ENC.A 6         |             |                          |            | 
+| **DIO 13**     | DIO 13      | PWM 13      | ENC.B 6         |             |                          |            | 
+| **DIO 14**     | DIO 14      | PWM 14      | ENC.A 7         |             | I2C.SCL                  |            | 
+| **DIO 15**     | DIO 15      | PWM 15      | ENC.B 7         |             | I2C.SDA                  |            | 
+| **DIO 16**     | DIO 16      | PWM 16      | ENC.A 8         |             |                          | UART.RX    | 
+| **DIO 17**     | DIO 17      | PWM 17      | ENC.B 8         |             |                          | UART.TX    | 
+| **DIO 18**     | DIO 18      | PWM 18      | ENC.A 9         |             |                          |            | 
+| **DIO 19**     | DIO 19      | PWM 19      | ENC.B 9         |             |                          |            |
