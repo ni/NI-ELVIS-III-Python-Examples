@@ -9,11 +9,11 @@ Result:
 """
 import time
 import academicIO
-from enums import Bank, AIOChannel
+from enums import Bank, AOChannel
 
 # specify the bank, channel for the AO session
 bank = Bank.A
-channel = AIOChannel.AO0
+channel = AOChannel.AO0
 
 # open an AO session and set the initial values for the parameters
 with academicIO.AnalogOutput({'bank': bank,

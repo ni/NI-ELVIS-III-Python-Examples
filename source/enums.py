@@ -11,8 +11,8 @@ class Bank(Enum):
     A = 'A'
     B = 'B'
 
-class AIOChannel(IntEnum):
-    """ NI ELVIS III Analog Input and Output channel. """
+class AIChannel(IntEnum):
+    """ NI ELVIS III Analog Input channel. """
     AI0 = 0
     AI1 = 1
     AI2 = 2
@@ -21,6 +21,9 @@ class AIOChannel(IntEnum):
     AI5 = 5
     AI6 = 6
     AI7 = 7
+
+class AOChannel(IntEnum):
+    """ NI ELVIS III Analog Output channel. """
     AO0 = 0
     AO1 = 1
 

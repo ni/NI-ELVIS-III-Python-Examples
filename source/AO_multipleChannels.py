@@ -9,12 +9,12 @@ Result:
 """
 import time
 import academicIO
-from enums import Bank, AIOChannel, AIRange
+from enums import Bank, AOChannel, AIRange
 
 # specify the bank, channels, and range for the AO session
 bank = Bank.A
-channel0 = AIOChannel.AO0
-channel1 = AIOChannel.AO1
+channel0 = AOChannel.AO0
+channel1 = AOChannel.AO1
 airange = AIRange.PLUS_OR_MINUS_10V
 
 # open an AO session and set the initial values for the parameters

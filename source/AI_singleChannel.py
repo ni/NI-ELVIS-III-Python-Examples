@@ -30,11 +30,11 @@ Result:
 """
 import time
 import academicIO
-from enums import Bank, AIOChannel, AIRange, AIMode
+from enums import Bank, AIChannel, AIRange, AIMode
 
 # specify the bank, channel, range, and mode
 ai_bank = Bank.A
-ai_channel = AIOChannel.AI0
+ai_channel = AIChannel.AI0
 ai_range = AIRange.PLUS_OR_MINUS_10V
 ai_mode = AIMode.SINGLE_ENDED
 

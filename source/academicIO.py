@@ -67,9 +67,9 @@ class AnalogInput(ELVISIII):
 
             # check that user inputted channel is correct
             if configuration_details['mode'] == AIMode.SINGLE_ENDED:
-                assert AIOChannel.AI0 <= configuration_details['channel'] <= AIOChannel.AI7
+                assert AIChannel.AI0 <= configuration_details['channel'] <= AIChannel.AI7
             elif configuration_details['mode'] == AIMode.DIFFERENTIAL:   # differential mode
-                assert AIOChannel.AI0 <= configuration_details['channel'] <= AIOChannel.AI3, 'the valid range for channel is AI0 to AI3 in differential mode'
+                assert AIChannel.AI0 <= configuration_details['channel'] <= AIChannel.AI3, 'the valid range for channel is AI0 to AI3 in differential mode'
 
             # get valeus of Enum bank, channel, and mode
             configuration_details['bank'] = configuration_details['bank'].value
@@ -126,7 +126,7 @@ class AnalogInput(ELVISIII):
                 init_cnfg_value = 0
 
             # save the detail information for the AI event into a array
-            configuration = {'bank': Bank.A.value, 'channel': AIOChannel.AI0.value, 'value': val, 'cnfgval': 0}
+            configuration = {'bank': Bank.A.value, 'channel': AIChannel.AI0.value, 'value': val, 'cnfgval': 0}
 
             # get the bank A registration addresses and initialize them
             if configuration_details['bank'] == Bank.A.value and not a_open:
@@ -190,7 +190,7 @@ class AnalogInput(ELVISIII):
         # the information is different based on whether it is differential mode
         channel_list = []
         for channel in self.channel_list:
-            configuration = {'bank': channel['bank'], 'channel': AIOChannel.AI0.value, 'value': channel['value'], 'cnfgval': 0}
+            configuration = {'bank': channel['bank'], 'channel': AIChannel.AI0.value, 'value': channel['value'], 'cnfgval': 0}
             if channel['mode']:
                 # differential mode
                 configuration['channel'] = 7 + channel['channel']
@@ -271,7 +271,7 @@ class AnalogOutput(ELVISIII):
         channel_value = {'value': '0'}
         for configuration_details in configuration:
             assert configuration_details['bank'] in Bank
-            assert AIOChannel.AO0 <= configuration_details['channel'] <= AIOChannel.AO1
+            assert AOChannel.AO0 <= configuration_details['channel'] <= AOChannel.AO1
             configuration_details['bank'] = configuration_details['bank'].value
             configuration_details['channel'] = configuration_details['channel'].value
             self.value = self.session.registers['AO.' + configuration_details['bank'] + '_' + str(configuration_details['channel']) + '.VAL']

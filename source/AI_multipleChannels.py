@@ -19,8 +19,8 @@ references the selected channel to another channel as indicated in this table:
    AI3: AI3 to AI7
 
 This example uses:
-   1. Bank A, Channel AI0, Range +/-10 V, Mode Single Ended.
-   2. Bank B, Channel AI1, Range +/-5 V, Mode Single Ended.
+    1. Bank A, Channel AI0, Range +/-10 V, Mode Single Ended.
+    2. Bank B, Channel AI1, Range +/-5 V, Mode Single Ended.
 
 Hardware setup:
     1. Connect a +5 V voltage source to AI0 on bank A.
@@ -33,13 +33,13 @@ Result:
 """
 import time
 import academicIO
-from enums import Bank, AIOChannel, AIRange, AIMode
+from enums import Bank, AIChannel, AIRange, AIMode
 
 # specify the banks, channels, ranges, and mode for the AI session
 ai_bankA = Bank.A
 ai_bankB = Bank.B
-ai_channel0 = AIOChannel.AI0
-ai_channel1 = AIOChannel.AI1
+ai_channel0 = AIChannel.AI0
+ai_channel1 = AIChannel.AI1
 ai_range0 = AIRange.PLUS_OR_MINUS_10V
 ai_range1 = AIRange.PLUS_OR_MINUS_5V
 ai_mode = AIMode.SINGLE_ENDED
