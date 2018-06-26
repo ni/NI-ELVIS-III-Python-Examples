@@ -9,11 +9,11 @@ import academicIO
 from enums import *
 
 bank = Bank.A
-AO_single_channel = academicIO.AnalogOutput({'bank': bank, 'channel': AIOChannel.AO0})
-AO_multiple_channels = academicIO.AnalogOutput({'bank': bank, 'channel': AIOChannel.AO0}, 
-                                                         {'bank': bank, 'channel': AIOChannel.AO1})
-AI_multiple_channels = academicIO.AnalogInput({'bank': bank, 'channel': AIOChannel.AI0},
-                                                        {'bank': bank, 'channel': AIOChannel.AI3})
+AO_single_channel = academicIO.AnalogOutput({'bank': bank, 'channel': AOChannel.AO0})
+AO_multiple_channels = academicIO.AnalogOutput({'bank': bank, 'channel': AOChannel.AO0}, 
+                                                         {'bank': bank, 'channel': AOChannel.AO1})
+AI_multiple_channels = academicIO.AnalogInput({'bank': bank, 'channel': AIChannel.AI0},
+                                                        {'bank': bank, 'channel': AIChannel.AI3})
 
 input_value = 3.5
 AO_multiple_channels.write(input_value)
@@ -47,6 +47,6 @@ AO_multiple_channels.close()
 AI_multiple_channels.close()
 
 try:
-    academicIO.AnalogOutput({'bank': bank, 'channel': AIOChannel.AI2})
+    academicIO.AnalogOutput({'bank': bank, 'channel': 2})
 except (AssertionError) as err:
     print "Caught the error - The channels available in the AO should be 0-1."

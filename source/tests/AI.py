@@ -9,9 +9,9 @@ import academicIO
 from enums import *
 
 bank = Bank.A
-AI_single_channel = academicIO.AnalogInput({'bank': bank, 'channel': AIOChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_5V, 'mode': AIMode.NONE})
-AI_multiple_channels = academicIO.AnalogInput({'bank': bank, 'channel': AIOChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_10V},
-                                                        {'bank': bank, 'channel': AIOChannel.AI2, 'mode': AIMode.DIFFERENTIAL})
+AI_single_channel = academicIO.AnalogInput({'bank': bank, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_5V, 'mode': AIMode.SINGLE_ENDED})
+AI_multiple_channels = academicIO.AnalogInput({'bank': bank, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_10V},
+                                                        {'bank': bank, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL})
 
 value_array = AI_single_channel.read()
 for value in value_array:
@@ -32,21 +32,21 @@ AI_single_channel.close()
 AI_multiple_channels.close()
 
 try:
-    academicIO.AnalogInput({'bank': 'C', 'channel': AIOChannel.AI0, 'mode': AIMode.NONE})
+    academicIO.AnalogInput({'bank': 'C', 'channel': AIChannel.AI0, 'mode': AIMode.SINGLE_ENDED})
 except (AssertionError) as err:
     print "Caught the error - The banks available in the AI normal mode are A and B."
 
 try:
-    academicIO.AnalogInput({'bank': bank, 'channel': 8, 'mode': AIMode.NONE})
+    academicIO.AnalogInput({'bank': bank, 'channel': 8, 'mode': AIMode.SINGLE_ENDED})
 except (AssertionError) as err:
     print "Caught the error - The channels available in the AI normal mode are AI0 - 7."
 
 try:
-    academicIO.AnalogInput({'bank': bank, 'channel': AIOChannel.AI4, 'mode': AIMode.DIFFERENTIAL})
+    academicIO.AnalogInput({'bank': bank, 'channel': AIChannel.AI4, 'mode': AIMode.DIFFERENTIAL})
 except (AssertionError) as err:
     print "Caught the error - The channels available in the AI differential mode are AI0 - 3."
 
 try:
-    academicIO.AnalogInput({'bank': bank, 'channel': AIOChannel.AI2, 'range': '+/-20V'})
+    academicIO.AnalogInput({'bank': bank, 'channel': AIChannel.AI2, 'range': '+/-20V'})
 except (AssertionError) as err:
     print "Caught the error - The range value of the channel should be in AIRange."
