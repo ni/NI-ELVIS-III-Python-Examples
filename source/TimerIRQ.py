@@ -11,6 +11,9 @@ The callback function executes when the interrupt occurs. You can customize
 the callback function as needed. For example, you can write code to make an
 LED flash as shown in this example, or to read from an AI channel.
 
+Hardware setup:
+    No hardware is needed.
+
 Result:
     An interrupt occurs when the time interval is reached.
     The program calls irq_handler when the interrupt occurs.
