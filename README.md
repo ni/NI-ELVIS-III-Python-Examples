@@ -16,14 +16,14 @@ In this document we will walk you through the setup, transfer of files, and the 
 
 ## Enable the Secure Shell Server
 1. Open Internet Explorer and visit the NI ELVIS III Configuration website:: \<IP Address of NI ELVIS III\>/WIF.html<br />
-  :exclamation: IP Address can be found on the Display of the NI ELVIS III
-  
-  ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/IPaddress.jpg)
+  :exclamation: IP Address can be found on the Display of the NI ELVIS III. Press BUTTON 0 until IP address appears. Enter IP address from the display.<br />
+
+      ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/IPaddress.jpg)
   
 2. Navigate to the ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/system_configuration.png) tab at the left of the page if not already there.
 3. Enable **Secure Shell Server (sshd)** checkbox in the **Startup Settings** section.
     ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/sshd.png)
-4. Click **Save*.
+4. Click **Save**.
 
 ## Setup Time Configuration
 On the NI ELVIS III configuration website:
