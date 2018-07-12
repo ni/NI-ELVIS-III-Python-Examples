@@ -4,6 +4,9 @@ This example illustrates how to set the status of the LEDs on the NI ELVIS III.
 To create an LED session, you need to define led, which is an optional
 parameter. The default value of led is LED0.
 
+Hardware setup:
+    No hardware is needed.
+
 Result:
     The LED flashes.
 """

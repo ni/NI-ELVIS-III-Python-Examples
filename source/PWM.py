@@ -5,6 +5,9 @@ peripheral through the PWM channels. To create a PWM session, you need to
 define two required parameters, bank and channel. To configure a PWM signal,
 you need to define another two required parameters, frequency and duty_cycle.
 
+Hardware setup:
+    No hardware is needed.
+
 Result:
     Generate a PWM signal from DIO0 on bank B.
 """

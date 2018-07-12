@@ -4,6 +4,9 @@ This example illustrates how to read the value from the user programmable
 button BUTTON 0 on the NI ELVIS III. The BUTTON 0 is a non-latching push
 switch. It returns True when pressed and False otherwise.
 
+Hardware setup:
+    No hardware is needed.
+
 Result: 
     The program prints a string when you press the button.
 """

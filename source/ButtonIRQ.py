@@ -24,6 +24,9 @@ with the same IRQ number as that of a registered I/O interrupt. However, after
 you close the existing interrupt, you can use the IRQ number to register
 another interrupt.
 
+Hardware setup:
+    No hardware is needed.
+
 Result:
     An interrupt occurs when you press the button.
     The program calls irq_handler when the interrupt occurs.
