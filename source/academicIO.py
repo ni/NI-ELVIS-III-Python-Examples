@@ -1300,10 +1300,11 @@ class UART(ELVISIII):
                 self.b_ena.write(True)
         self.bank = bank
 
-    def configure(self, baud_rate=UARTBaudRate.RATE9600.value,
-                        data_bits=UARTDataBits.BITS8.value,
-                        stop_bits=UARTStopBits.ONE.value,
-                        parity=UARTParity.NO.value):
+    def configure(self, baud_rate=UARTBaudRate.RATE9600,
+                        data_bits=UARTDataBits.BITS8,
+                        stop_bits=UARTStopBits.ONE,
+                        parity=UARTParity.NO,
+                        flow_control=UARTFlowControl.NONE):
         """
         Initializes the serial port specified by VISA resource name to the
         specified settings.
@@ -1325,8 +1326,9 @@ class UART(ELVISIII):
         baud_rates = {110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400}
         assert baud_rate in baud_rates
         assert UARTDataBits.BITS7 <= data_bits <= UARTDataBits.BITS8
-        assert UARTStopBits.ONE <= stop_bits <= UARTStopBits.TWO
-        assert UARTParity.NO <= parity <= UARTParity.EVEN
+        assert stop_bits in UARTStopBits
+        assert parity in UARTParity
+        assert flow_control in UARTFlowControl
         if self.bank == Bank.A:
             resource_name = 'ASRL1::INSTR'
         else :
@@ -1335,16 +1337,9 @@ class UART(ELVISIII):
         self.instrument = self.resource_manager.open_resource(resource_name)
         self.instrument.baud_rate = baud_rate.value
         self.instrument.data_bits = data_bits.value
-        if stop_bits == UARTStopBits.TWO:
-            self.instrument.stop_bits = pyvisa.constants.StopBits.two
-        else:
-            self.instrument.stop_bits = pyvisa.constants.StopBits.one
-        if parity == UARTParity.EVEN:
-            self.instrument.parity = pyvisa.constants.Parity.even
-        elif parity == UARTParity.ODD:
-            self.instrument.parity = pyvisa.constants.Parity.odd
-        else:
-            self.instrument.parity = pyvisa.constants.Parity.none
+        self.instrument.stop_bits = stop_bits.value
+        self.instrument.parity = parity.value
+        self.instrument.flow_control = flow_control.value
 
     def write(self, value_to_write):
         """

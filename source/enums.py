@@ -1,3 +1,4 @@
+from pyvisa import constants
 from enum import Enum, IntEnum
 
 class Bank(Enum):
@@ -139,7 +140,7 @@ class UARTDataBits(IntEnum):
     BITS7 = 7
     BITS8 = 8
 
-class UARTStopBits(IntEnum):
+class UARTStopBits(Enum):
     """
     NI ELVIS III UART stop bits.
 
@@ -147,14 +148,45 @@ class UARTStopBits(IntEnum):
         ONE: 1 stop bit
         TWO: 2 stop bits
     """
-    ONE = 1
-    TWO = 2
+    ONE = constants.StopBits.one
+    TWO = constants.StopBits.two
 
-class UARTParity(IntEnum):
+class UARTParity(Enum):
     """ NI ELVIS III UART parity. """
-    NO = 0
-    ODD = 1
-    EVEN = 2
+    NO = constants.Parity.none
+    ODD = constants.Parity.odd
+    EVEN = constants.Parity.even
+
+class UARTFlowControl(Enum):
+    """
+    NI ELVIS III UART flow control.
+
+    Values:
+       NONE:
+           The transfer mechanism does not use flow control. Buffers on both
+           sides of the connection are assumed to be large enough to hold all
+           data transferred.
+       XOR_XOFF:
+           The transfer mechanism uses the XON and XOFF characters to perform
+           flow control. The transfer mechanism controls input flow by sending
+           XOFF when the receive buffer is nearly full, and it controls the
+           output flow by suspending transmission when XOFF is received.
+       RTS_CTS:
+           The transfer mechanism uses the XON and XOFF characters to perform
+           flow control. The transfer mechanism controls input flow by sending
+           XOFF when the receive buffer is nearly full, and it controls the
+           output flow by suspending transmission when XOFF is received.
+       DTR_DSR:
+           The transfer mechanism uses the DTR output signal and the DSR input
+           signal to perform flow control. The transfer mechanism controls
+           input flow by unasserting the DTR signal when the receive buffer is
+           nearly full, and it controls output flow by suspending the
+           transmission when the DSR signal is unasserted.
+    """
+    NONE = constants.VI_ASRL_FLOW_NONE
+    XOR_XOFF = constants.VI_ASRL_FLOW_XON_XOFF
+    RTS_CTS = constants.VI_ASRL_FLOW_RTS_CTS
+    DTR_DSR = constants.VI_ASRL_FLOW_DTR_DSR
 
 class I2CSpeedMode(Enum):
     """

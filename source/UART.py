@@ -3,12 +3,13 @@ NI ELVIS III Universal Asynchronous Receiver/Transmitter (UART) Example
 This example illustrates how to write data to or read data from a UART device
 through the UART channels on the NI ELVIS III. To create a UART session, you
 need to define bank, which is a required parameter, bank. To configure the
-UART communication, you need to define four parameters: baud rate, data bits,
-stop bits, and parity. The default values of these parameters are:
+UART communication, you need to define five parameters: baud rate, data bits,
+stop bits, parity, and flow control. The default values of these parameters are:
     baud_rate: RATE9600
     data_bits: BITS8
     stop_bits: ONE
     parity: NO
+    flow_control = NONE
 
 Hardware setup:
     1. Connect UART.RX (DIO16) on bank A to UART.TX of a UART device.
@@ -20,7 +21,7 @@ Result:
 """
 import time
 import academicIO
-from enums import Bank, UARTBaudRate, UARTDataBits, UARTParity, UARTStopBits
+from enums import Bank, UARTBaudRate, UARTDataBits, UARTParity, UARTStopBits, UARTFlowControl
 
 # specify the bank
 bank = Bank.A
@@ -35,12 +36,15 @@ with academicIO.UART(bank) as uart:
     stop_bits = UARTStopBits.ONE
     # specifies the parity bits to write or read characters
     parity = UARTParity.NO
+    # sets the type of control used by the transfer mechanism
+    flow_control = UARTFlowControl.NONE
 
     # configure the UART VISA
     uart.configure(baud_rate,
                    data_bits,
                    stop_bits,
-                   parity)
+                   parity,
+                   flow_control)
 
     # specify the data to write to the UART device
     value = 'Hello World'
