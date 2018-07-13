@@ -7,7 +7,13 @@ the I2C slave device, you must specify an address in 7 bits. Some I2C devices
 might have an 8-bit address in which the first 7 bits represent the address
 and the last bit represents the mode of operation. For this kind of I2C
 devices, you must specify the slave address(7-bit) using the seven most
-significant bits.
+significant bits. For example, a device provides a 8-bit slave address
+10100110. You can determine it to '1010011 0' which has a 7-bit slave address
+1010011. The last bit 0 is used to either to write to the slave device or read
+from the slave device. The NI ELVIS III helper library (academicIO) will
+insert the read/write bit based on the function been called.
+
+See https://www.nxp.com/docs/en/user-guide/UM10204.pdf for more details.
 
 slave_device_address is an address which refers to the slave device. In this
 example, slave_device_address is 0x53 which specifies to the I2C connection
@@ -33,7 +39,7 @@ speed = I2CSpeedMode.STANDARD
 
 # open an I2C session, and set initial values for the parameters
 with academicIO.I2C(bank, speed) as I2C:
-    # specify the address of the I2C slave device
+    # specify the address, in hexadecimal, of the I2C slave device
     slave_device_address = 0x53
 
     # The program reads values 5 times
