@@ -76,57 +76,23 @@ class AnalogInput(ELVISIII):
             configuration_details['channel'] = configuration_details['channel'].value
             configuration_details['mode'] = configuration_details['mode'].value
 
-            # give default values for minvalue and maxvalue and check that user inputted range is correct
+            # set the configuration value based on AI range
             if 'range' not in configuration_details:
-                maxvalue = 10
-                minvalue = -10
+                init_cnfg_value = 0
             else:
                 assert configuration_details['range'] in AIRange
-                configuration_details['range'] = configuration_details['range'].value
-                if configuration_details['range'] == AIRange.PLUS_OR_MINUS_1V.value:
-                    maxvalue = 1
-                    minvalue = -1
-                elif configuration_details['range'] == AIRange.PLUS_OR_MINUS_2V.value:
-                    maxvalue = 2
-                    minvalue = -2
-                elif configuration_details['range'] == AIRange.PLUS_OR_MINUS_5V.value:
-                    maxvalue = 5
-                    minvalue = -5
-                elif configuration_details['range'] == AIRange.PLUS_OR_MINUS_10V.value:
-                    maxvalue = 10
-                    minvalue = -10
-
-            # calculate the lsb weight and offset value based on minvalue and maxvalue
-            val = int(max(abs(minvalue), abs(maxvalue)))
-            if val in range(0, 1):
-                lsb_weight = 2
-                offset_value = -1
-            elif val == 2:
-                lsb_weight = 4
-                offset_value = -2
-            elif val in range(3, 5):
-                lsb_weight = 10
-                offset_value = -5
-            elif val in range(6, 10):
-                lsb_weight = 20
-                offset_value = -10
-            else:
-                lsb_weight = 0
-                offset_value = 0
-
-            # calculate the configuration value based on lsb weight and offset value
-            val = int(lsb_weight + offset_value)
-            if val == 1:
-                init_cnfg_value = int('110000', 2)
-            elif val == 2:
-                init_cnfg_value = int('100000', 2)
-            elif val == 5:
-                init_cnfg_value = int('10000', 2)
-            else:
-                init_cnfg_value = 0
+                init_range = configuration_details['range'].value
+                if init_range == AIRange.PLUS_OR_MINUS_1V.value:
+                    init_cnfg_value = int('110000', 2)
+                elif init_range == AIRange.PLUS_OR_MINUS_2V.value:
+                    init_cnfg_value = int('100000', 2)
+                elif init_range == AIRange.PLUS_OR_MINUS_5V.value:
+                    init_cnfg_value = int('10000', 2)
+                elif init_range == AIRange.PLUS_OR_MINUS_10V.value:
+                    init_cnfg_value = 0
 
             # save the detail information for the AI event into a array
-            configuration = {'bank': Bank.A.value, 'channel': AIChannel.AI0.value, 'value': val, 'cnfgval': 0}
+            configuration = {'bank': Bank.A.value, 'channel': AIChannel.AI0.value, 'value': 0, 'cnfgval': init_cnfg_value}
 
             # get the bank A registration addresses and initialize them
             if configuration_details['bank'] == Bank.A.value and not a_open:
@@ -172,8 +138,6 @@ class AnalogInput(ELVISIII):
 
             configuration['bank'] = configuration_details['bank']
             configuration['channel'] = configuration_details['channel']
-            configuration['value'] = val
-            configuration['cnfgval'] = init_cnfg_value
             configuration['mode'] = configuration_details['mode']
             self.channel_list.append(configuration)
 
