@@ -938,7 +938,7 @@ class IRQ(ELVISIII):
                 other interrupts are from IRQ1 to IRQ7.  
         """
         assert timeout >= 0
-        assert 0 <= irq_number <= 7
+        assert 0 <= irq_number <= IRQNumber.IRQ8
         print "waiting for IRQ..."
         irq_status = self.session.wait_on_irqs([irq_number], timeout)
         if irq_number in irq_status.irqs_asserted:
@@ -960,7 +960,7 @@ class IRQ(ELVISIII):
                 which is only used by timer interrupt. The valid range for
                 other interrupts are from IRQ1 to IRQ7.
         """
-        assert 0 <= irq_number <= 7
+        assert 0 <= irq_number <= IRQNumber.IRQ8
         irq_status = self.session.wait_on_irqs([irq_number], 0)
         while irq_number in irq_status.irqs_asserted:
             time.sleep(0.5)
@@ -1018,7 +1018,7 @@ class ButtonIRQ(IRQ):
                 default is 1. The range of edge_count is from 1 to 4294967295.
         """
         assert callable(callback_function), "callback_function need to be a function"
-        assert IRQNumber.IRQ1 <= irq_number <= IRQNumber.IRQ7
+        assert IRQNumber.IRQ1 <= irq_number <= IRQNumber.IRQ8
         assert timeout >= 0
         if type_rising == type_falling:
             assert type_falling != False
@@ -1091,7 +1091,7 @@ class DIIRQ(IRQ):
                 default is 1. The range of edge_count is from 1 to 4294967295.
         """
         assert callable(callback_function), "callback_function need to be a function"
-        assert IRQNumber.IRQ1 <= irq_number <= IRQNumber.IRQ7
+        assert IRQNumber.IRQ1 <= irq_number <= IRQNumber.IRQ8
         assert timeout >= 0
         if type_rising == type_falling:
             assert type_falling != False
@@ -1169,7 +1169,7 @@ class AIIRQ(IRQ):
                 input signal. The default value is RISING.
         """
         assert callable(callback_function), "callback_function need to be a function"
-        assert IRQNumber.IRQ1 <= irq_number <= IRQNumber.IRQ7
+        assert IRQNumber.IRQ1 <= irq_number <= IRQNumber.IRQ8
         assert timeout >= 0
         assert 0 <= threshold <= 5
         assert 0 <= hysteresis <= 1

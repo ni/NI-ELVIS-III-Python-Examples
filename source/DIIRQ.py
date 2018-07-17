@@ -19,7 +19,7 @@ example, you can write code to make an LED flash as shown in this example, or
 to read from an AI channel.
 
 irq_number specifies the identifier of the interrupt to register. There are
-seven identical numbers of IRQ number (IRQ1 to IRQ7). You cannot register an
+seven identical numbers of IRQ number (IRQ1 to IRQ8). You cannot register an
 I/O interrupt with the same IRQ number as that of a registered I/O interrupt.
 However, after you close the existing interrupt, you can use the IRQ number to
 register another interrupt.

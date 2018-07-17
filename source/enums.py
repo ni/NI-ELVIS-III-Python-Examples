@@ -272,6 +272,7 @@ class IRQNumber(IntEnum):
     IRQ5 = 5
     IRQ6 = 6
     IRQ7 = 7
+    IRQ8 = 8
 
 class AIIRQChannel(IntEnum):
     """ NI ELVIS III Analog Input Interrupt channel """
