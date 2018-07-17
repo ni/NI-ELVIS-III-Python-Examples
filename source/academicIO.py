@@ -450,7 +450,7 @@ class Encoder(ELVISIII):
 
 class PWM(ELVISIII):
     """ NI ELVIS III Pulse Width Modulation (PWM) API. """
-    def __init__(self, bank=Bank.A.value, channel=DIOChannel.DIO0):
+    def __init__(self, bank=Bank.A, channel=DIOChannel.DIO0):
         """
         Opens a session to a pulse width modulation (PWM) channel and
         initialize PWM registration on NI ELVIS III.
@@ -631,6 +631,8 @@ class I2C(ELVISIII):
                 Specifies the number of milliseconds this VI waits for writing
                 a single byte before timing out. The default is 1000.
         """
+        assert 0 <= slave_address <= 127, "You must specify the slave address using the seven most significant bits (MSB) to 7 bit."
+        assert bytes_to_write >= 0
         self.addr.write(slave_address << 1)
         timeout = False
         error = False
@@ -705,6 +707,8 @@ class I2C(ELVISIII):
                 Returns the data that this function reads from the I2C slave
                 device.
         """
+        assert 0 <= slave_address <= 127, "You must specify the slave address using the seven most significant bits (MSB) to 7 bit."
+        assert num_bytes_to_read >= 0
         return_value = []
         error = False
         timeout = False
@@ -1013,6 +1017,7 @@ class ButtonIRQ(IRQ):
                 must occur for this function to register an interrupt. The
                 default is 1. The range of edge_count is from 1 to 4294967295.
         """
+        assert callable(callback_function), "callback_function need to be a function"
         assert IRQNumber.IRQ1 <= irq_number <= IRQNumber.IRQ7
         assert timeout >= 0
         if type_rising == type_falling:
@@ -1085,6 +1090,7 @@ class DIIRQ(IRQ):
                 must occur for this function to register an interrupt. The
                 default is 1. The range of edge_count is from 1 to 4294967295.
         """
+        assert callable(callback_function), "callback_function need to be a function"
         assert IRQNumber.IRQ1 <= irq_number <= IRQNumber.IRQ7
         assert timeout >= 0
         if type_rising == type_falling:
@@ -1162,6 +1168,7 @@ class AIIRQ(IRQ):
                 Specifies when to register the interrupt based on the analog
                 input signal. The default value is RISING.
         """
+        assert callable(callback_function), "callback_function need to be a function"
         assert IRQNumber.IRQ1 <= irq_number <= IRQNumber.IRQ7
         assert timeout >= 0
         assert 0 <= threshold <= 5
@@ -1219,6 +1226,8 @@ class TimerIRQ(IRQ):
                 Specify the span of time, in milliseconds, between two
                 adjacent interrupts.
         """
+        assert callable(callback_function), "callback_function need to be a function"
+        assert irq_interval > 0
         self.write.write(irq_interval)
         self.set.write(True)
         irq_number = 0
