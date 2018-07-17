@@ -7,7 +7,7 @@ is called a list of single point data is written to the channels. The time
 between writes is not precisely timed, and is controlled by a software delay.
 
 The AO configuration consists of two parameters: bank and channel. There are
-two identical banks of AI channels (A and B). Each bank contains 2 analog
+two identical banks of AO channels (A and B). Each bank contains 2 analog
 output channels. Every channel can be configured for single ended mode.
 
 This example uses:
@@ -29,7 +29,7 @@ bank = Bank.A
 channel0 = AOChannel.AO0
 channel1 = AOChannel.AO1
 
-# open an AO session and set the initial values for the parameters
+# configure the AO channels
 with academicIO.AnalogOutput({'bank': bank,     # define first channel: AO0
                               'channel': channel0},
                              {'bank': bank,     # define second channel: AO1
@@ -38,7 +38,7 @@ with academicIO.AnalogOutput({'bank': bank,     # define first channel: AO0
     for i in range(0, 20):
         # define the value as a floating-point number
         input_value = 3.5
-        # write 3.5 to both AO0 and AI1 on bank A
+        # write 3.5 to both AO0 and AO1 on bank A
         AO_multiple_channels.write(input_value)
 
         # add a short delay before acquiring next data point

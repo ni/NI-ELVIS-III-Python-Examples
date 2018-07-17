@@ -7,7 +7,7 @@ is called a single point of data is written to the channel. The time between
 writes is not precisely timed, and is controlled by a software delay.
 
 The AO configuration consists of two parameters: bank and channel. There are
-two identical banks of AI channels (A and B). Each bank contains 2 analog
+two identical banks of AO channels (A and B). Each bank contains 2 analog
 output channels. Every channel can be configured for single ended mode.
 
 This example uses:
@@ -27,7 +27,7 @@ from enums import Bank, AOChannel
 bank = Bank.A
 channel = AOChannel.AO0
 
-# open an AO session and set the initial values for the parameters
+# configure the AO channel
 with academicIO.AnalogOutput({'bank': bank,
                               'channel': channel}) as AO_single_channel:
 
