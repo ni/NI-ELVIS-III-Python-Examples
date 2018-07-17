@@ -3,9 +3,9 @@ NI ELVIS III Universal Asynchronous Receiver/Transmitter (UART) Example
 This example illustrates how to write data to or read data from an Universal
 Asynchronous Receiver/Transmitter (UART) device through the UART channels on
 the NI ELVIS III. The program first defined the configuration for the UART
-communication, then writes to and reads from the UART device in a loop. Each
-time the write is called a string is returned from the UART device; each time
-the read is called a string is returned from the UART device.
+communication, then writes to and reads from the UART device. Each time the
+write is called a string is returned from the UART device; each time the read
+is called a string is returned from the UART device.
 
 The UART configuration consists of one parameter: bank, and there are two
 identical banks of AI channels (A and B).

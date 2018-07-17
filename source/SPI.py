@@ -3,9 +3,9 @@ NI ELVIS III Serial Peripheral Interface Example
 This example illustrates how to write data to or read data from an Serial
 Peripheral Interface (SPI) slave device through the SPI channels on the NI
 ELVIS III. The program first defines the configuration for the SPI
-communication, then writes to and reads from the device in a loop. Each time
-the write is called a list of data is written to the SPI device; each time the
-read is called a list of data is returned from the SPI device.
+communication, then writes to and reads from the device. Each time the write
+is called a list of data is written to the SPI device; each time the read is
+called a list of data is returned from the SPI device.
 
 The SPI configuration consists of six parameters: frequency, bank, clock_phase,
 clock_polarity data_direction, and frame_length. There are two identical banks
