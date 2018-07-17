@@ -1,9 +1,16 @@
 """
-NI ELVIS III Pulse Width Modulation (PWM) Example 
-This example illustrates how to generate a PWM signal to an external 
-peripheral through the PWM channels. To create a PWM session, you need to
-define two required parameters, bank and channel. To configure a PWM signal,
-you need to define another two required parameters, frequency and duty_cycle.
+NI ELVIS III Pulse Width Modulation Example 
+This example illustrates how to generate a Pulse Width Modulation (PWM) signal
+to an external peripheral through the PWM channels. The program first defines
+the configuration for the PWM/DIO channels, then generates the signal in a
+loop.
+
+The PWM configuration consists of two parameters: bank and channel. There are
+two identical banks of PWM channels (A and B). The PWM shared the same channels
+with DIO. Each bank contains 19 digital input and output channels.
+
+This example uses:
+    Bank B, Channel DIO0.
 
 Hardware setup:
     No hardware is needed.
@@ -19,17 +26,16 @@ from enums import Bank, DIOChannel
 bank = Bank.B
 channel = DIOChannel.DIO0
 
-# open a PWM session, and set initial values for the parameters
+# open a PWM session
 with academicIO.PWM(bank, channel) as PWM:
     # specify the frequency settings for the PWM signal
-    frequency = 160
+    frequency = 1000
     # specify the percentage of time the PWM signal remains high over one PWM
     # cycle
     duty_cycle = 0.7
 
     # generate the PWM signal
     PWM.configure(frequency, duty_cycle)
-    # The program generates the PWM signal 20 times
-    for i in range(0, 20):
-            time.sleep(0.01)
-            print "generating PWM signal.."
+    # begin to generate PWM signal for 20 seconds
+    time.sleep(20)
+    # stop generating PWM signal

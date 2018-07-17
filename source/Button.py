@@ -1,11 +1,18 @@
 """
 NI ELVIS III Button Example
 This example illustrates how to read the value from the user programmable
-button BUTTON 0 on the NI ELVIS III. The BUTTON 0 is a non-latching push
-switch. It returns True when pressed and False otherwise.
+button BUTTON 0 on the NI ELVIS III. The program first defines the
+configuration for the LED, then reads from the LED registers in a loop. Each
+time the read is called a Boolean data is returned. The BUTTON 0 is a
+non-latching push switch. The read function returns True when pressed and
+False otherwise. The time between reads is not precisely timed, and is
+controlled by a software delay.
+
+This example uses:
+    User programmable button BUTTON 0.
 
 Hardware setup:
-    No hardware is needed.
+    Press the button BUTTON 0 on NI ELVIS III before the program ends.
 
 Result: 
     The program prints a string when you press the button.
@@ -15,7 +22,7 @@ import academicIO
 
 # open a button session
 with academicIO.Button() as button:
-    # The program reads values 20 times
+    # reads values 20 times
     for x in range(0, 20):
         # print the loop count
         print "loop ", x
@@ -23,5 +30,5 @@ with academicIO.Button() as button:
         if button.read():
             # print a notice
             print "The Button is pressed."
-        # delay for 0.1 seconds so that the program does not run too fast
+        # add a short delay before acquiring next data point
         time.sleep(1)

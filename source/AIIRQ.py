@@ -28,8 +28,13 @@ register another interrupt.
 This example uses:
     Bank A, Channel AI0.
 
+This example uses:
+    Bank A, Channel AI0.
+
 Hardware setup:
-    Connect an analog signal source to AI0 on bank A.
+    Connect an analog signal source to AI0 on bank A. Gives an appropriate
+    analog signal before the program ends. You can connect a +5 V voltage
+    source to AI0 on bank A to trigger the interrupt.
 
 Result:
     An interrupt occurs when AI0 receives an appropriate analog signal.
@@ -74,10 +79,10 @@ with academicIO.AIIRQ(irq_channel) as AI_IRQ:
     # occur before timing out
     timeout = 6000
     # specify the value, in volts, that the signal must cross for this example
-    threshold = 4.0
+    threshold = 5.0
     # specify a window, in volts, above or below threshold. This program uses
     # hysteresis to prevent false interrupt registration
-    hysteresis = 0.02
+    hysteresis = 0.1
     # specify whether to register an interrupt on the falling edge or rising
     # edge of the analog input signal
     irq_type = AIIRQType.RISING

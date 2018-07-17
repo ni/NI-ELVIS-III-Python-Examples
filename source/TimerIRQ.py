@@ -1,15 +1,15 @@
 """
-NI ELVIS III Timer Interrupt (TimerIRQ) Example
-This example illustrates how to register a timer interrupt on the NI ELVIS
-III. To do so, you need to first create a timer interrupt session, and then
-configure an interrupt.
+NI ELVIS III Timer Interrupt Example
+This example illustrates how to register a timer interrupt (TimerIRQ) on the
+NI ELVIS III. The program first defines the configuration for the Timer IRQ,
+then waits for a specific time. When the time is arrived, the irq_handler
+function will be called.
 
-To configure an interrupt, you need to define two parameters: irq_handler,
-and irq_interval. Both irq_handler and irq_interval are required parameters. 
-irq_handler defines the callback function which you use to handle interrupts.
-The callback function executes when the interrupt occurs. You can customize
-the callback function as needed. For example, you can write code to make an
-LED flash as shown in this example, or to read from an AI channel.
+irq_handler is a required parameter. It defines the callback function which
+you use to handle interrupts. The callback function executes when the
+interrupt occurs. You can customize the callback function as needed. For
+example, you can write code to make an LED flash as shown in this example, or
+to read from an AI channel.
 
 Hardware setup:
     No hardware is needed.
@@ -35,15 +35,15 @@ def irq_handler():
         # specify the LED status
         led_on = True
         led_off = False
-        # The program writes values 5 times
+        # writes values 5 times
         for x in range(0, 5):
             # turn LED0 on
             LED.write(led, led_on)
-            # delay for 2 seconds so that the program does not run too fast
+            # add a short delay before acquiring next data point
             time.sleep(1)
             # turn LED0 off
             LED.write(led, led_off)
-            # delay for 2 seconds so that the program does not run too fast
+            # add a short delay before acquiring next data point
             time.sleep(1)
 
 # open a timer interrupt session
