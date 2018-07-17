@@ -1,9 +1,9 @@
 """
 NI ELVIS III Single Point, Multiple Channels, Digital Input and Output Example
 This example illustrates how to write values to and read values from multiple
-digital input and output (DIO) channel. The program first defines the
-configuration for the DIO channels, then reads and writes the DIO channels in
-a loop. Each time the write is called a list of data is written to the
+digital input and output (DIO) channels. The program first defines the
+configuration for the DIO channels, then writes to and reads from the DIO
+channels. Each time the write is called a list of data is written to the
 channels; each time the read is called a lsit of data is returned for the
 channels.
 

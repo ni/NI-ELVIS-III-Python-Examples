@@ -1,10 +1,10 @@
 """
 NI ELVIS III Single Point, Single Channel, Digital Input and Output Example
-This example illustrates how to write values to and read values from a single
+This example illustrates how to write a value to and read a value from a single
 digital input and output (DIO) channel. The program first defines the
-configuration for the DIO channels, then reads and writes the DIO channel in a
-loop. Each time the write is called a data is written to the channel; each
-time the read is called a data is returned for the channel.
+configuration for the DIO channels, then writes to reads from the DIO channels.
+Each time the write is called a data is written to the channel; each time the
+read is called a data is returned for the channel.
 
 The DIO configuration consists of one parameter: bank. There are two identical
 banks of DIO channels (A and B). Each bank contains 19 digital input and
