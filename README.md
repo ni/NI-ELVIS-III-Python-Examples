@@ -1,7 +1,7 @@
 How to use NI ELVIS III with Python
 =======  
 # Overview
-In this document we will walk you through the setup, transfer of files, and the use of a Python example on NI ELVIS III. The NI ELVIS III solution for project-based learning can be programmed with python to help students or educators who are familiar with Python syntax to rapidly acquire measurements using common SSH clients. Attached to this file are a total of 14 examples which illustrate the use of the NI ELVIS III helper library ([academicIO.py](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/readme/source/academicIO.py)).
+In this document we will walk you through the setup, transfer of files, and the use of a Python example on NI ELVIS III. The NI ELVIS III solution for project-based learning can be programmed with python to help students or educators who are familiar with Python syntax to rapidly acquire measurements using common SSH clients. Attached to this file are a total of 18 examples which illustrate the use of the NI ELVIS III helper library ([academicIO.py](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/source/nielvisiii/academicIO.py)).
 
 # Table of Contents
 - [NI ELVIS III Configuration Setup](#ni-elvis-iii-configuration-setup)
@@ -15,7 +15,7 @@ In this document we will walk you through the setup, transfer of files, and the 
 # NI ELVIS III Configuration Setup
 
 ## Enable the Secure Shell Server
-1. Open Internet Explorer and visit the NI ELVIS III Configuration website:: \<IP Address of NI ELVIS III\>/WIF.html<br />
+1. Open Internet Explorer and visit the NI ELVIS III Configuration website: \<IP Address of NI ELVIS III\>/WIF.html<br />
   :exclamation: IP Address can be found on the Display of the NI ELVIS III. Press BUTTON 0 until IP address appears. Enter IP address from the display.<br />
 
       ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/IPaddress.jpg)
@@ -77,7 +77,7 @@ In this section we will transfer an FPGA bitfile and the Python examples to the 
     
     ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/home_directory.png)
     
-4. Upload the [ELVIS III v1.1 FPGA.lvbitx](https://github.com/ni-kismet/NI-ELVIS-III-Python/tree/master/bitfile) bitfile and the [Python examples](https://github.com/ni-kismet/NI-ELVIS-III-Python/tree/master/source) to the directory `/home/admin` directory in FileZilla.
+4. Upload the [ELVIS III v1.1 FPGA.lvbitx](https://github.com/ni-kismet/NI-ELVIS-III-Python/tree/master/bitfile) bitfile, [NI ELVIS III helper library](https://github.com/ni-kismet/NI-ELVIS-III-Python/tree/master/source/nielvisiii), and the [Python examples](https://github.com/ni-kismet/NI-ELVIS-III-Python/tree/master/examples) to the directory `/home/admin` directory in FileZilla.
 
 # Running the Example
 
