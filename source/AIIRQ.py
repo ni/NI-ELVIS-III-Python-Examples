@@ -33,8 +33,13 @@ This example uses:
 
 Hardware setup:
     Connect an analog signal source to AI0 on bank A. Gives an appropriate
-    analog signal before the program ends. You can connect a +5 V voltage
-    source to AI0 on bank A to trigger the interrupt.
+    analog signal before the program ends. You can connect BTN0 to AI0 on
+    bank A to trigger the interrupt as indicated in this table:
+        1. Connect BTN0 A to AI0 on bank A, then connect to a 10k Ohm
+           resistance.
+        2. Connect a +3.3 V voltage source to the 10k Ohm resistance.
+        3. Connect BTN0 B to DGND.
+    Then, press the button BTN0.
 
 Result:
     An interrupt occurs when AI0 receives an appropriate analog signal.
@@ -79,10 +84,10 @@ with academicIO.AIIRQ(irq_channel) as AI_IRQ:
     # occur before timing out
     timeout = 6000
     # specify the value, in volts, that the signal must cross for this example
-    threshold = 5.0
+    threshold = 1
     # specify a window, in volts, above or below threshold. This program uses
     # hysteresis to prevent false interrupt registration
-    hysteresis = 0.1
+    hysteresis = 0.05
     # specify whether to register an interrupt on the falling edge or rising
     # edge of the analog input signal
     irq_type = AIIRQType.RISING
