@@ -40,7 +40,8 @@ Hardware setup:
     4. Connect SPI.MOSI(DIO7) on bank A to SPI.MISO of a slave device.
 
 Result:
-    The program reads a specified number of frames from the SPI channel. The
+    The program writes 0x00 to the SPI device which requests ELVIS III to read
+    a specified number of frames from the 0x00 register of the SPI device. The
     returned value is E5 in hexadecimal.
 """
 import time

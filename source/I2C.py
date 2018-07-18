@@ -44,9 +44,9 @@ Hardware setup:
     2. Connect an I2C.SDA of a slave device to I2C.SDA (DIO15) on bank A.
 
 Result:
-    The program reads a value from the I2C slave device. The slave device
-    returns the value that just be written into the register. The returned
-    value is 8 in decimal.
+    The program sets the I2C device to measure mode and reads a value from the
+    I2C slave device. The slave device returns the value that just be written
+    into the register. The returned value is 8 in decimal.
 """
 import time
 import academicIO
