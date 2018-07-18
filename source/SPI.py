@@ -9,7 +9,7 @@ called a list of data is returned from the SPI device.
 
 The SPI configuration consists of six parameters: frequency, bank, clock_phase,
 clock_polarity data_direction, and frame_length. There are two identical banks
-of SPI (A and B) which contains a frequency (is 40Hz to 4000000Hz),
+of SPI port (A and B) which contains a frequency (is 40Hz to 4000000Hz),
 two clock phases (leading and trailing), two clock polarities (low and high),
 two directions (LSB and MSB), and a frame length (4 to 16). 
 

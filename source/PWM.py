@@ -2,8 +2,8 @@
 NI ELVIS III Pulse Width Modulation Example 
 This example illustrates how to generate a Pulse Width Modulation (PWM) signal
 to an external peripheral through the PWM channels. The program first defines
-the configuration for the PWM/DIO channels, then generates the signal in a
-loop.
+the configuration for the PWM channels, then generates the signal for 20
+seconds.
 
 The PWM configuration consists of two parameters: bank and channel. There are
 two identical banks of PWM channels (A and B). The PWM shared the same channels

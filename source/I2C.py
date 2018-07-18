@@ -8,7 +8,7 @@ the I2C device; each time the read is called a list of data is returned from
 the I2C device.
 
 The I2C configuration consists of two parameters: bank and mode. There are two
-identical banks of AI channels (A and B). There are two speeds of I2C
+identical banks of I2C port (A and B). There are two speeds of I2C
 communication (standard and fast).
 
 To read data from and write data to the I2C slave device, you must specify an

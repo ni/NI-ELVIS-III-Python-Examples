@@ -8,7 +8,7 @@ The list of data contains counter value and counter direction. The time
 between reads is not precisely timed, and is controlled by a software delay.
 
 The encoder configuration consists of three parameters: bank, channel, and
-mode. There are two identical banks of encoder channels (A and B). Each
+mode. There are two identical banks of encoder port (A and B). Each
 encoder channel contains two phases which represents to two DIO channels as
 indicated in this table:
     ENC0: phase A (DIO0) and phase B (DIO1)
