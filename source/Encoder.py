@@ -25,7 +25,9 @@ The encoder communication can be configured to quadrature mode or step and
 direction mode.
 
 This example illustrates how to use 2pcs KY-040 Arduino Rotary under the
-quadrature mode.
+quadrature mode. See
+http://henrysbench.capnfatz.com/henrys-bench/arduino-sensors-and-input/keyes-ky-040-arduino-rotary-encoder-user-manual/
+for more details.
 
 This example uses:
     1. Bank A, Channel DIO0.
