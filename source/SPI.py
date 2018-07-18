@@ -105,4 +105,3 @@ with academicIO.SPI(frequency,
     value_array = SPI.writeread(data_to_write)
     # print the data read back from the SPI channel
     print "value read from SPI.writeread: ", value_array[0]
-    value_array = SPI.writeread(data_to_write)
