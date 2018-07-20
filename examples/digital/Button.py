@@ -18,6 +18,8 @@ Result:
     The program prints a string when you press the button.
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 
 # open a button session

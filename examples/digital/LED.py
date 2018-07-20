@@ -16,6 +16,8 @@ Result:
     The LED flashes.
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import Led
 

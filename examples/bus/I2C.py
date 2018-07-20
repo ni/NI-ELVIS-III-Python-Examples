@@ -42,6 +42,8 @@ Result:
     returned value should be 8 in decimal.
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import Bank, I2CSpeedMode
 

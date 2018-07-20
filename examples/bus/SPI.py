@@ -45,6 +45,8 @@ Result:
     returned value is E5 in hexadecimal.
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import Bank, SPIClockPhase, SPIClockPolarity, SPIDataDirection
 

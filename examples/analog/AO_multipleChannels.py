@@ -21,6 +21,8 @@ Result:
     The program writes a values into both AO0 and AO1 on bank A.
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import Bank, AOChannel
 

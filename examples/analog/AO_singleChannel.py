@@ -20,6 +20,8 @@ Result:
     The program writes values to AO0 on bank A.
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import Bank, AOChannel
 

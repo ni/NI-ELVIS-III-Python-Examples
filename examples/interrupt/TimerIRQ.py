@@ -19,6 +19,8 @@ Result:
     The program calls irq_handler when the interrupt occurs.
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import Led
 

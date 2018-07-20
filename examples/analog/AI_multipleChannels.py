@@ -32,6 +32,8 @@ Result:
     variation on each due to signal noise.
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import Bank, AIChannel, AIRange, AIMode
 

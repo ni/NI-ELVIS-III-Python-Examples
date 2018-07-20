@@ -45,6 +45,8 @@ Result:
     Rotary is rotated.
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import Bank, EncoderChannel, EncoderMode
 

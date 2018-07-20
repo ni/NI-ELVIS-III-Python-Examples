@@ -19,6 +19,8 @@ Result:
     Generate a PWM signal from DIO0 on bank B.
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import Bank, DIOChannel
 
