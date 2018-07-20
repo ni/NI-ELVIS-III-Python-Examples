@@ -480,7 +480,7 @@ class PWM(ELVISIII):
         select |= (1 << (channel*2))
         self.sys_select.write(select)
 
-    def configure(self, frequency, duty_cycle):
+    def generate(self, frequency, duty_cycle):
         """
         Sets the duty cycle value and frequency value of a pulse width
         modulation (PWM) signal.
@@ -1244,7 +1244,13 @@ class UART(ELVISIII):
     """
     NI ELVIS III Universal Asynchronous Receiver/Transmitter (UART) API.
     """
-    def __init__(self, bank=Bank.A):
+    def __init__(self,
+                 bank=Bank.A,
+                 baud_rate=UARTBaudRate.RATE9600,
+                 data_bits=UARTDataBits.BITS8,
+                 stop_bits=UARTStopBits.ONE,
+                 parity=UARTParity.NO,
+                 flow_control=UARTFlowControl.NONE):
         """
         Opens the session to one or more Universal Asynchronous
         Receiver/Transmitter (UART) channels and initialize UART registration
@@ -1256,9 +1262,30 @@ class UART(ELVISIII):
                 resource name is defined based on name of the bank. When bank
                 A is selected, resource name is 'ASRL1::INSTR'. Otherwise is
                 'ASRL2::INSTR'. The default value is A.
+            baud_rate (UARTBaudRate):
+                Specifies the rate of transmission. The default value is
+                RATE9600.
+            data_bits (UARTDataBits):
+                Specifies the number of bits in the incoming data. The value
+                of data bits is seven and eight. The default value is BITS8.
+            stop_bits (UARTStopBits):
+                Specifies the number of stop bits used to indicate the end of
+                a frame. The default value is ONE.
+            parity (UARTParity):
+                Specifies the parity used for every frame to be transmitted or
+                received. The default value is NO.
         """
         super(UART, self).__init__()
         assert bank in Bank
+        assert baud_rate in {110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400}
+        assert UARTDataBits.BITS7 <= data_bits <= UARTDataBits.BITS8
+        assert stop_bits in UARTStopBits
+        assert parity in UARTParity
+        assert flow_control in UARTFlowControl
+        if bank == Bank.A:
+            resource_name = 'ASRL1::INSTR'
+        else :
+            resource_name = 'ASRL2::INSTR'
         self.a_ena = self.session.registers['UART.A.ENA']
         self.a_stat = self.session.registers['UART.A.STAT']
         self.b_ena = self.session.registers['UART.B.ENA']
@@ -1274,41 +1301,7 @@ class UART(ELVISIII):
         else:
             while not self.b_ena.read():
                 self.b_ena.write(True)
-        self.bank = bank
 
-    def configure(self, baud_rate=UARTBaudRate.RATE9600,
-                        data_bits=UARTDataBits.BITS8,
-                        stop_bits=UARTStopBits.ONE,
-                        parity=UARTParity.NO,
-                        flow_control=UARTFlowControl.NONE):
-        """
-        Initializes the serial port specified by VISA resource name to the
-        specified settings.
-
-        Args:
-            baud_rate (UARTBaudRate):
-                Specifies the rate of transmission. The default value is
-                RATE9600.
-            data_bits (UARTDataBits):
-                Specifies the number of bits in the incoming data. The value
-                of data bits is seven and eight. The default value is BITS8.
-            stop_bits (UARTStopBits):
-                Specifies the number of stop bits used to indicate the end of
-                a frame. The default value is ONE.
-            parity (UARTParity):
-                Specifies the parity used for every frame to be transmitted or
-                received. The default value is NO.
-        """
-        baud_rates = {110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400}
-        assert baud_rate in baud_rates
-        assert UARTDataBits.BITS7 <= data_bits <= UARTDataBits.BITS8
-        assert stop_bits in UARTStopBits
-        assert parity in UARTParity
-        assert flow_control in UARTFlowControl
-        if self.bank == Bank.A:
-            resource_name = 'ASRL1::INSTR'
-        else :
-            resource_name = 'ASRL2::INSTR'
         self.resource_manager = pyvisa.ResourceManager()
         self.instrument = self.resource_manager.open_resource(resource_name)
         self.instrument.baud_rate = baud_rate.value

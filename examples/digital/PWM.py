@@ -37,7 +37,7 @@ with academicIO.PWM(bank, channel) as PWM:
     duty_cycle = 0.7
 
     # generate the PWM signal
-    PWM.configure(frequency, duty_cycle)
+    PWM.generate(frequency, duty_cycle)
     # begin to generate PWM signal for 20 seconds
     time.sleep(20)
     # stop generating PWM signal

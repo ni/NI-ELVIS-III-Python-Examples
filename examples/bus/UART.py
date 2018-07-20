@@ -39,27 +39,23 @@ from enums import Bank, UARTBaudRate, UARTDataBits, UARTParity, UARTStopBits, UA
 
 # specify the bank
 bank = Bank.A
+# specifies the baud rate of transmission
+baud_rate = UARTBaudRate.RATE9600
+# specifies the number of bits in the incoming data
+data_bits = UARTDataBits.BITS8
+# specifies the number of stop bits this program uses to indicate the end of a data
+stop_bits = UARTStopBits.ONE
+# specifies the parity bits to write or read characters
+parity = UARTParity.NO
+# sets the type of control used by the transfer mechanism
+flow_control = UARTFlowControl.NONE
 # open a UART session
-with academicIO.UART(bank) as uart:
-    # specifies the baud rate of transmission
-    baud_rate = UARTBaudRate.RATE9600
-    # specifies the number of bits in the incoming data
-    data_bits = UARTDataBits.BITS8
-    # specifies the number of stop bits this program uses to indicate the end
-    # of a data
-    stop_bits = UARTStopBits.ONE
-    # specifies the parity bits to write or read characters
-    parity = UARTParity.NO
-    # sets the type of control used by the transfer mechanism
-    flow_control = UARTFlowControl.NONE
-
-    # configure the UART VISA
-    uart.configure(baud_rate,
-                   data_bits,
-                   stop_bits,
-                   parity,
-                   flow_control)
-
+with academicIO.UART(bank,
+                     baud_rate,
+                     data_bits,
+                     stop_bits,
+                     parity,
+                     flow_control) as uart:
     # specify the data to write to the UART device
     value = 'Hello World'
     # write the data to the UART device
