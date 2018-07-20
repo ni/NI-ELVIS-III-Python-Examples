@@ -45,6 +45,9 @@ Result:
     when the interrupt occurs.
 """
 import time
+import thread
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import DIOChannel, IRQNumber, Led
 
@@ -57,49 +60,64 @@ def irq_handler():
     # open an LED session
     with academicIO.LEDs() as LED:
         # specify the LED which you want to control
-        led = Led.LED0
+        led = Led.LED1
         # specify the LED status
-        led_on = True
-        led_off = False
-        # writes values 5 times
-        for x in range(0, 5):
-            # turn LED0 on
-            LED.write(led, led_on)
+        led_on_off = True
+        # writes values 10 times which turns LED1 on/off 5 times
+        for x in range(0, 10):
+            # turn LED0 on/off
+            LED.write(led, led_on_off)
             # add a short delay
-            time.sleep(1)
-            # turn LED0 off
-            LED.write(led, led_off)
-            # add a short delay
-            time.sleep(1)
+            time.sleep(0.3)
+            # if the led is on, set the paramter to off
+            # if the led is off, set the paramter to on
+            led_on_off = not led_on_off
 
 # specify the DIO channel that serves as the interrupt channel
 irq_channel = DIOChannel.DIO0
+# specify the identifier of the interrupt to register
+irq_number = IRQNumber.IRQ1
+# specify the amount of time, in milliseconds, to wait for an interrupt to
+# occur before timing out
+timeout = 6000
+# specify whether to register an interrupt on the rising edge or the
+# falling edge of the digital input signal. To register an interrupt on
+# the rising edge of the digital input signal, set interrupt_type_rising
+# as True and interrupt_type_falling as False
+interrupt_type_rising = True
+interrupt_type_falling = False
+# specify the number of edges of the signal that must occur for this
+# program to register an interrupt. For example, when
+# interrupt_type_rising is True and edge_count is 1, an interrupt occurs
+# when the DIO channel receives one appropriate rising edge
+edge_count = 1
 # open a digital input interrupt session
-with academicIO.DIIRQ(irq_channel) as DI_IRQ:
-    # specify the identifier of the interrupt to register
-    irq_number = IRQNumber.IRQ1
-    # specify the amount of time, in milliseconds, to wait for an interrupt to
-    # occur before timing out
-    timeout = 6000
-    # specify whether to register an interrupt on the rising edge or the
-    # falling edge of the digital input signal. To register an interrupt on
-    # the rising edge of the digital input signal, set interrupt_type_rising
-    # as True and interrupt_type_falling as False. The possible combination is
-    # shown as indicated in this table:
-    #     interrupt_type_rising    True    False   True
-    #     interrupt_type_falling   False   True    True
-    interrupt_type_rising = True
-    interrupt_type_falling = False
-    # specify the number of edges of the signal that must occur for this
-    # program to register an interrupt. For example, when
-    # interrupt_type_rising is True and edge_count is 1, an interrupt occurs
-    # when the DIO channel receives one appropriate rising edge
-    edge_count = 1
+with academicIO.DIIRQ(irq_channel,
+                      irq_handler,
+                      irq_number,
+                      timeout,
+                      interrupt_type_rising,
+                      interrupt_type_falling,
+                      edge_count) as DI_IRQ:
+    # open the LED session
+    LED = academicIO.LEDs()
+    # specify the LED which you want to control
+    led = Led.LED0
+    # specify the LED status
+    led_on_off = True
 
-    # wait for the interrupt or timeout
-    DI_IRQ.configure(irq_handler,
-                     irq_number,
-                     timeout,
-                     interrupt_type_rising,
-                     interrupt_type_falling,
-                     edge_count)
+    # create a thread for interrupt
+    thread.start_new_thread(DI_IRQ.wait, ())
+
+    # writes values 50 times which turns LED0 on/off 25 times
+    for x in range(0, 50):
+        # turn LED0 on/off
+        LED.write(led, led_on_off)
+        # add a short delay
+        time.sleep(0.5)
+        # if the led is on, set the paramter to off
+        # if the led is off, set the paramter to on
+        led_on_off = not led_on_off
+    
+    # close the LED session
+    LED.close()

@@ -1,6 +1,8 @@
 import time
 import pyvisa
 from nifpga import Session
+import sys
+sys.path.append('source/nielvisiii')
 from enums import *
 
 class ELVISIII(object):
@@ -8,7 +10,7 @@ class ELVISIII(object):
     ResourceName = "RIO0"
 
     def __init__(self):
-        self.session = Session("ELVIS III v1.1 FPGA.lvbitx", ELVISIII.ResourceName)
+        self.session = Session("bitfile/ELVIS III v1.1 FPGA.lvbitx", ELVISIII.ResourceName)
 
     def __enter__(self):
         return self
@@ -922,7 +924,7 @@ class IRQ(ELVISIII):
     def __init__(self):
         super(IRQ, self).__init__()
 
-    def wait(self, timeout, irq_number=0):
+    def irq_wait(self, timeout, irq_number=0):
         """
         Either trigger the interrupt or timeout. This function is used
         internally and should not be used in non-interrupt examples.
@@ -942,7 +944,7 @@ class IRQ(ELVISIII):
         print "waiting for IRQ..."
         irq_status = self.session.wait_on_irqs([irq_number], timeout)
         if irq_number in irq_status.irqs_asserted:
-            print irq_number, "was asserted. IRQ occured. Calling the callback function:"
+            print irq_number, "was asserted. IRQ occured."
             self.callback_function()
             self.acknowledge(irq_number)
         else:
@@ -972,27 +974,16 @@ class ButtonIRQ(IRQ):
     """
     NI ELVIS III Button Interrupt (ButtonIRQ) API.
     """
-    def __init__(self):
+    def __init__(self,
+                 callback_function,
+                 irq_number=IRQNumber.IRQ1,
+                 timeout=10000,
+                 type_rising=True,
+                 type_falling=False,
+                 edge_count=1):
         """
         Open a session to register button interrupt.
-        """
-        super(ButtonIRQ, self).__init__()
-        self.irq_number = self.session.registers['IRQ.DI_BTN.NO']
-        self.enable = self.session.registers['IRQ.DI_BTN.ENA']
-        self.rise = self.session.registers['IRQ.DI_BTN.RISE']
-        self.fall = self.session.registers['IRQ.DI_BTN.FALL']
-        self.counter = self.session.registers['IRQ.DI_BTN.CNT']
-
-    def configure(self,
-                  callback_function,
-                  irq_number=IRQNumber.IRQ1,
-                  timeout=10000,
-                  type_rising=True,
-                  type_falling=False,
-                  edge_count=1):
-        """
-        Configure ButtonIRQ and execute the interrupt events.
-
+        
         Args:
             callback_function (function):
                 Specifies the reference to a callback function.
@@ -1017,56 +1008,52 @@ class ButtonIRQ(IRQ):
                 must occur for this function to register an interrupt. The
                 default is 1. The range of edge_count is from 1 to 4294967295.
         """
+        super(ButtonIRQ, self).__init__()
         assert callable(callback_function), "callback_function need to be a function"
         assert IRQNumber.IRQ1 <= irq_number <= IRQNumber.IRQ8
         assert timeout >= 0
         if type_rising == type_falling:
             assert type_falling != False
         assert 1 <= edge_count <= 4294967295
-        irq_number = irq_number.value
-        self.irq_number.write(irq_number)
-        self.counter.write(edge_count)
-        self.enable.write(True)
-        self.rise.write(type_rising)
-        self.fall.write(type_falling)
-
+        irq_num = self.session.registers['IRQ.DI_BTN.NO']
+        enable = self.session.registers['IRQ.DI_BTN.ENA']
+        rise = self.session.registers['IRQ.DI_BTN.RISE']
+        fall = self.session.registers['IRQ.DI_BTN.FALL']
+        counter = self.session.registers['IRQ.DI_BTN.CNT']
+        self.timeout = timeout
         self.callback_function = callback_function
-        self.acknowledge(irq_number)
-        self.wait(timeout, irq_number)
+        self.irq_number = irq_number.value
+        irq_num.write(self.irq_number)
+        counter.write(edge_count)
+        enable.write(True)
+        rise.write(type_rising)
+        fall.write(type_falling)
+
+    def wait(self):
+        """
+        Configure ButtonIRQ and execute the interrupt events.
+        """
+        self.acknowledge(self.irq_number)
+        self.irq_wait(self.timeout, self.irq_number)
 
 
 class DIIRQ(IRQ):
     """
     NI ELVIS III Digital Input Interrupt (DIIRQ) API.
     """
-    def __init__(self, channel):
+    def __init__(self,
+                 channel,
+                 callback_function,
+                 irq_number=IRQNumber.IRQ1,
+                 timeout=10000,
+                 type_rising=True,
+                 type_falling=False,
+                 edge_count=1):
         """
         Initialize DIIRQ registration.
 
         Args:
             channel (DIIRQChannel)
-        """
-        super(DIIRQ, self).__init__()
-        assert DIIRQChannel.DIO0 <= channel <= DIIRQChannel.DIO3
-        channel = channel.value
-        self.enable = self.session.registers['IRQ.DIO_A_7:0.ENA']
-        self.rise = self.session.registers['IRQ.DIO_A_7:0.RISE']
-        self.fall = self.session.registers['IRQ.DIO_A_7:0.FALL']
-        self.counter = self.session.registers['IRQ.DIO_A_' + str(channel) + '.CNT']
-        self.irq_number = self.session.registers['IRQ.DIO_A_' + str(channel) + '.NO']
-        self.irq_channel = int(channel)
-
-    def configure(self,
-                  callback_function,
-                  irq_number=IRQNumber.IRQ1,
-                  timeout=10000,
-                  type_rising=True,
-                  type_falling=False,
-                  edge_count=1):
-        """
-        Configure DIIRQ and execute the interrupt events.
-
-        Args:
             callback_function (function):
                 Specifies the reference to a callback function.
             irq_number (IRQNumber):
@@ -1090,59 +1077,59 @@ class DIIRQ(IRQ):
                 must occur for this function to register an interrupt. The
                 default is 1. The range of edge_count is from 1 to 4294967295.
         """
+        super(DIIRQ, self).__init__()
+        assert DIIRQChannel.DIO0 <= channel <= DIIRQChannel.DIO3
         assert callable(callback_function), "callback_function need to be a function"
         assert IRQNumber.IRQ1 <= irq_number <= IRQNumber.IRQ8
         assert timeout >= 0
         if type_rising == type_falling:
             assert type_falling != False
         assert 1 <= edge_count <= 4294967295
-        irq_number = irq_number.value
-        self.counter.write(edge_count)
-        self.irq_number.write(irq_number)
+        channel = channel.value
+        enable = self.session.registers['IRQ.DIO_A_7:0.ENA']
+        rise = self.session.registers['IRQ.DIO_A_7:0.RISE']
+        fall = self.session.registers['IRQ.DIO_A_7:0.FALL']
+        counter = self.session.registers['IRQ.DIO_A_' + str(channel) + '.CNT']
+        irq_num = self.session.registers['IRQ.DIO_A_' + str(channel) + '.NO']
 
-        rise_value = self.rise.read()
-        self.rise.write(rise_value | (int(type_rising) << self.irq_channel))
-        fall_value = self.fall.read()
-        self.fall.write(fall_value | (int(type_falling) << self.irq_channel))
-        enable_value = self.enable.read()
-        self.enable.write(enable_value | (1 << self.irq_channel))
+        counter.write(edge_count)
+        rise_value = rise.read()
+        rise.write(rise_value | (int(type_rising) << channel))
+        fall_value = fall.read()
+        fall.write(fall_value | (int(type_falling) << channel))
+        enable_value = enable.read()
+        enable.write(enable_value | (1 << channel))
 
         self.callback_function = callback_function
-        self.acknowledge(irq_number)
-        self.wait(timeout, irq_number)
+        self.timeout = timeout
+        self.irq_number = irq_number.value
+        irq_num.write(self.irq_number)
+
+    def wait(self):
+        """
+        Configure DIIRQ and execute the interrupt events.
+        """
+        self.acknowledge(self.irq_number)
+        self.irq_wait(self.timeout, self.irq_number)
 
 
 class AIIRQ(IRQ):
     """
     NI ELVIS III Analog Input Interrupt (AIIRQ) API.
     """
-    def __init__(self, channel):
+    def __init__(self,
+                 channel,
+                 callback_function,
+                 irq_number=IRQNumber.IRQ1,
+                 timeout=10000,
+                 threshold=2.5,
+                 hysteresis=0.02,
+                 irq_type=AIIRQType.RISING):
         """
         Initialize AIIRQ registration.
 
         Args:
             channel (AIIRQChannel)
-        """
-        super(AIIRQ, self).__init__()
-        assert channel == AIIRQChannel.AI0 or channel == AIIRQChannel.AI1
-        self.ai = AnalogInput({'bank': Bank.A, 'channel': channel})
-        channel = channel.value
-        self.channel = channel
-        self.irq_number = self.session.registers['IRQ.AI_A_' + str(channel) + '.NO']
-        self.hysteresis = self.session.registers['IRQ.AI_A_' + str(channel) + '.HYSTERESIS']
-        self.threshold = self.session.registers['IRQ.AI_A_' + str(channel) + '.THRESHOLD']
-        self.cnfg = self.session.registers['IRQ.AI_A.CNFG']
-
-    def configure(self, callback_function,
-                        irq_number=IRQNumber.IRQ1,
-                        timeout=10000,
-                        threshold=2.5,
-                        hysteresis=0.02,
-                        irq_type=AIIRQType.RISING):
-        """
-        Configure AIIRQ and execute the interrupt events.
-
-        Args:
             callback_function (function):
                 Specifies the reference to a callback function.
             irq_number (IRQNumber):
@@ -1168,20 +1155,28 @@ class AIIRQ(IRQ):
                 Specifies when to register the interrupt based on the analog
                 input signal. The default value is RISING.
         """
+        super(AIIRQ, self).__init__()
+        assert channel == AIIRQChannel.AI0 or channel == AIIRQChannel.AI1
         assert callable(callback_function), "callback_function need to be a function"
         assert IRQNumber.IRQ1 <= irq_number <= IRQNumber.IRQ8
         assert timeout >= 0
         assert 0 <= threshold <= 5
         assert 0 <= hysteresis <= 1
         assert irq_type == AIIRQType.RISING or irq_type == AIIRQType.FALLING
+        self.ai = AnalogInput({'bank': Bank.A, 'channel': channel})
+        channel = channel.value
+        irq_num = self.session.registers['IRQ.AI_A_' + str(channel) + '.NO']
+        irq_hysteresis = self.session.registers['IRQ.AI_A_' + str(channel) + '.HYSTERESIS']
+        irq_threshold = self.session.registers['IRQ.AI_A_' + str(channel) + '.THRESHOLD']
+        cnfg = self.session.registers['IRQ.AI_A.CNFG']
         irq_number = irq_number.value
         irq_type = irq_type.value
-        self.irq_number.write(irq_number)
-        self.threshold.write(threshold)
-        self.hysteresis.write(hysteresis)
+        irq_num.write(irq_number)
+        irq_threshold.write(threshold)
+        irq_hysteresis.write(hysteresis)
 
-        cnfg_value = self.cnfg.read()
-        if self.channel == 1:
+        cnfg_value = cnfg.read()
+        if channel == 1:
             cnfg_value = cnfg_value & 0x3
             cnfg_value = cnfg_value | int('0100',2)
             if irq_type == AIIRQType.RISING.value:
@@ -1191,11 +1186,18 @@ class AIIRQ(IRQ):
             cnfg_value = cnfg_value | int('0001', 2)
             if irq_type == AIIRQType.RISING.value:
                 cnfg_value = cnfg_value | int('0010', 2)
-        self.cnfg.write(cnfg_value)
+        cnfg.write(cnfg_value)
 
         self.callback_function = callback_function
-        self.acknowledge(irq_number)
-        self.wait(timeout, irq_number)
+        self.timeout = timeout
+        self.irq_number = irq_number
+
+    def wait(self):
+        """
+        Configure AIIRQ and execute the interrupt events.
+        """
+        self.acknowledge(self.irq_number)
+        self.irq_wait(self.timeout, self.irq_number)
 
     def close(self):
         """ Close AI IRQ session"""
@@ -1207,17 +1209,9 @@ class TimerIRQ(IRQ):
     """
     NI ELVIS III TimerIRQ API.
     """
-    def __init__(self):
+    def __init__(self, callback_function, irq_interval):
         """
         Initialize TimerIRQ registration.
-        """
-        super(TimerIRQ, self).__init__()
-        self.write = self.session.registers['IRQ.TIMER.WRITE']
-        self.set = self.session.registers['IRQ.TIMER.SETTIME']
-
-    def configure(self, callback_function, irq_interval):
-        """
-        Configure TimerIRQ and execute the interrupt events.
 
         Args:
             callback_function (function):
@@ -1226,15 +1220,24 @@ class TimerIRQ(IRQ):
                 Specify the span of time, in milliseconds, between two
                 adjacent interrupts.
         """
+        super(TimerIRQ, self).__init__()
         assert callable(callback_function), "callback_function need to be a function"
         assert irq_interval > 0
+        self.write = self.session.registers['IRQ.TIMER.WRITE']
+        self.set = self.session.registers['IRQ.TIMER.SETTIME']
         self.write.write(irq_interval)
         self.set.write(True)
-        irq_number = 0
         self.callback_function = callback_function
+        self.irq_interval = irq_interval
+
+    def wait(self):
+        """
+        Configure TimerIRQ and execute the interrupt events.
+        """
+        irq_number = 0
         self.acknowledge(irq_number)
-        timeout = irq_interval+500
-        self.wait(timeout, irq_number)
+        timeout = self.irq_interval+500
+        self.irq_wait(timeout, irq_number)
 
 
 class UART(ELVISIII):
