@@ -4,6 +4,8 @@ Output:
   LED0 turns off and then LED2, LED2, LED3
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import *
 

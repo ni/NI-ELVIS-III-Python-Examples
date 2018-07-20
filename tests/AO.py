@@ -5,6 +5,8 @@ Hardware setup:
 """
 import time
 import pytest
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import *
 

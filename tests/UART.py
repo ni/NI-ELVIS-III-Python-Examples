@@ -4,17 +4,17 @@ Hardware setup:
 	2. Connect connector A UART.TX (DIO17) to UART.RX of a device.
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import *
 
 bank = Bank.A
-with academicIO.UART(bank) as uart:
-    baud_rate = UARTBaudRate.RATE9600
-    data_bits = UARTDataBits.BITS8
-    stop_bits = UARTStopBits.ONE
-    parity = UARTParity.NO
-    uart.configure(baud_rate, data_bits, stop_bits, parity)
-
+baud_rate = UARTBaudRate.RATE9600
+data_bits = UARTDataBits.BITS8
+stop_bits = UARTStopBits.ONE
+parity = UARTParity.NO
+with academicIO.UART(bank,baud_rate, data_bits, stop_bits, parity) as uart:
     value = 'Hello World'
     uart.write(value)
 

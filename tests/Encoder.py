@@ -4,6 +4,8 @@ Hardware setup:
 	2. Connect connector A phase B (DIO19) to ENC.B of ADXL345.
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import *
 

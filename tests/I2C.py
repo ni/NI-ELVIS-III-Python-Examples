@@ -4,6 +4,8 @@ Hardware setup:
   2. Connect DIO14 to I2C.SCL of ADXL345.
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import *
 

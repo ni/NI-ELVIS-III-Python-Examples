@@ -6,6 +6,8 @@ Hardware setup:
     4. Connect connector A SPI.MOSI(DIO7) to SPI.MISO of ADXL345.
 """
 import time
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import *
 

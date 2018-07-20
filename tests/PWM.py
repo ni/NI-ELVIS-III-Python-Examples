@@ -4,6 +4,8 @@ Hardware setup:
 """
 import time
 import pytest
+import sys
+sys.path.append('source/nielvisiii')
 import academicIO
 from enums import *
 
@@ -12,7 +14,7 @@ channel = DIOChannel.DIO13
 with academicIO.PWM(bank, channel) as PWM:
     frequency = 1200
     duty_cycle = 0.1
-    PWM.configure(frequency, duty_cycle)
+    PWM.generate(frequency, duty_cycle)
     # actual_frequency = PWM.configure(frequency, duty_cycle)
     # print actual_frequency
     # assert actual_frequency == pytest.approx(1200, 1)
