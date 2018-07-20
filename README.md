@@ -77,15 +77,19 @@ In this section we will transfer an FPGA bitfile and the Python examples to the 
     
     ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/home_directory.png)
     
-4. Upload the [ELVIS III v1.1 FPGA.lvbitx](https://github.com/ni-kismet/NI-ELVIS-III-Python/tree/master/bitfile) bitfile, [NI ELVIS III helper library](https://github.com/ni-kismet/NI-ELVIS-III-Python/tree/master/source/nielvisiii), and the [Python examples](https://github.com/ni-kismet/NI-ELVIS-III-Python/tree/master/examples) to the directory `/home/admin` directory in FileZilla.
+4. Download or clone the **NI-ELVIS-III-Python** repository.
+5. Upload the **examples**, **source**, and **bitfile** folders to the `/home/admin` directory in FileZilla.
+
+    ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/examples_directory.png)
 
 # Running the Example
 
 In the PuTTY client (or similar clients) used in the earlier **Software Setup** session, enter the following commands:
 ```
 cd /home/admin
-python filename.py
+python examples/interrupt/DIIRQ.py
 ```
+For example: `python examples/analog/AI_singleChannel.py`
 
 # Function Select Register
 
