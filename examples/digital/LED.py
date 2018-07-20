@@ -26,15 +26,13 @@ with academicIO.LEDs() as LED:
     # specify the LED which you want to control
     led = Led.LED0
     # specify the LED status
-    led_on = True
-    led_off = False
-    # writes values 20 times
-    for x in range(0, 20):
-        # turn LED0 on
-        LED.write(led, led_on)
-        # add a short delay before acquiring next data point
-        time.sleep(1)
-        # turn LED0 off
-        LED.write(led, led_off)
-        # add a short delay before acquiring next data point
-        time.sleep(1)
+    led_on_off = True
+    # writes values 10 times which turns LED1 on/off 5 times
+    for x in range(0, 10):
+        # turn LED0 on/off
+        LED.write(led, led_on_off)
+        # add a short delay
+        time.sleep(0.5)
+        # if the led is on, set the paramter to off
+        # if the led is off, set the paramter to on
+        led_on_off = not led_on_off

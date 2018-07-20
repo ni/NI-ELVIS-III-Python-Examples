@@ -20,8 +20,8 @@ See http://www.ftdichip.com/Documents/DataSheets/ICs/DS_FT232R.pdf for more
 details.
 
 This example uses:
-    1. Bank A, Channel DIO16.
-    2. Bank A, Channel DIO17.
+    1. Bank A, UART.RX.
+    2. Bank A, UART.TX.
 
 Hardware setup:
     1. Connect UART.RX (DIO16) on bank A to UART.TX of a UART device.

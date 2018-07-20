@@ -43,5 +43,5 @@ with academicIO.AnalogOutput({'bank': bank,     # define first channel: AO0
         # write 3.5 to both AO0 and AO1 on bank A
         AO_multiple_channels.write(input_value)
 
-        # add a short delay before acquiring next data point
+        # add a short delay before writing next data point
         time.sleep(0.001)

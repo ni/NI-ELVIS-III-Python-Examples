@@ -30,13 +30,13 @@ http://henrysbench.capnfatz.com/henrys-bench/arduino-sensors-and-input/keyes-ky-
 for more details.
 
 This example uses:
-    1. Bank A, Channel DIO0.
-    2. Bank A, Channel DIO1.
+    1. Bank A, ENC.A 0.
+    2. Bank A, ENC.B 0.
 
 Hardware setup:
-    1. Connect ENC0 phase A (DIO0) on bank A to ENC.A of a encoder
+    1. Connect ENC.A 0 (DIO0) on bank A to ENC.A of a encoder
        device.
-    2. Connect ENC0 phase B (DIO1) on bank A to ENC.B of a encoder
+    2. Connect ENC.B 0 (DIO1) on bank A to ENC.B of a encoder
        device.
 
 Result:

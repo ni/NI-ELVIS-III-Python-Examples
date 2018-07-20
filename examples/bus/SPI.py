@@ -15,8 +15,9 @@ two directions (LSB and MSB), and a frame length (4 to 16).
 
 This example uses ADXL345 as the slave device. The 0x00 hexadecimal data send
 from the master device requests the slave device send back a default device 
-code which equals to 'E5' in hexadecimal or '229' in decimal. All the SPI
-configuration is set correctly if the device ID E5 is returned.
+code which equals to 'E5' in hexadecimal or '229' in decimal. This returned
+value is used for validation. All the SPI configuration is set correctly and
+the connection is functional correctly if the device ID E5 is returned.
 
 See http://www.analog.com/media/en/technical-documentation/data-sheets/ADXL345.pdf
 for more details about ADXL345.
@@ -28,21 +29,21 @@ The second portion demonstrates how to use the writeread function to write to
 and read from the SPI channel by using a function.
 
 This example uses:
-    1. Bank A, Channel DIO0.
-    2. Bank A, Channel DIO5.
-    3. Bank A, Channel DIO6.
-    4. Bank A, Channel DIO7.
+    1. Bank A, SPI.CS.
+    2. Bank A, SPI.CLK.
+    3. Bank A, SPI.MISO.
+    4. Bank A, SPI.MOSI.
 
 Hardware setup:
-    1. Connect SPI.CS(DIO0) on bank A to SPI.CS of a slave device.
-    2. Connect SPI.CLK(DIO5) on bank A to SPI.CLK of a slave device.
-    3. Connect SPI.MISO(DIO6) on bank A to SPI.MOSI of a slave device.
-    4. Connect SPI.MOSI(DIO7) on bank A to SPI.MISO of a slave device.
+    1. Connect SPI.CS (DIO0) on bank A to SPI.CS of a slave device.
+    2. Connect SPI.CLK (DIO5) on bank A to SPI.CLK of a slave device.
+    3. Connect SPI.MISO (DIO6) on bank A to SPI.MOSI of a slave device.
+    4. Connect SPI.MOSI (DIO7) on bank A to SPI.MISO of a slave device.
 
 Result:
-    The program writes 0x00 to the SPI device which requests ELVIS III to read
-    a specified number of frames from the 0x00 register of the SPI device. The
-    returned value is E5 in hexadecimal.
+    The program writes 0x00 to the SPI device which specifies the address to
+    read from. Then the program reads back a value from the 0x00 register of
+    the SPI device. The returned value is E5 in hexadecimal.
 """
 import time
 import sys

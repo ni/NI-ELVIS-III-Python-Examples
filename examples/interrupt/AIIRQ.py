@@ -1,26 +1,24 @@
 """
 NI ELVIS III Analog Input Interrupt Example
 This example illustrates how to register analog input interrupts (AI IRQ) on
-the NI ELVIS III. The program first defines the configuration for the AI
-channel, then waits for an appropriate analog signal. When the AI channel
-receive the signal, the irq_handler function will be called.
+the NI ELVIS III. The program first defines the configuration for the AI IRQ,
+then creates a thread to wait for an interrupt. The irq_handler function
+executes when the AI channel receives an appropriate analog signal to trigger
+the interrupt conditions.
 
 The AI IRQ configuration consists of seven parameters: irq_channel,
-irq_handler, irq_number, timeout, threshold, hysteresis, and irq_type. Only 2
-channels support AI IRQ configuration, which are AI0 and AI1 on bank A. The AI
-IRQ contains two types of edge (rising and falling) with a threshold from 0 to
-5 and hysteresis from 0 to 1.
+irq_handler, irq_number, timeout, threshold, hysteresis, and irq_type. There
+are two AI channels support AI IRQ configuration, which are AI0 and AI1 on
+bank A. The AI IRQ contains two types of edge (rising and falling) with a
+threshold from 0 to 5 and hysteresis from 0 to 1. There are 8 IRQ numbers
+(IRQ1 to IRQ8). You cannot register an I/O interrupt with the same IRQ number
+as that of a registered I/O interrupt. However, after you close the existing
+interrupt, you can use the IRQ number to register another interrupt.
 
 irq_handler defines the callback function which you use to handle interrupts.
 The callback function executes when the interrupt occurs. You can customize
 the callback function as needed. For example, you can write code to make an
 LED flash as shown in this example, or to read from an AI channel.
-
-irq_number specifies the identifier of the interrupt to register. There are
-8 IRQ numbers (IRQ1 to IRQ8). You cannot register an I/O interrupt with the
-same IRQ number as that of a registered I/O interrupt. However, after you
-close the existing interrupt, you can use the IRQ number to register another
-interrupt.
 
 This example uses:
     Bank A, Channel AI0.
@@ -43,9 +41,9 @@ Hardware setup:
 Result:
     The LED0 flashes for 25 seconds. An interrupt occurs when AI0 receives an
     appropriate analog signal and the signal trigger the interrupt conditions.
-    Press the button BTN0 to trigger the interrupt within 25 seconds. The
-    program calls irq_handler, which makes the LED1 flashes for 3 seconds,
-    when the interrupt occurs.
+    Press the button BTN0 to trigger the interrupt before the timeout expires.
+    The program then calls the irq_handler function, which makes the LED1
+    flashes for 3 seconds.
 """
 import time
 import thread

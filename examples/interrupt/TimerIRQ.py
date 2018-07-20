@@ -2,8 +2,8 @@
 NI ELVIS III Timer Interrupt Example
 This example illustrates how to register a timer interrupt (TimerIRQ) on the
 NI ELVIS III. The program first defines the configuration for the Timer IRQ,
-then waits for a specific time. When the time is arrived, the irq_handler
-function will be called.
+then creates a thread to wait for an interrupt. The irq_handler function
+executes when the time interval is reached.
 
 The Timer IRQ configuration consists of two parameters: irq_handler and
 irq_interval. irq_handler defines the callback function which you use to
@@ -16,9 +16,9 @@ Hardware setup:
     No hardware is needed.
 
 Result:
-    The LED0 flashes for 25 seconds. An interrupt occurs when the interrupt
-    condition, time interval is reached. The program calls irq_handler, which
-    makes the LED1 flashes for 3 seconds, when the interrupt occurs.
+    The LED0 flashes for 25 seconds. An interrupt occurs when the time
+    interval is reached. The program then calls the irq_handler function,
+    which makes the LED1 flashes for 3 seconds.
 """
 import time
 import thread

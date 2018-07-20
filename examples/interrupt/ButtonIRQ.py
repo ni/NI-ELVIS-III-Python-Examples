@@ -2,22 +2,24 @@
 NI ELVIS III Button Interrupt Example
 This example illustrates how to register button interrupts (ButtonIRQ) on the
 NI ELVIS III. The program first defines the configuration for the Button IRQ,
-then waits for BUTTON 0 to be pressed. When the button is pressed, the
-irq_handler function will be called.
+then creates a thread to wait for an interrupt. The irq_handler function
+executes when the button BUTTON 0 is pressed.
 
 The Button IRQ configuration consists of six parameters: irq_handler, irq_number,
-timeout, interrupt_type_rising, interrupt_type_falling, and edge_count.
+timeout, interrupt_type_rising, interrupt_type_falling, and edge_count. Each
+configuration contains two parmeters to define whether to register the
+interrupt at the rising edge or falling edge as indicated in this table:
+    interrupt_type_rising    True    False   True
+    interrupt_type_falling   False   True    True
+There are 8 IRQ numbers (IRQ1 to IRQ8). You cannot register an I/O interrupt
+with the same IRQ number as that of a registered I/O interrupt. However, after
+you close the existing interrupt, you can use the IRQ number to register another
+interrupt.
 
 irq_handler defines the callback function which you use to handle interrupts.
 The callback function executes when the interrupt occurs. You can customize
 the callback function as needed. For example, you can write code to make an
 LED flash as shown in this example, or to read from an AI channel.
-
-irq_number specifies the identifier of the interrupt to register. There are
-8 IRQ numbers (IRQ1 to IRQ8). You cannot register an I/O interrupt with the
-same IRQ number as that of a registered I/O interrupt. However, after you
-close the existing interrupt, you can use the IRQ number to register another
-interrupt.
 
 This example uses:
     User programmable button BUTTON 0.
@@ -27,9 +29,9 @@ Hardware setup:
 
 Result:
     The LED0 flashes for 25 seconds. An interrupt occurs when the button
-    BUTTON 0 is pressed. Press the button to trigger the interrupt within 25
-    seconds. The program calls irq_handler, which makes the LED1 flashes for 3
-    seconds, when the interrupt occurs.
+    BUTTON 0 is pressed. Press the button BUTTON 0 to trigger the interrupt
+    before the timeout expires. The program then calls the irq_handler
+    function, which makes the LED1 flashes for 3 seconds.
 """
 import time
 import thread
