@@ -273,7 +273,7 @@ class AnalogOutput(ELVISIII):
             self.go.write(False)
 
 
-class DIO(ELVISIII):
+class DigitalInputOutput(ELVISIII):
     """ NI ELVIS III Digital Input and Output (DIO) API. """
     def __init__(self, bank=Bank.A):
         """
@@ -285,7 +285,7 @@ class DIO(ELVISIII):
                 Specifies the name of the bank to open a session. The default
                 value is A.
         """
-        super(DIO, self).__init__()
+        super(DigitalInputOutput, self).__init__()
         assert bank in Bank
         bank = bank.value
         self.write_registration = self.session.registers['DIO.' + bank + '_19:0.OUT']
@@ -796,7 +796,7 @@ class SPI(ELVISIII):
         assert clock_phase in SPIClockPhase
         assert clock_polarity in SPIClockPolarity
         assert data_direction in SPIDataDirection
-        with DIO(bank) as dio:
+        with DigitalInputOutput(bank) as dio:
             dio.to_write({DIOChannel.DIO0})
         bank = bank.value
         clock_phase = clock_phase.value

@@ -31,7 +31,7 @@ from enums import Bank, DIOChannel
 # specify the bank
 bank = Bank.A
 # open a DIO session
-with academicIO.DIO(bank) as DIO:
+with academicIO.DigitalInputOutput(bank) as DIO:
     # specify the DIO channels
     channel2 = DIOChannel.DIO2
     channel4 = DIOChannel.DIO4

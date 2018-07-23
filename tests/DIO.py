@@ -13,7 +13,7 @@ import academicIO
 from enums import *
 
 bank = Bank.A
-with academicIO.DIO(bank) as DIO:
+with academicIO.DigitalInputOutput(bank) as DIO:
     value = True
 
     # multiple channels
