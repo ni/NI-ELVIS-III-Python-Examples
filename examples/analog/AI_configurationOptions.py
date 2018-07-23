@@ -1,7 +1,9 @@
 """
 NI ELVIS III Configuration Options for Analog Input Example
 This example illustrates the effect of the analog input (AI) configuration
-options on the NI ELVIS III.
+options on the NI ELVIS III. The program defines the five different
+configurations for the AI channels, then reads the AI channels. Each time the
+read is called a single point of data is returned from the channel. 
 
 The AI configuration consists of four parameters: bank, channel, range, and
 mode. There are two identical banks of AI channels (A and B). Each bank
@@ -67,9 +69,6 @@ with academicIO.AnalogInput({'bank': ai_bank,
     # print the value
     print "Range ", ai_range.value, ": ", value_array[0]
 
-    # add a short delay before acquiring next data point
-    time.sleep(0.001)
-
 ##############################################################################
 # The first portion:
 # 2. Selecting the smallest range that includes your signal for highest
@@ -87,9 +86,6 @@ with academicIO.AnalogInput({'bank': ai_bank,
     # print the value
     print "Range ", ai_range.value, ": ", value_array[0]
 
-    # add a short delay before acquiring next data point
-    time.sleep(0.001)
-
 ##############################################################################
 # The first portion:
 # 3. Selecting a larger range than necessary still returns valid data.
@@ -105,9 +101,6 @@ with academicIO.AnalogInput({'bank': ai_bank,
     value_array = AI_single_channel.read()
     # print the value
     print "Range ", ai_range.value, ": ", value_array[0]
-
-    # add a short delay before acquiring next data point
-    time.sleep(0.001)
 
 ##############################################################################
 # The second portion: 
@@ -125,9 +118,6 @@ with academicIO.AnalogInput({'bank': ai_bank,
     # print the value
     print "Single Ended: ", value_array[0]
 
-    # add a short delay before acquiring next data point
-    time.sleep(0.001)
-
 ##############################################################################
 # The second portion: 
 # 2. Selecting differential mode.
@@ -143,6 +133,3 @@ with academicIO.AnalogInput({'bank': ai_bank,
     value_array = AI_single_channel.read()
     # print the value
     print "Differential: ", value_array[0]
-
-    # add a short delay before acquiring next data point
-    time.sleep(0.001)
