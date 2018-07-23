@@ -30,6 +30,9 @@ with academicIO.LEDs() as LED:
     # writes values 10 times which turns LED1 on/off 5 times
     for x in range(0, 10):
         # turn LED0 on/off
+        # the first parameter of the write function specifies which LED to
+        # write to, the second parameter specifies the status of the LED which
+        # should be either True or False
         LED.write(led, led_on_off)
         # add a short delay
         time.sleep(0.5)

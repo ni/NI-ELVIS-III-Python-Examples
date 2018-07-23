@@ -8,9 +8,7 @@ write is called a string is written to the UART device; each time the read
 is called a string is returned from the UART device.
 
 The UART configuration consists of one parameter: bank, and there are two
-identical banks of UART port (A and B).
-
-The UART configure function consists five parameters: baud rate (110, 300, 600,
+identical banks of UART port (A and B) with baud rate (110, 300, 600,
 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, and 230400), data bits (7
 and 8), stop bits (one and two), parity (none, odd, and even), and
 flow_control (none, xor and xoff, rts and cts, and dtr and dsr).

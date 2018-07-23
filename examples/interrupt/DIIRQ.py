@@ -6,7 +6,7 @@ then creates a thread to wait for an interrupt. The irq_handler function
 executes when the DI channel receives an appropriate digital signal to trigger
 the interrupt conditions.
 
-The DI IRQ configuration consists of seven parameter: irq_channel, irq_handler,
+The DI IRQ configuration consists of seven parameters: irq_channel, irq_handler,
 irq_number, timeout, interrupt_type_rising, interrupt_type_falling, and
 edge_count. There are four DI channels support DI IRQ configuration, which are
 DIO0 to DIO3 on bank A. Each configuration contains two parmeters to define

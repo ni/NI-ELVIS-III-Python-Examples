@@ -30,7 +30,7 @@ channel = DIOChannel.DIO0
 
 # open a PWM session
 with academicIO.PWM(bank, channel) as PWM:
-    # specify the frequency settings for the PWM signal
+    # specify the frequency (integer value) settings for the PWM signal
     frequency = 1000
     # specify the percentage of time the PWM signal remains high over one PWM
     # cycle

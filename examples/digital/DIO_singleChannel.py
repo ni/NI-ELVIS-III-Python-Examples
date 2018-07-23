@@ -39,6 +39,7 @@ with academicIO.DigitalInputOutput(bank) as DIO:
     value = True
 
     # write the value True to DIO2 on bank A
+    # the written value must be a boolean variable
     DIO.write(value, channel2)
     # read value from DIO4 on bank A
     data = DIO.read(channel4)

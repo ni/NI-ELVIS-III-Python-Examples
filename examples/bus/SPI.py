@@ -83,7 +83,7 @@ with academicIO.SPI(frequency,
     data_to_write = [0x00]
     # write data to the SPI SPI
     SPI.write(data_to_write)
-    # specify the number of frame to read from the SPI channel
+    # specify the number of frame (int) to read from the SPI channel
     number_frames = 1
     # read a 1 byte data from SPI channel
     value_array = SPI.read(number_frames)
