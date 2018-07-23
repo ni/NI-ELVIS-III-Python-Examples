@@ -1,7 +1,7 @@
 How to use NI ELVIS III with Python
 =======  
 # Overview
-In this document we will walk you through the setup, transfer of files, and the use of a Python example on NI ELVIS III. The NI ELVIS III solution for project-based learning can be programmed with python to help students or educators who are familiar with Python syntax to rapidly acquire measurements using common SSH clients. Attached to this file are a total of 18 examples which illustrate the use of the NI ELVIS III helper library ([academicIO.py](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/source/nielvisiii/academicIO.py)).
+In this document we will walk you through the setup, transfer of files, and the use of a Python example on NI ELVIS III. The NI ELVIS III solution for project-based learning can be programmed with python to help students or educators who are familiar with Python syntax to rapidly acquire measurements using common SSH clients. Attached to this file are a total of 18 examples which illustrate the use of the NI ELVIS III helper library ([academicIO.py](source/nielvisiii/academicIO.py)).
 
 # Table of Contents
 - [NI ELVIS III Configuration Setup](#ni-elvis-iii-configuration-setup)
@@ -16,18 +16,18 @@ In this document we will walk you through the setup, transfer of files, and the 
 
 ## Enable the Secure Shell Server
 1. Open Internet Explorer and visit the NI ELVIS III Configuration website: \<IP Address of NI ELVIS III\>/WIF.html<br />
-  :exclamation: IP Address can be found on the Display of the NI ELVIS III. Press BUTTON 0 until IP address appears. Enter IP address from the display.<br />
+   >  IP Address can be found on the Display of the NI ELVIS III. Press BUTTON 0 until IP address appears. Enter IP address from the display.<br />
 
-      ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/IPaddress.jpg)
+      ![](docs/resource/IPaddress.jpg)
   
 2. Navigate to the ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/system_configuration.png) tab at the left of the page if not already there.
 3. Enable **Secure Shell Server (sshd)** checkbox in the **Startup Settings** section.
-    ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/sshd.png)
+    ![](docs/resource/sshd.png)
 4. Click **Save**.
 
 ## Setup Time Configuration
 On the NI ELVIS III configuration website:
-1. Click on the ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/time_configuration.png) tab at the left of the page .
+1. Click on the ![](resource/time_configuration.png) tab at the left of the page .
 2. Change the date and time to the current local date and time, and select the right time zone.
 3. Click **Save**.
 
@@ -39,7 +39,7 @@ In this section we will install the software needed to communicate to the NI ELV
 3. Install and open your favorite SSH client. If you do not have one, we recommend [PuTTY](https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe): 
     - Configure PuTTY or another client as follows:
     
-        ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/putty.png)
+        ![](docs/resource/putty.png)
         
         - **Host Name**: \<IP Address of NI ELVIS III\>
         - **Port**: 22
@@ -49,7 +49,7 @@ In this section we will install the software needed to communicate to the NI ELV
        - **Username**: admin
        - **Password**: (Just press Enter. There is no password by default.)
     - Run the following commands:<br />
-       :exclamation: Time configuration must be set before running these commands
+      > Time configuration must be set before running these commands
         ```
         opkg update
         opkg upgrade
@@ -67,7 +67,7 @@ In this section we will transfer an FPGA bitfile and the Python examples to the 
 2. Log into the NI ELVIS III in FileZilla:
     - **Configuration**:
         
-        ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/filezilla.png)
+        ![](docs/resource/filezilla.png)
         
         - **Host Name**: sftp://\<IP Address of NI ELVIS III\>
         - **Username**: admin
@@ -75,19 +75,19 @@ In this section we will transfer an FPGA bitfile and the Python examples to the 
     - Click **Quickconnect**
 3. Navigate to the `/home/admin` directory.
     
-    ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/home_directory.png)
+    ![](docs/resource/home_directory.png)
     
 4. Download or clone the **NI-ELVIS-III-Python** repository.
 5. Upload the **examples**, **source**, and **bitfile** folders to the `/home/admin` directory in FileZilla.
 
-    ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/examples_directory.png)
+    ![](docs/resource/examples_directory.png)
 
 # Running the Example
 
 In the PuTTY client (or similar clients) used in the earlier **Software Setup** session, enter the following commands:
 ```
 cd /home/admin
-python examples/interrupt/DIIRQ.py
+python examples/example_category/example_filename.py
 ```
 For example: `python examples/analog/AI_singleChannel.py`
 
