@@ -1,93 +1,84 @@
 How to use NI ELVIS III with Python
-=======  
+=======
 # Overview
 In this document we will walk you through the setup, transfer of files, and the use of a Python example on NI ELVIS III. The NI ELVIS III solution for project-based learning can be programmed with python to help students or educators who are familiar with Python syntax to rapidly acquire measurements using common SSH clients. Attached to this file are a total of 18 examples which illustrate the use of the NI ELVIS III helper library ([academicIO.py](source/nielvisiii/academicIO.py)).
 
 # Table of Contents
-- [NI ELVIS III Configuration Setup](#ni-elvis-iii-configuration-setup)
-  * [Enable the Secure Shell Server](#enable-the-secure-shell-server)
-  * [Setup Time Configuration](#setup-time-configuration)
 - [Software Setup](#software-setup)
-- [File Transfer](#file-transfer)
+  * [NI ELVIS III Software Setup](#ni-elvis-iii-software-setup)
+  * [Install Prerequisite Software for NI ELVIS III Python](#install-prerequisite-software-for-ni-elvis-iii-python)
+  * [Install NI ELVIS III Python](#install-ni-elvis-iii-python)
 - [Running the Example](#running-the-example)
 - [Function Select Register](#function-select-register)
 
-# NI ELVIS III Configuration Setup
-
-## Enable the Secure Shell Server
-1. Open Internet Explorer and visit the NI ELVIS III Configuration website: \<IP Address of NI ELVIS III\>/WIF.html<br />
-   >  IP Address can be found on the Display of the NI ELVIS III. Press BUTTON 0 until IP address appears. Enter IP address from the display.<br />
-
-      ![](docs/resource/IPaddress.jpg)
-  
-2. Navigate to the ![](https://github.com/ni-kismet/NI-ELVIS-III-Python/blob/master/docs/resource/system_configuration.png) tab at the left of the page if not already there.
-3. Enable **Secure Shell Server (sshd)** checkbox in the **Startup Settings** section.
-    ![](docs/resource/sshd.png)
-4. Click **Save**.
-
-## Setup Time Configuration
-On the NI ELVIS III configuration website:
-1. Click on the ![](resource/time_configuration.png) tab at the left of the page .
-2. Change the date and time to the current local date and time, and select the right time zone.
-3. Click **Save**.
-
 # Software Setup
 
+## NI ELVIS III Software Setup
 In this section we will install the software needed to communicate to the NI ELVIS III and install the required packages to use the Python FPGA API.
-1. Install the NI Measurement Live Support Files.
-2. Connect the NI ELVIS III to the computer via USB, Ethernet or WiFi.
-3. Install and open your favorite SSH client. If you do not have one, we recommend [PuTTY](https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe): 
-    - Configure PuTTY or another client as follows:
+
+1. Install the [NI Measurement Live Support Files](http://www.ni.com/download/labview-elvis-iii-toolkit-2018/7639/en/).
+2. Connect the NI ELVIS III to the Internet using the Ethernet Port, Wifi, or USB connection so that the Python libraries can be installed from the Internet. We recommend to use either Ethernet Port or Wifi.
+3. Enable the **Secure Shell Server**.
+   1. Open Internet Explorer and visit the NI ELVIS III Configuration website: \<IP Address of NI ELVIS III\>/WIF.html<br/>
+      ![](docs/resource/url.png)<br/>
+      Note: IP Address can be found on the Display of the NI ELVIS III. Press BUTTON 0 until IP address appears. Enter IP address from the display.<br />
+      ![](docs/resource/IPaddress.jpg)
+   2. Navigate to the![](docs/resource/system_configuration.png)tab at the left of the page if not already there.
+   3. Enable **Secure Shell Server (sshd)** checkbox in the **Startup Settings** section.
+       ![](docs/resource/sshd.png)
+   4. Click **Save**.
+4. Setup **Time Configuration**.
+   On the NI ELVIS III configuration website:
+   1. Click on the ![](docs/resource/time_configuration.png) tab at the left of the page .
+   2. Configure the **Date**, **Current time**, and **Time Zone** to your current local time.
+      ![](docs/resource/data_and_time.png)
+   3. Click **Save**.
+
+## Install Prerequisite Software for NI ELVIS III Python
+1. Install and open your favorite SSH client. If you do not have one, we recommend [PuTTY](https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe): 
+   - Configure PuTTY or another client as follows:
     
-        ![](docs/resource/putty.png)
+     ![](docs/resource/putty.png)
         
-        - **Host Name**: \<IP Address of NI ELVIS III\>
-        - **Port**: 22
-        - **Connection Type**: SSH
-    - Click **Open**.
-    - Once the connection opens Log In as:
-       - **Username**: admin
+      - **Host Name**: \<IP Address of NI ELVIS III\>
+      - **Port**: 22
+      - **Connection Type**: SSH
+   - Click **Open**.
+   - Once the connection opens Log In as:
+       - **login as**: admin
        - **Password**: (Just press Enter. There is no password by default.)
-    - Run the following commands:<br />
-      > Time configuration must be set before running these commands
-        ```
-        opkg update
-        opkg upgrade
-        opkg install python
-        opkg install python-pip
-        pip install nifpga
-        pip install pyvisa
-        ```
-    - The NI ELVIS III is now setup to run Python applications and communicate to the FPGA using the Python FPGA API.
+2. Install prerequisite software by running the following commands:<br />
+   Note: **Time configuration** must be set before running these commands
+   ```
+   opkg update
+   opkg install python
+   opkg install python-pip
+   pip install nifpga
+   pip install pyvisa
+   ```
 
-# File Transfer
-
-In this section we will transfer an FPGA bitfile and the Python examples to the NI ELVIS III. The directions are performed using the free FTP Client FileZilla. You are free to use any application you are comfortable with.
-1. Download and install [FileZilla](https://filezilla-project.org/download.php)
-2. Log into the NI ELVIS III in FileZilla:
-    - **Configuration**:
-        
-        ![](docs/resource/filezilla.png)
-        
-        - **Host Name**: sftp://\<IP Address of NI ELVIS III\>
-        - **Username**: admin
-        - **Password**: (Just press Enter. There is no password by default.)
-    - Click **Quickconnect**
-3. Navigate to the `/home/admin` directory.
-    
-    ![](docs/resource/home_directory.png)
-    
-4. Download or clone the **NI-ELVIS-III-Python** repository.
-5. Upload the **examples**, **source**, and **bitfile** folders to the `/home/admin` directory in FileZilla.
-
-    ![](docs/resource/examples_directory.png)
+## Install NI ELVIS III Python
+1. Configure GitHub.
+   - Generate SSH keys and add to your GitHub account. If you are new to GitHub, you can type `ssh-keygen -t rsa -C "example@email.com"`  on Putty to generate a SSH key and add it to your GitHub account. See [Connecting to GitHub with SSH](https://help.github.com/articles/connecting-to-github-with-ssh/) for more helps.
+2. Download the NI ELVIS III Python helper library and Python Example from GitHub.
+   - Download NI ELVIS III Python.
+     ```
+     git clone --recursive git@github.com:ni/NI-ELVIS-III-Python.git
+     ```
+   - You will see things like this when the download finished successfully. 
+     > admin@NI-ELVIS-III-0000000: ~# git clone --recursive git@github.com:ni/NI-ELVIS-III-Python<br/>
+     > Cloning into 'NI-ELVIS-III-Python'...<br/>
+     > remote: Counting objects: 407, done.<br/>
+     > remote: Total 407 (delta 0), reused 0 (delta 0), pack-reused 407<br/>
+     > Receiving objects: 100% (407/407), 1.31 MiB | 265.00 KiB/s, done.<br/>
+     > Resolving deltas: 100% (263/263), done.<br/>
+     > git: 'submodule' is not a git command. See 'git --help'.<br/>
 
 # Running the Example
 
-In the PuTTY client (or similar clients) used in the earlier **Software Setup** session, enter the following commands:
+In the PuTTY client (or similar clients) used in the earlier **Software Setup** session, change the current directory to **NI-ELVIS-III-Python/** (`cd /home/admin/NI-ELVIS-III-Python/`), then enter the following command to run the example:
 ```
-cd /home/admin
-python examples/example_category/example_filename.py
+python examples/<example_category>/<example_filename>.py
 ```
 For example: `python examples/analog/AI_singleChannel.py`
 
@@ -98,7 +89,7 @@ For example: `python examples/analog/AI_singleChannel.py`
 - Encoder:  DIO [0:1], DIO [2:3], …, DIO [18:19] on bank A and bank B
 - SPI:      DIO [5:7] on bank A and bank B
 - I2C:      DIO [14:15] on bank A and bank B
-- UART:     DIO [16:17]  on bank A and bank B
+- UART:     DIO [16:17] on bank A and bank B
 
 |**NI ELVIS III**| DIO | PWM | Encoder | SPI | I2C | UART | 
 |:--------------:|:-----------:|:-----------:|:---------------:|:-----------:|:------------------------:|:----------:| 
