@@ -65,6 +65,7 @@ In this section we will install the software needed to communicate to the NI ELV
      ```
      git clone --recursive git@github.com:ni/NI-ELVIS-III-Python.git
      ```
+   - Now, you can find **NI-ELVIS-III-Python** at your current directory, the default directory is `/home/admin/` if you did not change the directory.
    - You will see things like this when the download finished successfully. 
      > admin@NI-ELVIS-III-0000000: ~# git clone --recursive git@github.com:ni/NI-ELVIS-III-Python<br/>
      > Cloning into 'NI-ELVIS-III-Python'...<br/>
@@ -76,11 +77,15 @@ In this section we will install the software needed to communicate to the NI ELV
 
 # Running the Example
 
-In the PuTTY client (or similar clients) used in the earlier **Software Setup** session, change the current directory to **NI-ELVIS-III-Python/** (`cd /home/admin/NI-ELVIS-III-Python/`), then enter the following command to run the example:
-```
-python examples/<example_category>/<example_filename>.py
-```
-For example: `python examples/analog/AI_singleChannel.py`
+1. At the same directory where you clone from GitHub (the default directory is `/home/admin/`) in the earlier session, change the directory to `NI-ELVIS-III-Python/`:
+   ```
+   cd NI-ELVIS-III-Python/
+   ```
+2. Run the example at the `NI-ELVIS-III-Python/` directory:
+   ```
+   python examples/<example_category>/<example_filename>.py
+   ```
+   For example: `python examples/analog/AI_singleChannel.py`
 
 # Function Select Register
 
