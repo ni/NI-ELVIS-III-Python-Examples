@@ -24,7 +24,7 @@ import academicIO
 
 # open a button session
 with academicIO.Button() as button:
-    # reads values 20 times
+    # read values 20 times
     for x in range(0, 20):
         # print the loop count
         print "loop ", x

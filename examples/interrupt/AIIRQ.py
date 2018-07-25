@@ -104,7 +104,7 @@ with academicIO.AIIRQ(irq_channel,
     # specify the LED status
     led_on_off = True
 
-    # create a thread for interrupt
+    # create a thread to wait for the interrupt
     thread.start_new_thread(AI_IRQ.wait, ())
 
     # writes values 50 times which turns LED0 on/off 25 times

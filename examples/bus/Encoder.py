@@ -67,7 +67,7 @@ with academicIO.Encoder(bank, channel, mode) as encoder:
     # specify not to reset the encoder in order to keep the counter value and
     # the counter direction since last counter reset
     reset_counter = False
-    # generates and reads values 20 times
+    # read and display the encoder port 20 times
     for x in range(0, 20):
         # read the counter value and direction of the counter from the encoder
         # since last counter read
