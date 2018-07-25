@@ -13,7 +13,7 @@ Hardware setup:
     No hardware is needed.
 
 Result:
-    The LED flashes.
+    The LED0 flashes for 5 seconds.
 """
 import time
 import sys
@@ -21,7 +21,7 @@ sys.path.append('source/nielvisiii')
 import academicIO
 from enums import Led
 
-# open an LED session
+# configure an LED session
 with academicIO.LEDs() as LED:
     # specify the LED which you want to control
     led = Led.LED0

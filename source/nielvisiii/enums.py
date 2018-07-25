@@ -162,21 +162,21 @@ class UARTFlowControl(Enum):
     NI ELVIS III UART flow control.
 
     Values:
-       NONE:
+        NONE:
            The transfer mechanism does not use flow control. Buffers on both
            sides of the connection are assumed to be large enough to hold all
            data transferred.
-       XOR_XOFF:
+        XOR_XOFF:
            The transfer mechanism uses the XON and XOFF characters to perform
            flow control. The transfer mechanism controls input flow by sending
            XOFF when the receive buffer is nearly full, and it controls the
            output flow by suspending transmission when XOFF is received.
-       RTS_CTS:
+        RTS_CTS:
            The transfer mechanism uses the XON and XOFF characters to perform
            flow control. The transfer mechanism controls input flow by sending
            XOFF when the receive buffer is nearly full, and it controls the
            output flow by suspending transmission when XOFF is received.
-       DTR_DSR:
+        DTR_DSR:
            The transfer mechanism uses the DTR output signal and the DSR input
            signal to perform flow control. The transfer mechanism controls
            input flow by unasserting the DTR signal when the receive buffer is

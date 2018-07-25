@@ -3,9 +3,8 @@ NI ELVIS III Single Point, Multiple Channels, Digital Input and Output Example
 This example illustrates how to write values to and read values from multiple
 digital input and output (DIO) channels. The program first defines the
 configuration for the DIO channels, then writes to and reads from the DIO
-channels. Each time the write is called a list of data is written to the
-channels; each time the read is called a lsit of data is returned for the
-channels.
+channels. Each time the write is called a data is written to the channels;
+each time the read is called a data is returned for the channels.
 
 The DIO configuration consists of one parameter: bank. There are two identical
 banks of DIO channels (A and B). Each bank contains 19 digital input and
@@ -31,8 +30,8 @@ Hardware setup:
     2. Connect DIO3 to DIO8 on bank A.
 
 Result:
-    The program writes values to DIO2 and DIO3 and reads values from DIO4 and
-    DIO8 on bank A.
+    The program writes values to DIO2 and DIO3 and reads back values from DIO4
+    and DIO8 on bank A.
 """
 import time
 import sys
@@ -42,7 +41,7 @@ from enums import Bank, DIOChannel
 
 # specify the bank
 bank = Bank.A
-# open a DIO session
+# configure a DIO session
 with academicIO.DigitalInputOutput(bank) as DIO:
     # specify the DIO channels
     channel2 = DIOChannel.DIO2

@@ -1,6 +1,6 @@
 """
 NI ELVIS III Button Example
-This example illustrates how to read the value from the user programmable
+This example illustrates how to read the value back from the user programmable
 button BUTTON 0 on the NI ELVIS III. The program first defines the
 configuration for the LED, then reads from the LED registers in a loop. Each
 time the read is called a Boolean data is returned. The BUTTON 0 is a
@@ -15,19 +15,19 @@ Hardware setup:
     Press the button BUTTON 0 on NI ELVIS III before the program ends.
 
 Result: 
-    The program prints a string when you press the button.
+    The program reads back a Boolean value. The value is True when you press
+    the button BUTTON 0, and the program prints a string. Otherwise, do
+    nothing.
 """
 import time
 import sys
 sys.path.append('source/nielvisiii')
 import academicIO
 
-# open a button session
+# configure a button session
 with academicIO.Button() as button:
     # read values 20 times
     for x in range(0, 20):
-        # print the loop count
-        print "loop ", x
         # when you press the button, the if statement is True
         if button.read():
             # print a notice

@@ -3,15 +3,15 @@ NI ELVIS III Serial Peripheral Interface Example
 This example illustrates how to write data to or read data from an Serial
 Peripheral Interface (SPI) slave device through the SPI channels on the NI
 ELVIS III. The program first defines the configuration for the SPI
-communication, then writes to and reads from the device. Each time the write
+channels, then writes to and reads from the device. Each time the write
 is called a list of data is written to the SPI device; each time the read is
 called a list of data is returned from the SPI device.
 
 The SPI configuration consists of six parameters: frequency, bank, clock_phase,
 clock_polarity data_direction, and frame_length. There are two identical banks
-of SPI port (A and B) which contains a frequency (is 40Hz to 4000000Hz),
-two clock phases (leading and trailing), two clock polarities (low and high),
-two directions (LSB and MSB), and a frame length (4 to 16). 
+of SPI port (A and B) which contains frequency (40Hz to 4000000Hz), clock
+phase (leading and trailing), clock polaritie (low and high), direction (LSB
+and MSB), and frame length (4 to 16). 
 
 This example uses ADXL345 as the slave device. The 0x00 hexadecimal data send
 from the master device requests the slave device send back a default device 
@@ -72,7 +72,7 @@ frame_length = 8
 # channel.
 ##############################################################################
 
-# open an SPI session
+# configure an SPI session
 with academicIO.SPI(frequency,
                     bank,
                     clock_phase,
@@ -96,7 +96,7 @@ with academicIO.SPI(frequency,
 # immediately after it is written.
 ##############################################################################
 
-# open an SPI session
+# configure an SPI session
 with academicIO.SPI(frequency,
                     bank,
                     clock_phase,

@@ -2,7 +2,7 @@
 NI ELVIS III Encoder Example
 This example illustrates how to read and decode signals from an encoder
 through the encoder channels on the NI ELVIS III. The program first defines
-the configuration for the ender channels, then reads the encoder channels in a
+the configuration for the encoder channels, then reads the encoder channels in a
 loop. Each time the read is called a list of data is returned for the channels.
 The list of data contains counter value and counter direction. The time
 between reads is not precisely timed, and is controlled by a software delay.
@@ -40,9 +40,9 @@ Hardware setup:
        device.
 
 Result:
-    Twenty data (counter value and the counter direction) acquired from the
-    encoder device. The data changes when the knob on the KY-040 Arduino
-    Rotary is rotated.
+    The program reads back twenty data (counter value and the counter
+    direction) from the encoder device. The data changes when the knob on the
+    KY-040 Arduino Rotary is rotated.
 """
 import time
 import sys
@@ -56,7 +56,7 @@ channel = EncoderChannel.ENC0
 # specify the mode of operation for communicating with the encoder device
 mode = EncoderMode.QUADRATURE
 
-# open an encoder session
+# configure an encoder session
 with academicIO.Encoder(bank, channel, mode) as encoder:
     # specify whether to reset the encoder device. To reset the encoder, set
     # reset_counter to True

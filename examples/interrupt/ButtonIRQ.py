@@ -1,6 +1,6 @@
 """
 NI ELVIS III Button Interrupt Example
-This example illustrates how to register button interrupts (ButtonIRQ) on the
+This example illustrates how to register a button interrupt (Button IRQ) on the
 NI ELVIS III. The program first defines the configuration for the Button IRQ,
 then creates a thread to wait for an interrupt. The irq_handler function
 executes when the button BUTTON 0 is pressed.
@@ -77,7 +77,7 @@ interrupt_type_falling = False
 # interrupt_type_rising is True and edge_count is 2, an interrupt occurs
 # when you press the button twice
 edge_count = 2        
-# open a button interrupt session
+# configure a button interrupt session
 with academicIO.ButtonIRQ(irq_handler,
                           irq_number,
                           timeout,

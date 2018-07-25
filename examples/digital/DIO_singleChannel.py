@@ -20,7 +20,8 @@ Hardware setup:
     Connect DIO2 to DIO4 on bank A.
 
 Result:
-    The program writes a value to DIO2 and reads a value from DIO4 on bank A.
+    The program writes a value to DIO2 and reads back a value from DIO4 on
+    bank A.
 """
 import time
 import sys
@@ -30,7 +31,7 @@ from enums import Bank, DIOChannel
 
 # specify the bank
 bank = Bank.A
-# open a DIO session
+# configure a DIO session
 with academicIO.DigitalInputOutput(bank) as DIO:
     # specify the DIO channels
     channel2 = DIOChannel.DIO2

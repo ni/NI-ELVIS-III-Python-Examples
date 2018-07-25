@@ -1,6 +1,6 @@
 """
 NI ELVIS III Analog Input Interrupt Example
-This example illustrates how to register analog input interrupts (AI IRQ) on
+This example illustrates how to register an analog input interrupt (AI IRQ) on
 the NI ELVIS III. The program first defines the configuration for the AI IRQ,
 then creates a thread to wait for an interrupt. The irq_handler function
 executes when the AI channel receives an appropriate analog signal to trigger
@@ -23,9 +23,6 @@ LED flash as shown in this example, or to read from an AI channel.
 This example uses:
     Bank A, Channel AI0.
 
-This example uses:
-    Bank A, Channel AI0.
-
 Hardware setup:
     Connect an analog signal source to AI0 on bank A. Gives a analog signal
     to match the interrupt conditions we set in the configuration before the
@@ -35,12 +32,12 @@ Hardware setup:
            resistance.
         2. Connect a +3.3 V voltage source to the 10k Ohm resistance.
         3. Connect BTN0 B to DGND.
-    Then, press the button BTN0. The interrupt is trigger when you press the
+    Then, press the button BTN0. The interrupt is triggered when you press the
     button.
 
 Result:
     The LED0 flashes for 25 seconds. An interrupt occurs when AI0 receives an
-    appropriate analog signal and the signal trigger the interrupt conditions.
+    appropriate analog signal and the signal triggers the interrupt conditions.
     Press the button BTN0 to trigger the interrupt before the timeout expires.
     The program then calls the irq_handler function, which makes the LED1
     flashes for 3 seconds.
@@ -89,7 +86,7 @@ hysteresis = 0.05
 # specify whether to register an interrupt on the falling edge or rising
 # edge of the analog input signal
 irq_type = AIIRQType.RISING
-# open an analog input interrupt session
+# configure an analog input interrupt session
 with academicIO.AIIRQ(irq_channel,
                       irq_handler,
                       irq_number,

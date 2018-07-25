@@ -1,6 +1,6 @@
 """
 NI ELVIS III Timer Interrupt Example
-This example illustrates how to register a timer interrupt (TimerIRQ) on the
+This example illustrates how to register a timer interrupt (Timer IRQ) on the
 NI ELVIS III. The program first defines the configuration for the Timer IRQ,
 then creates a thread to wait for an interrupt. The irq_handler function
 executes when the time interval is reached.
@@ -11,6 +11,9 @@ handle interrupts. The callback function executes when the interrupt occurs.
 You can customize the callback function as needed. For example, you can write
 code to make an LED flash as shown in this example, or to read from an AI
 channel.
+
+This example uses:
+    NI ELVIS III FPGA timer.
 
 Hardware setup:
     No hardware is needed.
@@ -52,7 +55,7 @@ def irq_handler():
 # specify the span of time, in milliseconds, between when the program
 # starts and when an interrupt occurs
 irq_interval= 5000000    # 5000000us = 5s
-# open a timer interrupt session
+# configure a timer interrupt session
 with academicIO.TimerIRQ(irq_handler, irq_interval) as Timer_IRQ:
     # open the LED session
     LED = academicIO.LEDs()

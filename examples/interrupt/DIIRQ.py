@@ -1,6 +1,6 @@
 """
 NI ELVIS III Digital Input Interrupt Example
-This example illustrates how to register digital input interrupts (DIIRQ) on
+This example illustrates how to register a digital input interrupt (DI IRQ) on
 the NI ELVIS III. The program first defines the configuration for the DI IRQ,
 then creates a thread to wait for an interrupt. The irq_handler function
 executes when the DI channel receives an appropriate digital signal to trigger
@@ -36,12 +36,12 @@ Hardware setup:
            resistance.
         2. Connect a +3.3 V voltage source to the 10k Ohm resistance.
         3. Connect BTN0 B to DGND.
-    Then, press the button BTN0. The interrupt is trigger when you press the
+    Then, press the button BTN0. The interrupt is triggered when you press the
     button.
 
 Result:
     The LED0 flashes for 25 seconds. An interrupt occurs when DIO0 receives an
-    appropriate digital signal and the signal trigger the interrupt conditions.
+    appropriate digital signal and the signal triggers the interrupt conditions.
     Press the button BTN0 to trigger the interrupt before the timeout expires.
     The program then calls the irq_handler function, which makes the LED1
     flashes for 3 seconds.
@@ -93,7 +93,7 @@ interrupt_type_falling = False
 # interrupt_type_rising is True and edge_count is 1, an interrupt occurs
 # when the DIO channel receives one appropriate rising edge
 edge_count = 1
-# open a digital input interrupt session
+# configure a digital input interrupt session
 with academicIO.DIIRQ(irq_channel,
                       irq_handler,
                       irq_number,

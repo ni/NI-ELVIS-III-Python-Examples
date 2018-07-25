@@ -2,10 +2,10 @@
 NI ELVIS III Inter-Integrated Circuit (I2C) Example
 This example illustrates how to write data to or read data from an I2C slave
 device through the I2C channels. The program first defines the configuration
-for the I2C communication, then writes to and reads from the I2C device in a
-loop. Each time the write is called a list of hexadecimal data is written to
-the I2C device; each time the read is called a list of data is returned from
-the I2C device.
+for the I2C channels, then writes to and reads from the I2C device. Each
+time the write is called a list of hexadecimal data is written to the I2C
+device; each time the read is called a list of data is returned from the I2C
+device.
 
 The I2C configuration consists of two parameters: bank and speed. There are two
 identical banks of I2C port (A and B). There are two speeds of I2C
@@ -53,7 +53,7 @@ bank = Bank.A
 # I2C slave device
 speed = I2CSpeedMode.STANDARD
 
-# open an I2C session
+# configure an I2C session
 with academicIO.I2C(bank, speed) as I2C:
     # specify the 7-bit address, in hexadecimal
     # we use the chip ADXL345 for this example and its slave device address is

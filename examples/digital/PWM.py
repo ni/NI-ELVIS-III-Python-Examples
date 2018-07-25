@@ -28,7 +28,7 @@ from enums import Bank, DIOChannel
 bank = Bank.B
 channel = DIOChannel.DIO0
 
-# open a PWM session
+# configure a PWM session
 with academicIO.PWM(bank, channel) as PWM:
     # specify the frequency (integer value) settings for the PWM signal
     frequency = 1000
