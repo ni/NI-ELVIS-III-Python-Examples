@@ -9,12 +9,21 @@ In this document we will walk you through the setup, transfer of files, and the 
   * [Install Prerequisite Software for NI ELVIS III Python](#install-prerequisite-software-for-ni-elvis-iii-python)
   * [Install NI ELVIS III Python](#install-ni-elvis-iii-python)
 - [Running the Example](#running-the-example)
+- [Examples Overview](#examples-overview)
+  * [Analog](#analog)
+  * [Bus](#bus)
+  * [Digital](#digital)
+  * [Interrupt](#interrupt)
+- [Open a Session](#open-a-session)
 - [Function Select Register](#function-select-register)
+- [NI ELVIS III Shipping Personality Reference](#ni-elvis-iii-shipping-personality-reference)
+
+<p align="right"><a href="#top">↥ back to top</a>
 
 # Software Setup
 
 ## NI ELVIS III Software Setup
-In this section we will install the software needed to communicate to the NI ELVIS III and install the required packages to use the Python FPGA API.
+In this section we will install the NI Measurement Live Support Files and setup the software environment.
 
 1. Install the [NI Measurement Live Support Files](http://www.ni.com/download/labview-elvis-iii-toolkit-2018/7639/en/).
 2. Connect the NI ELVIS III to the Internet using the Ethernet Port, Wifi, or USB connection so that the Python libraries can be installed from the Internet. We recommend to use either Ethernet Port or Wifi.
@@ -35,6 +44,8 @@ In this section we will install the software needed to communicate to the NI ELV
    3. Click **Save**.
 
 ## Install Prerequisite Software for NI ELVIS III Python
+In this section we will install the software needed to execute the NI ELVIS III Python examples and the required packages to use the Python FPGA API.
+
 1. Install and open your favorite SSH client. If you do not have one, we recommend [PuTTY](https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe): 
    - Configure PuTTY or another client as follows:
     
@@ -49,6 +60,7 @@ In this section we will install the software needed to communicate to the NI ELV
        - **Password**: (Just press Enter. There is no password by default.)
 2. Install prerequisite software by running the following commands:<br />
    Note: **Time configuration** must be set before running these commands
+   
    ```
    opkg update
    opkg install python
@@ -58,10 +70,13 @@ In this section we will install the software needed to communicate to the NI ELV
    ```
 
 ## Install NI ELVIS III Python
+In this section we will download the NI ELVIS III Python examples.
+
 1. Configure GitHub.
    - Generate SSH keys and add to your GitHub account. If you are new to GitHub, you can type `ssh-keygen -t rsa -C "example@email.com"`  on Putty to generate a SSH key and add it to your GitHub account. See [Connecting to GitHub with SSH](https://help.github.com/articles/connecting-to-github-with-ssh/) for more helps.
 2. Download the NI ELVIS III Python helper library and Python Example from GitHub.
    - Download NI ELVIS III Python.
+   
      ```
      git clone --recursive git@github.com:ni/NI-ELVIS-III-Python.git
      ```
@@ -75,17 +90,74 @@ In this section we will install the software needed to communicate to the NI ELV
      > Resolving deltas: 100% (263/263), done.<br/>
      > git: 'submodule' is not a git command. See 'git --help'.<br/>
 
+<p align="right"><a href="#top">↥ back to top</a>
+
 # Running the Example
 
-1. At the same directory where you clone from GitHub (the default directory is `/home/admin/`) in the earlier session, change the directory to `NI-ELVIS-III-Python/`:
+1. At the same directory where you clone from GitHub in the earlier session, change the directory to `NI-ELVIS-III-Python/`:
+
    ```
    cd NI-ELVIS-III-Python/
    ```
-2. Run the example at the `NI-ELVIS-III-Python/` directory:
+2. Run the example:
+
    ```
    python examples/<example_category>/<example_filename>.py
    ```
-   For example: `python examples/analog/AI_singleChannel.py`
+   For example: `python examples/analog/AI_singleChannel.py`.                                                                                                  
+
+<p align="right"><a href="#top">↥ back to top</a>
+
+# Examples Overview
+ ### [Analog](examples/analog)
+   - AI_configurationOptions
+   - AI_multipleChannels
+   - AI_singleChannel
+   - AO_multipleChannels
+   - AO_singleChannel
+ ### [Bus](examples/bus)
+   - Encoder
+   - I2C
+   - SPI
+   - UART
+ ### [Digital](examples/digital)
+   - Button
+   - DIO_multipleChannels
+   - DIO_singleChannel
+   - LED
+   - PWM
+ ### [Interrupt](examples/interrupt)
+   - AIIRQ (Analog Interrupt)
+   - ButtonIRQ (Button Interrupt)
+   - DIIRQ (Digital Interrupt)
+   - TimerIRQ (Timer Interrupt)
+
+<p align="right"><a href="#top">↥ back to top</a>
+
+# Open a Session
+
+A context manager ('with' statement) is a convenient way to open/close a NI ELVIS III FPGA session. 
+```python
+with academicIO.AnalogInput({'bank': ai_bank,
+                             'channel': ai_channel,
+                             'range': ai_range,
+                             'mode': ai_mode}) as AI_single_channel:
+```
+It is always recommended that you use a context manager ('with' statement) to open/close a NI ELVIS III FPGA session. The program will automatically initialize the environments of NI ELVIS III FPGA at the beginning; and it will automatically free its resources after the 'with' statement ends. Opening a session without a context manager could increase the risk to cause you to leak the session.
+
+See [compound statements](https://docs.python.org/2.7/reference/compound_stmts.html#the-with-statement) for more details about the context manager ('with' statement).
+
+You can also manually open/close a NI ELVIS III FPGA session by using the following commands:
+```python
+# open a session
+AI_single_channel = academicIO.AnalogInput()
+
+# close a session
+AI_single_channel.close()
+```
+Do not call the `close()` function if you want the FPGA keeps executing the behaviors after the Python program ends. You may leak the session and cause errors in the future if `close()` is not called.
+
+<p align="right"><a href="#top">↥ back to top</a>
 
 # Function Select Register
 
@@ -118,3 +190,13 @@ In this section we will install the software needed to communicate to the NI ELV
 | **DIO 17**     | DIO 17      | PWM 17      | ENC.B 8         |             |                          | UART.TX    | 
 | **DIO 18**     | DIO 18      | PWM 18      | ENC.A 9         |             |                          |            | 
 | **DIO 19**     | DIO 19      | PWM 19      | ENC.B 9         |             |                          |            |
+
+<p align="right"><a href="#top">↥ back to top</a>
+
+# NI ELVIS III Shipping Personality Reference 
+
+This document contains reference information about the NI ELVIS III shipping personality. The reference includes information about the registers used to control the peripherals of NI ELVIS III.
+
+You can find NI ELVIS III Shipping Personality Reference [here](docs/NI_ELVIS_III_Shipping_Personality_Reference.md).
+
+<p align="right"><a href="#top">↥ back to top</a>
