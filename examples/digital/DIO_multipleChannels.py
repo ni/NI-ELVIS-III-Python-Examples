@@ -7,7 +7,7 @@ channels. Each time the write is called a data is written to the channels;
 each time the read is called a data is returned for the channels.
 
 The DIO configuration consists of one parameter: bank. There are two identical
-banks of DIO channels (A and B). Each bank contains 19 digital input and
+banks of DIO channels (A and B). Each bank contains 20 digital input and
 output channels. Each DIO channel contains two directions: write and read. The
 NI ELVIS III helper library (academicIO.py) will change the direction based on
 the function is called.

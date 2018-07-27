@@ -7,7 +7,7 @@ seconds.
 
 The PWM configuration consists of two parameters: bank and channel. There are
 two identical banks of PWM channels (A and B). The PWM shared the same channels
-with DIO. Each bank contains 19 digital input and output channels.
+with DIO. Each bank contains 20 digital input and output channels.
 
 This example uses:
     Bank B, Channel DIO0.
@@ -30,7 +30,9 @@ channel = DIOChannel.DIO0
 
 # configure a PWM session
 with academicIO.PWM(bank, channel) as PWM:
-    # specify the frequency (integer value) settings for the PWM signal
+    # specify the frequency (floating-point number) settings for the PWM
+    # signal. The FPGA will automatically convert it to the nearly possible
+    # frequency.
     frequency = 1000
     # specify the percentage of time the PWM signal remains high over one PWM
     # cycle
@@ -40,4 +42,4 @@ with academicIO.PWM(bank, channel) as PWM:
     PWM.generate(frequency, duty_cycle)
     # begin to generate PWM signal for 20 seconds
     time.sleep(20)
-    # stop generating PWM signal
+# stop generating PWM signal when the 'with' statement ends

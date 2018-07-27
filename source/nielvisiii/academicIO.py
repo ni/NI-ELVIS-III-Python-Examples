@@ -494,7 +494,7 @@ class PWM(ELVISIII):
                 over one PWM cycle. Valid values must be within the range
                 [0:1].
         """
-        assert 40 <= frequency <= 400000 and type(frequency) == int
+        assert 40 <= frequency <= 400000
         assert 0 <= duty_cycle <= 1
         clock_divisors = [1, 2, 4, 8, 16, 32, 64]
         actual_frequency, top, clock_divisor = calculate_clock_settings(frequency, clock_divisors)
