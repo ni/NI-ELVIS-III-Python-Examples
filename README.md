@@ -1,20 +1,20 @@
 How to use NI ELVIS III with Python
 =======
 # Overview
-In this document we will walk you through the setup, transfer of files, and the use of a Python example on NI ELVIS III. The NI ELVIS III solution for project-based learning can be programmed with python to help students or educators who are familiar with Python syntax to rapidly acquire measurements using common SSH clients. Attached to this file are a total of 18 examples which illustrate the use of the NI ELVIS III helper library ([academicIO.py](source/nielvisiii/academicIO.py)).
+In this document we will walk you through the setup, transfer of files, and the use of a Python example on the NI ELVIS III. The NI ELVIS III solution for project-based learning can be programmed with python to help students or educators who are familiar with Python syntax to rapidly acquire measurements by using common SSH clients. Attached to this file are a total of 18 examples which illustrate the use of the NI ELVIS III helper library ([academicIO.py](source/nielvisiii/academicIO.py)).
 
 # Table of Contents
 - [Software Setup](#software-setup)
-  * [NI ELVIS III Software Setup](#ni-elvis-iii-software-setup)
-  * [Install Prerequisite Software for NI ELVIS III Python](#install-prerequisite-software-for-ni-elvis-iii-python)
-  * [Install NI ELVIS III Python](#install-ni-elvis-iii-python)
+  * [Configuring the NI ELVIS III Device](#configuring-the-ni-elvis-iii-device)
+  * [Installing Prerequisite Software for NI ELVIS III Python](#installing-prerequisite-software-for-ni-elvis-iii-python)
+  * [Installing NI ELVIS III Python Examples](#installing-ni-elvis-iii-python-examples)
 - [Running the Example](#running-the-example)
 - [Examples Overview](#examples-overview)
   * [Analog](#analog)
   * [Bus](#bus)
   * [Digital](#digital)
   * [Interrupt](#interrupt)
-- [Open a Session](#open-a-session)
+- [Opening a Session](#opening-a-session)
 - [Function Select Register](#function-select-register)
 - [NI ELVIS III Shipping Personality Reference](#ni-elvis-iii-shipping-personality-reference)
 
@@ -22,42 +22,42 @@ In this document we will walk you through the setup, transfer of files, and the 
 
 # Software Setup
 
-## NI ELVIS III Software Setup
-In this section we will install the NI Measurement Live Support Files and setup the software environment.
+## Configuring the NI ELVIS III Device
+In this section we will install the NI Measurement Live Support Files and set up the software environment for the NI ELVIS III.
 
 1. Install the [NI Measurement Live Support Files](http://www.ni.com/download/labview-elvis-iii-toolkit-2018/7639/en/).
-2. Connect the NI ELVIS III to the Internet using the Ethernet Port, Wifi, or USB connection so that the Python libraries can be installed from the Internet. We recommend to use either Ethernet Port or Wifi.
+2. Connect the NI ELVIS III to the Internet by using the Ethernet Port, Wifi, or USB connection so that the Python libraries can be installed from the Internet. We recommend that you use either Ethernet Port or Wifi.
 3. Enable the **Secure Shell Server**.
-   1. Open Internet Explorer and visit the NI ELVIS III Configuration website: \<IP Address of NI ELVIS III\>/WIF.html<br/>
+   1. Open Internet Explorer and visit the NI ELVIS III Configuration website: \<IP Address of the NI ELVIS III\>/WIF.html<br/>
       ![](docs/resource/url.png)<br/>
-      Note: IP Address can be found on the Display of the NI ELVIS III. Press BUTTON 0 until IP address appears. Enter IP address from the display.<br />
+      Note: The IP Address can be found on the display of the NI ELVIS III. Press BUTTON 0 until the IP address appears. Enter the IP address from the display.<br />
       ![](docs/resource/IPaddress.jpg)
    2. Navigate to the![](docs/resource/system_configuration.png)tab at the left of the page if not already there.
-   3. Enable **Secure Shell Server (sshd)** checkbox in the **Startup Settings** section.
+   3. Enable the **Secure Shell Server (sshd)** checkbox in the **Startup Settings** section.
        ![](docs/resource/sshd.png)
    4. Click **Save**.
-4. Setup **Time Configuration**.
+4. Set up **Time Configuration**.
    On the NI ELVIS III configuration website:
    1. Click on the ![](docs/resource/time_configuration.png) tab at the left of the page .
    2. Configure the **Date**, **Current time**, and **Time Zone** to your current local time.
       ![](docs/resource/data_and_time.png)
    3. Click **Save**.
 
-## Install Prerequisite Software for NI ELVIS III Python
+## Installing Prerequisite Software for NI ELVIS III Python
 In this section we will install the software needed to execute the NI ELVIS III Python examples and the required packages to use the Python FPGA API.
 
-1. Install and open your favorite SSH client. If you do not have one, we recommend [PuTTY](https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe): 
+1. Install and open your favorite SSH client. If you do not have one, we recommend that you use [PuTTY](https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe): 
    - Configure PuTTY or another client as follows:
     
      ![](docs/resource/putty.png)
         
-      - **Host Name**: \<IP Address of NI ELVIS III\>
+      - **Host Name**: \<IP Address of the NI ELVIS III\>
       - **Port**: 22
       - **Connection Type**: SSH
    - Click **Open**.
-   - Once the connection opens Log In as:
+   - Once the connection opens, log in as:
        - **login as**: admin
-       - **Password**: (Just press Enter. There is no password by default.)
+       - **Password**: (Just press **Enter**. There is no password by default.)
 2. Install prerequisite software by running the following commands:<br />
    Note: **Time configuration** must be set before running these commands
    
@@ -69,19 +69,19 @@ In this section we will install the software needed to execute the NI ELVIS III 
    pip install pyvisa
    ```
 
-## Install NI ELVIS III Python
+## Installing NI ELVIS III Python Examples
 In this section we will download the NI ELVIS III Python examples.
 
 1. Configure GitHub.
-   - Generate SSH keys and add to your GitHub account. If you are new to GitHub, you can type `ssh-keygen -t rsa -C "example@email.com"`  on Putty to generate a SSH key and add it to your GitHub account. See [Connecting to GitHub with SSH](https://help.github.com/articles/connecting-to-github-with-ssh/) for more helps.
+   - Generate SSH keys and add them to your GitHub account. If you are new to GitHub, you can type `ssh-keygen -t rsa -C "example@email.com"`  on Putty to generate an SSH key and add it to your GitHub account. See [Connecting to GitHub with SSH](https://help.github.com/articles/connecting-to-github-with-ssh/) for more help.
 2. Download the NI ELVIS III Python helper library and Python Example from GitHub.
    - Download NI ELVIS III Python.
    
      ```
      git clone --recursive git@github.com:ni/NI-ELVIS-III-Python.git
      ```
-   - Now, you can find **NI-ELVIS-III-Python** at your current directory, the default directory is `/home/admin/` if you did not change the directory.
-   - You will see things like this when the download finished successfully. 
+   - You can now find **NI-ELVIS-III-Python** in your current directory. The default directory is `/home/admin`.
+   - You will see information similar to the following one when the download finishes successfully. 
      > admin@NI-ELVIS-III-0000000: ~# git clone --recursive git@github.com:ni/NI-ELVIS-III-Python<br/>
      > Cloning into 'NI-ELVIS-III-Python'...<br/>
      > remote: Counting objects: 407, done.<br/>
@@ -94,7 +94,7 @@ In this section we will download the NI ELVIS III Python examples.
 
 # Running the Example
 
-1. At the same directory where you clone from GitHub in the earlier session, change the directory to `NI-ELVIS-III-Python/`:
+1. In the same directory where you clone from GitHub in the earlier session, change the directory to `NI-ELVIS-III-Python/`:
 
    ```
    cd NI-ELVIS-III-Python/
@@ -134,20 +134,20 @@ In this section we will download the NI ELVIS III Python examples.
 
 <p align="right"><a href="#top">↥ back to top</a>
 
-# Open a Session
+# Opening a Session
 
-A context manager ('with' statement) is a convenient way to open/close a NI ELVIS III FPGA session. 
+A context manager ('with' statement) is a convenient way to open/close an NI ELVIS III FPGA session. 
 ```python
 with academicIO.AnalogInput({'bank': ai_bank,
                              'channel': ai_channel,
                              'range': ai_range,
                              'mode': ai_mode}) as AI_single_channel:
 ```
-It is always recommended that you use a context manager ('with' statement) to open/close a NI ELVIS III FPGA session. The program will automatically initialize the environments of NI ELVIS III FPGA at the beginning; and it will automatically free its resources after the 'with' statement ends. Opening a session without a context manager could increase the risk to cause you to leak the session.
+It is always recommended that you use a context manager to open/close an NI ELVIS III FPGA session. The program will automatically initialize the environment of NI ELVIS III FPGA at the beginning and will automatically free its resources after the 'with' statement ends. Opening a session without a context manager could increase the risk of leaking the session.
 
-See [compound statements](https://docs.python.org/2.7/reference/compound_stmts.html#the-with-statement) for more details about the context manager ('with' statement).
+See [compound statements](https://docs.python.org/2.7/reference/compound_stmts.html#the-with-statement) for more details about the context manager.
 
-You can also manually open/close a NI ELVIS III FPGA session by using the following commands:
+You can also manually open/close an NI ELVIS III FPGA session by using the following commands:
 ```python
 # open a session
 AI_single_channel = academicIO.AnalogInput()
@@ -155,7 +155,7 @@ AI_single_channel = academicIO.AnalogInput()
 # close a session
 AI_single_channel.close()
 ```
-Do not call the `close()` function if you want the FPGA keeps executing the behaviors after the Python program ends. You may leak the session and cause errors in the future if `close()` is not called.
+You may leak the session and cause errors if you don’t call the `close()` function after the Python program closes, and trying to use it again. If you want the FPGA to keep executing the code after the Python program ends, do not call the `close()` function within your code.
 
 <p align="right"><a href="#top">↥ back to top</a>
 
