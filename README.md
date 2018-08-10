@@ -42,6 +42,7 @@ In this section we will install the NI Measurement Live Support Files and set up
    2. Configure the **Date**, **Current time**, and **Time Zone** to your current local time.
       ![](docs/resource/data_and_time.png)
    3. Click **Save**.
+5. Restart the device.
 
 ## Installing Prerequisite Software for NI ELVIS III Python
 In this section we will install the software needed to execute the NI ELVIS III Python examples and the required packages to use the Python FPGA API.
@@ -155,7 +156,7 @@ AI_single_channel = academicIO.AnalogInput()
 # close a session
 AI_single_channel.close()
 ```
-You may leak the session and cause errors if you don’t call the `close()` function after the Python program closes, and trying to use it again. If you want the FPGA to keep executing the code after the Python program ends, do not call the `close()` function within your code.
+If you don’t call the `close()` function after the Python program closes, you may leak the session and cause errors when you run the program again. If you want the FPGA to keep executing the code after the Python program ends, do not call the `close()` function in the Python program.
 
 <p align="right"><a href="#top">↥ back to top</a>
 
