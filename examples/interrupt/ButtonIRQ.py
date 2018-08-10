@@ -2,12 +2,12 @@
 NI ELVIS III Button Interrupt Example
 This example illustrates how to register a button interrupt (Button IRQ) on the
 NI ELVIS III. The program first defines the configuration for the Button IRQ,
-then creates a thread to wait for an interrupt. The irq_handler function
-executes when the button BUTTON 0 is pressed.
+and then creates a thread to wait for an interrupt. The irq_handler function
+executes when BUTTON 0 is pressed.
 
 The Button IRQ configuration consists of six parameters: irq_handler, irq_number,
 timeout, interrupt_type_rising, interrupt_type_falling, and edge_count. Each
-configuration contains two parmeters to define whether to register the
+configuration contains two parameters to define whether to register the
 interrupt at the rising edge or falling edge as indicated in this table:
     interrupt_type_rising    True    False   True
     interrupt_type_falling   False   True    True
@@ -22,16 +22,18 @@ the callback function as needed. For example, you can write code to make an
 LED flash as shown in this example, or to read from an AI channel.
 
 This example uses:
-    User programmable button BUTTON 0.
+    User programmable button (BUTTON 0).
 
 Hardware setup:
-    Press the button BUTTON 0 on NI ELVIS III before the program ends.
+    Press BUTTON 0 on the NI ELVIS III before the program ends.
 
 Result:
-    The LED0 flashes for 25 seconds. An interrupt occurs when the button
-    BUTTON 0 is pressed. Press the button BUTTON 0 to trigger the interrupt
-    before the timeout expires. The program then calls the irq_handler
-    function, which makes the LED1 flashes for 3 seconds.
+    A thread is created to wait for an interrupt. LED0 flashes for 25 seconds
+    while waiting for an interrupt. An interrupt occurs when BUTTON 0 is
+    pressed. To trigger the interrupt, press BUTTON 0 before the timeout
+    expires. The program then calls the irq_handler function, which makes LED1
+    flash for 3 seconds. While LED1 is flashing, LED0 will also keep flashing
+    until the program ends.
 """
 import time
 import thread
@@ -44,7 +46,7 @@ def irq_handler():
     """
     irq_handler contains the code you want to execute when the interrupt
     occurs. Define your own callback function here by rewriting the code. We
-    make an LED flash in thie example.
+    make an LED flash in this example.
     """
     # open an LED session
     with academicIO.LEDs() as LED:
@@ -52,19 +54,19 @@ def irq_handler():
         led = Led.LED1
         # specify the LED status
         led_on_off = True
-        # writes values 10 times which turns LED1 on/off 5 times
+        # writes values 10 times which makes LED1 flash for 3 seconds
         for x in range(0, 10):
-            # turn LED0 on/off
+            # turn LED1 on or off
             LED.write(led, led_on_off)
             # add a short delay
             time.sleep(0.3)
-            # if the led is on, set the paramter to off
-            # if the led is off, set the paramter to on
+            # if the LED is on, set the parameter to off
+            # if the LED is off, set the parameter to on
             led_on_off = not led_on_off
 
 # specify the identifier of the interrupt to register
 irq_number = IRQNumber.IRQ1
-# specify the amount of time, in milliseconds , to wait for an interrupt
+# specify the amount of time, in milliseconds, to wait for an interrupt
 # to occur before timing out
 timeout = 6000
 # specify whether to register an interrupt when you press or release the
@@ -94,14 +96,14 @@ with academicIO.ButtonIRQ(irq_handler,
     # create a thread to wait for the interrupt
     thread.start_new_thread(Button_IRQ.wait, ())
 
-    # writes values 50 times which turns LED0 on/off 25 times
+    # writes values 50 times, which makes LED0 flash for 25 seconds
     for x in range(0, 50):
-        # turn LED0 on/off
+        # turn LED0 on or off
         LED.write(led, led_on_off)
         # add a short delay
         time.sleep(0.5)
-        # if the led is on, set the paramter to off
-        # if the led is off, set the paramter to on
+        # if the LED is on, set the parameter to off
+        # if the LED is off, set the parameter to on
         led_on_off = not led_on_off
     
     # close the LED session

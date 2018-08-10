@@ -2,14 +2,14 @@
 NI ELVIS III Digital Input Interrupt Example
 This example illustrates how to register a digital input interrupt (DI IRQ) on
 the NI ELVIS III. The program first defines the configuration for the DI IRQ,
-then creates a thread to wait for an interrupt. The irq_handler function
+and then creates a thread to wait for an interrupt. The irq_handler function
 executes when the DI channel receives an appropriate digital signal to trigger
 the interrupt conditions.
 
 The DI IRQ configuration consists of seven parameters: irq_channel, irq_handler,
 irq_number, timeout, interrupt_type_rising, interrupt_type_falling, and
-edge_count. There are four DI channels support DI IRQ configuration, which are
-DIO0 to DIO3 on bank A. Each configuration contains two parmeters to define
+edge_count. There are four DI channels that support DI IRQ configuration, which are
+DIO0 to DIO3 on bank A. Each configuration contains two parameters to define
 whether to register the interrupt at the rising edge or falling edge as
 indicated in this table:
     interrupt_type_rising    True    False   True
@@ -28,23 +28,25 @@ This example uses:
     Bank A, Channel DIO0.
 
 Hardware setup:
-    Connect a digital signal source to DIO0 on bank A. Gives a digital signal
-    to match the interrupt conditions we set in the configuration before the
-    timeout expires. You can connect BTN0 to DIO0 on bank A to trigger the
-    interrupt as indicated in this table:
-        1. Connect BTN0 A to DIO0 on bank A, then connect to a 10k Ohm
+    Connect a digital signal source to DIO0 on bank A. Send a digital signal
+    that meets the interrupt conditions we configure before the timeout
+    expires. You can connect BTN0 to DIO0 on bank A to trigger the interrupt as
+    indicated in this table:
+        1. Connect a pin of a 10k Ohm resistance to both BTN0 A and DIO0 on
+           bank A.
+        2. Connect a +3.3 V voltage source to another pin of the 10k Ohm
            resistance.
-        2. Connect a +3.3 V voltage source to the 10k Ohm resistance.
         3. Connect BTN0 B to DGND.
-    Then, press the button BTN0. The interrupt is triggered when you press the
-    button.
+    Press BTN0. The interrupt is triggered.
 
 Result:
-    The LED0 flashes for 25 seconds. An interrupt occurs when DIO0 receives an
-    appropriate digital signal and the signal triggers the interrupt conditions.
-    Press the button BTN0 to trigger the interrupt before the timeout expires.
-    The program then calls the irq_handler function, which makes the LED1
-    flashes for 3 seconds.
+    A thread is created to wait for an interrupt. LED0 flashes for 25 seconds
+    while waiting for an interrupt. An interrupt occurs when DIO0 receives an
+    appropriate digital signal that meets the interrupt conditions. To trigger
+    the interrupt, press BTN0 before the timeout expires. The program then
+    calls the irq_handler function, which makes LED1 flash for 3 seconds.
+    While LED1 is flashing, LED0 will also keep flashing until the program
+    ends.
 """
 import time
 import thread
@@ -57,7 +59,7 @@ def irq_handler():
     """
     irq_handler contains the code you want to execute when the interrupt
     occurs. Define your own callback function here by rewriting the code. We
-    make an LED flash in thie example.
+    make an LED flash in this example.
     """
     # open an LED session
     with academicIO.LEDs() as LED:
@@ -65,14 +67,14 @@ def irq_handler():
         led = Led.LED1
         # specify the LED status
         led_on_off = True
-        # writes values 10 times which turns LED1 on/off 5 times
+        # writes values 10 times, which makes LED1 flash for 3 seconds
         for x in range(0, 10):
-            # turn LED0 on/off
+            # turn LED0 on or off
             LED.write(led, led_on_off)
             # add a short delay
             time.sleep(0.3)
-            # if the led is on, set the paramter to off
-            # if the led is off, set the paramter to on
+            # if the LED is on, set the parameter to off
+            # if the LED is off, set the parameter to on
             led_on_off = not led_on_off
 
 # specify the DIO channel that serves as the interrupt channel
@@ -91,7 +93,7 @@ interrupt_type_falling = False
 # specify the number of edges of the signal that must occur for this
 # program to register an interrupt. For example, when
 # interrupt_type_rising is True and edge_count is 1, an interrupt occurs
-# when the DIO channel receives one appropriate rising edge
+# when the DIO channel receives one rising edge
 edge_count = 1
 # configure a digital input interrupt session
 with academicIO.DIIRQ(irq_channel,
@@ -111,14 +113,14 @@ with academicIO.DIIRQ(irq_channel,
     # create a thread to wait for the interrupt
     thread.start_new_thread(DI_IRQ.wait, ())
 
-    # writes values 50 times which turns LED0 on/off 25 times
+    # writes values 50 times, which makes LED0 flash for 25 seconds
     for x in range(0, 50):
-        # turn LED0 on/off
+        # turn LED0 on or off
         LED.write(led, led_on_off)
         # add a short delay
         time.sleep(0.5)
-        # if the led is on, set the paramter to off
-        # if the led is off, set the paramter to on
+        # if the LED is on, set the parameter to off
+        # if the LED is off, set the parameter to on
         led_on_off = not led_on_off
     
     # close the LED session

@@ -1,30 +1,31 @@
 """
-NI ELVIS III Configuration Options for Analog Input Example
-This example illustrates the effect of the analog input (AI) configuration
-options on the NI ELVIS III. The program defines the five different
-configurations for the AI channels, then reads the AI channels. Each time the
-read is called a single point of data is returned from the channel. 
+NI ELVIS III Analog Input Example – Configuration Options
+This example illustrates how to configure and read from the AI channels by
+setting different configurations on the NI ELVIS III. The program includes
+five different configurations examples. Each time the read function is called,
+a single point of data is returned from the channel.
 
 The AI configuration consists of four parameters: bank, channel, range, and
 mode. There are two identical banks of AI channels (A and B). Each bank
-contains 8 analog input channels. Each channel supports four input ranges
+contains eight analog input channels. Each channel supports four input ranges
 (+/-10 V, +/-5 V, +/-2 V, and +/-1 V). Every channel can be configured for
-single ended mode, which references the input to ground. Channels AI0 to AI3
+single-ended mode, which references the input to ground. Channels AI0 to AI3
 in each bank can be individually configured for differential mode, which
-references the selected channel to another channel as indicated in this table:
+references the selected channel to another channel as indicated in the
+following table:
     AI0: AI0 to AI4
     AI1: AI1 to AI5
     AI2: AI2 to AI6
     AI3: AI3 to AI7
 
-The program performs several different acquisitions each with a different
+The program performs several different acquisitions, each with a different
 combination of range and mode.
-The first portion demonstrates the effect of range on the acquisition.
-    1. Bank A, Channel AI0, +/-1 V, Mode Single Ended.
-    2. Bank A, Channel AI0, +/-5 V, Mode Single Ended.
-    3. Bank A, Channel AI0, +/-10 V, Mode Single Ended.
-The second portion demonstrates the effect of mode on the acquisition.
-    1. Bank A, Channel AI0, Range +/-10V, Mode Single Ended.
+Section 1 demonstrates the effect of range on the acquisition.
+    1. Bank A, Channel AI0, +/-1 V, Single-Ended Mode.
+    2. Bank A, Channel AI0, +/-5 V, Single-Ended Mode.
+    3. Bank A, Channel AI0, +/-10 V, Single-Ended Mode.
+Section 2 demonstrates the effect of mode on the acquisition.
+    1. Bank A, Channel AI0, Range +/-10V, Single-Ended Mode.
     2. Bank A, Channel AI1, Range +/-10V, Differential Mode.
 
 Hardware setup:
@@ -33,14 +34,14 @@ Hardware setup:
     3. Connect a +5 V voltage source to AI5 on bank A.
 
 Result:
-    Range portion:
+    Section 1:
         1. Values acquired from AI0 should be around 1 V.
         2. Values acquired from AI0 should be around 5 V.
         3. Values acquired from AI0 should be around 5 V.
-    Mode portion:
-        1. Values acquired from AI0 should be around 5 V in.
+    Section 2:
+        1. Values acquired from AI0 should be around 5 V.
         2. Values acquired from AI1 and AI5 should be around -1.7 V.
-    Expect some small variation on each due to signal noise.
+    Expect some small variation due to signal noise.
 """
 import time
 import sys
@@ -54,8 +55,8 @@ ai_channel0 = AIChannel.AI0
 ai_channel1 = AIChannel.AI1
 
 ##############################################################################
-# The first portion:
-# 1. Selecting a smaller range than necessary will clip the.
+# Section 1:
+# 1. Selecting a smaller range than necessary will clip the signal.
 ##############################################################################
 
 # specify the range
@@ -70,7 +71,7 @@ with academicIO.AnalogInput({'bank': ai_bank,
     print "Range ", ai_range.value, ": ", value_array[0]
 
 ##############################################################################
-# The first portion:
+# Section 1:
 # 2. Selecting the smallest range that includes your signal for highest
 #    measurement resolution.
 ##############################################################################
@@ -87,7 +88,7 @@ with academicIO.AnalogInput({'bank': ai_bank,
     print "Range ", ai_range.value, ": ", value_array[0]
 
 ##############################################################################
-# The first portion:
+# Section 1:
 # 3. Selecting a larger range than necessary still returns valid data.
 ##############################################################################
 
@@ -103,8 +104,8 @@ with academicIO.AnalogInput({'bank': ai_bank,
     print "Range ", ai_range.value, ": ", value_array[0]
 
 ##############################################################################
-# The second portion: 
-# 1. Selecting single ended mode.
+# Section 2: 
+# 1. Selecting single-ended mode.
 ##############################################################################
 
 # specify the mode
@@ -116,10 +117,10 @@ with academicIO.AnalogInput({'bank': ai_bank,
     # read the value
     value_array = AI_single_channel.read()
     # print the value
-    print "Single Ended: ", value_array[0]
+    print "Single-Ended: ", value_array[0]
 
 ##############################################################################
-# The second portion: 
+# Section 2: 
 # 2. Selecting differential mode.
 ##############################################################################
 

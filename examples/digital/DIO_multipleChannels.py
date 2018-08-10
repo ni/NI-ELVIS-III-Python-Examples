@@ -1,22 +1,24 @@
 """
-NI ELVIS III Single Point, Multiple Channels, Digital Input and Output Example
+NI ELVIS III Digital Input and Output Example - Single Point, Multiple Channels
 This example illustrates how to write values to and read values from multiple
 digital input and output (DIO) channels. The program first defines the
-configuration for the DIO channels, then writes to and reads from the DIO
-channels. Each time the write is called a data is written to the channels;
-each time the read is called a data is returned for the channels.
+configuration for the DIO channels, and then writes to and reads from the DIO
+channels. Each time the write function is called, a data point is written to
+the channels; each time the read function is called, a data point is returned
+from the channels.
 
 The DIO configuration consists of one parameter: bank. There are two identical
-banks of DIO channels (A and B). Each bank contains 20 digital input and
+banks of DIO channels (A and B). Each bank contains twenty digital input and
 output channels. Each DIO channel contains two directions: write and read. The
-NI ELVIS III helper library (academicIO.py) will change the direction based on
-the function is called.
+NI ELVIS III helper library (academicIO.py) decides the direction based on the
+function called.
 
-Both write and read functions suppport reading/writing multiple channels. To
-write to multiple channels, list all the channels after the value_to_write as
-indicated in the following line:
+Both the write and the read functions support reading/writing multiple
+channels. To write to multiple channels, list all the channels after the value
+to write, as indicated in the following line of code:
     write(value_to_write, channel_to_write_1, channel_to_write_2, ...)
-To read from multiple channels as indicated in the following line:
+To read from multiple channels, list all the channels to read from, as
+indicated in the following line of code:
     read(channel_to_read_1, channel_to_read_2, ...)
 
 This example uses:
@@ -48,13 +50,13 @@ with academicIO.DigitalInputOutput(bank) as DIO:
     channel3 = DIOChannel.DIO3
     channel4 = DIOChannel.DIO4
     channel8 = DIOChannel.DIO8
-    # define the value as a boolean
+    # define the value as a Boolean
     value = False
 
     # write the value False to both DIO2 and DIO3 on bank A
-    # the written value must be a boolean variable
+    # the written value must be a Boolean variable
     DIO.write(value, channel2, channel3)
     # read values from DIO4 and DIO8 on bank A
     data = DIO.read(channel4, channel8)
-    # the values read are [0, 0]
+    # print the values read. The values read are [0,0]
     print data

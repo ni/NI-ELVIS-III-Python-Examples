@@ -1,18 +1,21 @@
 """
-NI ELVIS III Universal Asynchronous Receiver/Transmitter (UART) Example
-This example illustrates how to write data to or read data from an Universal
+NI ELVIS III Universal Asynchronous Receiver/Transmitter Example
+This example illustrates how to write data to or read data from a Universal
 Asynchronous Receiver/Transmitter (UART) device through the UART channels on
-the NI ELVIS III. The program first defined the configuration for the UART
-channels, then writes to and reads from the UART device. Each time the
-write is called a string is written to the UART device; each time the read
-is called a string is returned from the UART device.
+the NI ELVIS III. The program first defines the configuration for the UART
+channels, and then writes to and reads from the UART device. Each time the
+write function is called, a string is written to the UART device; each time
+the read function is called, a string is returned from the UART device.
 
 The UART configuration consists of six parameters: bank, baud_rate, data_bits,
 stop_bits, parity, and flow_control. There are two identical banks of UART
-port (A and B) with baud rate (110, 300, 600, 1200, 2400, 4800, 9600, 19200,
-38400, 57600, 115200, and 230400), data bits (7 and 8), stop bits (one and two
-), parity (none, odd, and even), and four flow controls (None, XON/XOFF,
-RTS/CTS, and DTR/DSR).
+port, A and B. You can configure the port as follows:
+    Baud rates: 110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600,
+                115200, and 230400
+    Data bits: 7 and 8
+    Stop bits: one and two
+    Parity: none, odd, and even
+    Flow Controls: None, XON/XOFF, RTS/CTS, and DTR/DSR
 
 This example illustrates how to write to and read from a UART device, FTDI232.
 See http://www.ftdichip.com/Documents/DataSheets/ICs/DS_FT232R.pdf for more
@@ -27,7 +30,7 @@ Hardware setup:
     2. Connect UART.TX (DIO17) on bank A to UART.RX of a UART device.
 
 Result:
-    The program writes a string 'Hello World' to the UART device, and
+    The program writes the string 'Hello World' to the UART device, and
     reads back five bytes of data from the device.
 """
 import time
@@ -38,13 +41,14 @@ from enums import Bank, UARTBaudRate, UARTDataBits, UARTParity, UARTStopBits, UA
 
 # specify the bank
 bank = Bank.A
-# specify the baud rate of transmission
+# specify the baud rate of the transmission
 baud_rate = UARTBaudRate.RATE9600
 # specify the number of bits in the incoming data
 data_bits = UARTDataBits.BITS8
-# specify the number of stop bits this program uses to indicate the end of a data
+# specify the number of stop bits this program uses to indicate the end of a
+# data point
 stop_bits = UARTStopBits.ONE
-# specify the parity bits to write or read characters
+# specify the parity bits of the written or read characters
 parity = UARTParity.NO
 # set the type of control used by the transfer mechanism
 flow_control = UARTFlowControl.NONE

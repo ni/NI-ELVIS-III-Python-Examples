@@ -2,11 +2,11 @@
 NI ELVIS III Pulse Width Modulation Example 
 This example illustrates how to generate a Pulse Width Modulation (PWM) signal
 to an external peripheral through the PWM channels. The program first defines
-the configuration for the PWM channels, then generates the signal for 20
+the configuration for the PWM channels, and then generates the signal for 20
 seconds.
 
 The PWM configuration consists of two parameters: bank and channel. There are
-two identical banks of PWM channels (A and B). The PWM shared the same channels
+two identical banks of PWM channels (A and B). The PWM shares the same channels
 with DIO. Each bank contains 20 digital input and output channels.
 
 This example uses:
@@ -30,9 +30,8 @@ channel = DIOChannel.DIO0
 
 # configure a PWM session
 with academicIO.PWM(bank, channel) as PWM:
-    # specify the frequency (floating-point number) settings for the PWM
-    # signal. The FPGA will automatically convert it to the nearly possible
-    # frequency.
+    # specify the frequency (floating-point number) for the PWM signal. The
+    # FPGA automatically coerces it to the nearest possible frequency.
     frequency = 1000
     # specify the percentage of time the PWM signal remains high over one PWM
     # cycle
@@ -40,6 +39,6 @@ with academicIO.PWM(bank, channel) as PWM:
 
     # generate the PWM signal
     PWM.generate(frequency, duty_cycle)
-    # begin to generate PWM signal for 20 seconds
+    # begin to generate the PWM signal for 20 seconds
     time.sleep(20)
-# stop generating PWM signal when the 'with' statement ends
+# stop generating the PWM signal when the 'with' statement ends

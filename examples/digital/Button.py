@@ -1,22 +1,22 @@
 """
 NI ELVIS III Button Example
-This example illustrates how to read the value back from the user programmable
-button BUTTON 0 on the NI ELVIS III. The program first defines the
-configuration for the LED, then reads from the LED registers in a loop. Each
-time the read is called a Boolean data is returned. The BUTTON 0 is a
-non-latching push switch. The read function returns True when pressed and
-False otherwise. The time between reads is not precisely timed, and is
-controlled by a software delay.
+This example illustrates how to read back the value from the user programmable
+button (BUTTON 0) on the NI ELVIS III. The program first defines the
+configuration for the button, and then reads from the button registers in a
+loop. Each time the read function is called, a Boolean data is returned.
+BUTTON 0 is a non-latching push switch. The read function returns True when
+the button is pressed and False otherwise. The interval between reads is not
+precisely timed, and is controlled by a software delay.
 
 This example uses:
-    User programmable button BUTTON 0.
+    User programmable button (BUTTON 0).
 
 Hardware setup:
-    Press the button BUTTON 0 on NI ELVIS III before the program ends.
+    Press BUTTON 0 on the NI ELVIS III before the program ends.
 
 Result: 
     The program reads back a Boolean value. The value is True when you press
-    the button BUTTON 0, and the program prints a string. Otherwise, do
+    BUTTON 0, and the program prints a string. Otherwise, the program does
     nothing.
 """
 import time
@@ -32,5 +32,5 @@ with academicIO.Button() as button:
         if button.read():
             # print a notice
             print "The Button is pressed."
-        # add a short delay before acquiring next data point
+        # add a short delay before acquiring the next data point
         time.sleep(1)

@@ -1,14 +1,15 @@
 """
-NI ELVIS III Single Point, Single Channel, Analog Output Example
+NI ELVIS III Analog Output Example – Single Point, Single Channel
 This example illustrates how to write values to an analog output (AO)
 channel on the NI ELVIS III. The program first defines the configuration for
-the AO channel, then writes to the AO channel in a loop. Each time the write
-is called a single point of data is written to the channel. The time between
-writes is not precisely timed, and is controlled by a software delay.
+the AO channel, and then writes to the AO channel in a loop. Each time the
+write function is called, a single point of data is written to the channel.
+The interval between writes is not precisely timed, and is controlled by a
+software delay.
 
 The AO configuration consists of two parameters: bank and channel. There are
-two identical banks of AO channels (A and B). Each bank contains 2 analog
-output channels. Every channel can be configured for single ended mode.
+two identical banks of AO channels (A and B). Each bank contains two analog
+output channels (0 and 1).
 
 This example uses:
     Bank A, Channel AI0.
@@ -25,7 +26,7 @@ sys.path.append('source/nielvisiii')
 import academicIO
 from enums import Bank, AOChannel
 
-# specify the bank, channel for the AO session
+# specify the bank and channel for the AO session
 bank = Bank.A
 channel = AOChannel.AO0
 
@@ -40,5 +41,5 @@ with academicIO.AnalogOutput({'bank': bank,
         # write 2.0 to AO0 on bank A
         AO_single_channel.write(input_value)
 
-        # add a short delay before writing next data point
+        # add a short delay before writing the next data point
         time.sleep(0.001)

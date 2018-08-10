@@ -1,16 +1,17 @@
 """
-NI ELVIS III Single Point, Multiple Channels, Analog Input Example
+NI ELVIS III Analog Input Example – Single Point, Multiple Channels
 This example illustrates how to read values from multiple analog input (AI)
 channels on the NI ELVIS III. The program first defines the configuration for
-the AI channels, then reads the AI channels in a loop. Each time the read is
-called a list of single point data is returned for the channels. The time
-between reads is not precisely timed, and is controlled by a software delay.
+the AI channels, and then reads the AI channels in a loop. Each time the read
+function is called, a list of single point data is returned for the channels.
+The interval between reads is not precisely timed, and is controlled by a software
+delay.
 
 The AI configuration consists of four parameters: bank, channel, range, and
 mode. There are two identical banks of AI channels (A and B). Each bank
-contains 8 analog input channels. Each channel supports four input ranges
+contains eight analog input channels. Each channel supports four input ranges
 (+/-10 V, +/-5 V, +/-2 V, and +/-1 V). Every channel can be configured for
-single ended mode, which references the input to ground. Channels AI0 to AI3
+single-ended mode, which references the input to ground. Channels AI0 to AI3
 in each bank can be individually configured for differential mode, which
 references the selected channel to another channel as indicated in this table:
    AI0: AI0 to AI4
@@ -19,17 +20,17 @@ references the selected channel to another channel as indicated in this table:
    AI3: AI3 to AI7
 
 This example uses:
-    1. Bank A, Channel AI0, Range +/-10 V, Mode Single Ended.
-    2. Bank B, Channel AI1, Range +/-5 V, Mode Single Ended.
+    1. Bank A, Channel AI0, Range +/-10 V, Single-Ended Mode.
+    2. Bank B, Channel AI1, Range +/-5 V, Single-Ended Mode.
 
 Hardware setup:
     1. Connect a +5 V voltage source to AI0 on bank A.
     2. Connect a +3.3 V voltage source to AI1 on bank B.
 
 Result:
-    Twenty values acquired from each of A/AI0 and B/AI1. All values from A/AI0
-    should be around 5 V and from B/AI1 around 3.3 V, expect some small
-    variation on each due to signal noise.
+    Twenty values are acquired from both A/AI0 and B/AI1. All values from
+    A/AI0 should be around 5 V, and all values from B/AI1 should be around
+    3.3 V. Expect some small variation due to signal noise.
 """
 import time
 import sys
@@ -55,7 +56,7 @@ with academicIO.AnalogInput({'bank': ai_bankA,           # define first channel:
                              'channel': ai_channel1,
                              'range': ai_range1,
                              'mode': ai_mode}) as AI_multiple_channels:
-    # read and display the AI channel 20 times
+    # read from the AI channels and display the values 20 times
     for i in range(0, 20):
         # read the values
         value_array = AI_multiple_channels.read()
@@ -64,5 +65,5 @@ with academicIO.AnalogInput({'bank': ai_bankA,           # define first channel:
             # print the values
             print value
 
-        # add a short delay before acquiring next data point
+        # add a short delay before acquiring the next data point
         time.sleep(0.001)

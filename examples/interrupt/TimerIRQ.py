@@ -2,8 +2,8 @@
 NI ELVIS III Timer Interrupt Example
 This example illustrates how to register a timer interrupt (Timer IRQ) on the
 NI ELVIS III. The program first defines the configuration for the Timer IRQ,
-then creates a thread to wait for an interrupt. The irq_handler function
-executes when the time interval is reached.
+and then creates a thread to wait for an interrupt. The irq_handler function
+executes when the interval is reached.
 
 The Timer IRQ configuration consists of two parameters: irq_handler and
 irq_interval. irq_handler defines the callback function which you use to
@@ -19,9 +19,11 @@ Hardware setup:
     No hardware is needed.
 
 Result:
-    The LED0 flashes for 25 seconds. An interrupt occurs when the time
-    interval is reached. The program then calls the irq_handler function,
-    which makes the LED1 flashes for 3 seconds.
+    A thread is created to wait for an interrupt. LED0 flashes for 25 seconds
+    while waiting for an interrupt. An interrupt occurs when the interval is
+    reached. The program then calls the irq_handler function, which makes LED1
+    flash for 3 seconds. While LED1 is flashing, LED0 will also keep flashing
+    until the program ends.
 """
 import time
 import thread
@@ -34,7 +36,7 @@ def irq_handler():
     """
     irq_handler contains the code you want to execute when the interrupt
     occurs. Define your own callback function here by rewriting the code. We
-    make an LED flash in thie example.
+    make an LED flash in this example.
     """
     # open an LED session
     with academicIO.LEDs() as LED:
@@ -42,14 +44,14 @@ def irq_handler():
         led = Led.LED1
         # specify the LED status
         led_on_off = True
-        # writes values 10 times which turns LED1 on/off 5 times
+        # writes values 10 times, which makes LED1 flash for 3 seconds
         for x in range(0, 10):
-            # turn LED0 on/off
+            # turn LED0 on or off
             LED.write(led, led_on_off)
             # add a short delay
             time.sleep(0.3)
-            # if the led is on, set the paramter to off
-            # if the led is off, set the paramter to on
+            # if the LED is on, set the parameter to off
+            # if the LED is off, set the parameter to on
             led_on_off = not led_on_off
 
 # specify the span of time, in milliseconds, between when the program
@@ -67,14 +69,14 @@ with academicIO.TimerIRQ(irq_handler, irq_interval) as Timer_IRQ:
     # create a thread to wait for the interrupt
     thread.start_new_thread(Timer_IRQ.wait, ())
 
-    # writes values 50 times which turns LED0 on/off 25 times
+    # writes values 50 times, which makes LED0 flash for 25 seconds
     for x in range(0, 50):
-        # turn LED0 on/off
+        # turn LED0 on or off
         LED.write(led, led_on_off)
         # add a short delay
         time.sleep(0.5)
-        # if the led is on, set the paramter to off
-        # if the led is off, set the paramter to on
+        # if the LED is on, set the parameter to off
+        # if the LED is off, set the parameter to on
         led_on_off = not led_on_off
     
     # close the LED session

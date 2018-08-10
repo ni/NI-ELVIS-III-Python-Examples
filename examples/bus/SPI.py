@@ -1,32 +1,34 @@
 """
 NI ELVIS III Serial Peripheral Interface Example
-This example illustrates how to write data to or read data from an Serial
+This example illustrates how to write data to or read data from a Serial
 Peripheral Interface (SPI) slave device through the SPI channels on the NI
 ELVIS III. The program first defines the configuration for the SPI
-channels, then writes to and reads from the device. Each time the write
-is called a list of data is written to the SPI device; each time the read is
-called a list of data is returned from the SPI device.
+channels, and then writes to and reads from the device. Each time the write
+function is called, a list of data is written to the SPI device; each time the
+read function is called, a list of data is returned from the SPI device.
 
 The SPI configuration consists of six parameters: frequency, bank, clock_phase,
 clock_polarity data_direction, and frame_length. There are two identical banks
-of SPI port (A and B) which contains frequency (40Hz to 4000000Hz), clock
-phase (leading and trailing), clock polaritie (low and high), direction (LSB
-and MSB), and frame length (4 to 16). 
+of SPI port (A and B). You can configure the port as follows:
+    Frequency: 40Hz to 4000000Hz
+    Clock phase: leading and trailing
+    Clock polaritie: low and high
+    Direction: LSB and MSB
+    Frame length: 4 to 16
 
-This example uses ADXL345 as the slave device. The 0x00 hexadecimal data send
-from the master device requests the slave device send back a default device 
-code which equals to 'E5' in hexadecimal or '229' in decimal. This returned
+This example uses ADXL345 as the slave device. The 0x00 hexadecimal data sent
+from the master device requests the slave device to send back a default device 
+code which is equal to 'E5' in hexadecimal or '229' in decimal. This returned
 value is used for validation. All the SPI configuration is set correctly and
-the connection is functional correctly if the device ID E5 is returned.
+the connection is functioning correctly if the device ID 'E5' is returned.
 
 See http://www.analog.com/media/en/technical-documentation/data-sheets/ADXL345.pdf
 for more details about ADXL345.
 
-The program performs two different acquisitions of the write/read functions.
-The first portion demonstrates how to use the write function and read function
-separately.
-The second portion demonstrates how to use the writeread function to write to
-and read from the SPI channel by using a function.
+The program performs two different acquisitions by using the write/read
+functions. Section 1 demonstrates how to use the write function and the read
+function separately. Section 2 demonstrates how to use the writeread function
+to write to and read from the SPI channel.
 
 This example uses:
     1. Bank A, SPI.CS.
@@ -41,8 +43,8 @@ Hardware setup:
     4. Connect SPI.MOSI (DIO7) on bank A to SPI.MISO of a slave device.
 
 Result:
-    The program writes 0x00 to the SPI device which specifies the address to
-    read from. Then the program reads back a value from the 0x00 register of
+    The program writes 0x00, which specifies the address to read from, to the
+    SPI device. Then the program reads back a value from the 0x00 register of
     the SPI device. The returned value is E5 in hexadecimal.
 """
 import time
@@ -67,9 +69,9 @@ data_direction = SPIDataDirection.MSB
 frame_length = 8
 
 ##############################################################################
-# The first portion
-# You can use the write function and read funciton to write/read from the SPI
-# channel.
+# Section 1:
+# You use the write function and the read function to write to and read from
+# the SPI channel.
 ##############################################################################
 
 # configure an SPI session
@@ -81,19 +83,19 @@ with academicIO.SPI(frequency,
                     frame_length) as SPI:
     # specify the bytes to write to the SPI channel
     data_to_write = [0x00]
-    # write data to the SPI SPI
+    # write data to the SPI channel
     SPI.write(data_to_write)
     # specify the number of frame (int) to read from the SPI channel
     number_frames = 1
-    # read a 1 byte data from SPI channel
+    # read one byte of data from SPI channel
     value_array = SPI.read(number_frames)
     # print the data
     print "value read from SPI.read: ", value_array[0]
 
 ##############################################################################
-# The second portion
-# You can also choose the writeread function which reads back a value
-# immediately after it is written.
+# Section 2:
+# You use the writeread function which reads back a value immediately after it
+# is written.
 ##############################################################################
 
 # configure an SPI session
