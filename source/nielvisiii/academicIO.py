@@ -366,8 +366,7 @@ class DigitalInputOutput(ELVISIII):
         self.write_registration.write(write_values)
 
     def _sys_select(self, channel):
-        system_select_value = _clear_sys_select(self.select.read(), channel, 1)
-        system_select_value = _set_sys_select(system_select_value, channel, 1, '00')
+        system_select_value = SysSelect()._clear_sys_select(self.select.read(), channel, 1)
         self.select.write(system_select_value)
 
 class Encoder(ELVISIII):
@@ -408,8 +407,8 @@ class Encoder(ELVISIII):
 
         # ENC used two DIO channels at once, therefore the channel need to *2
         # for example, ENC0 = DIO0 + DIO1
-        system_select_value = _clear_sys_select(self.select.read(), 2*channel, 2)
-        system_select_value = _set_sys_select(system_select_value, 2*channel, 2, '10')
+        system_select_value = SysSelect()._clear_sys_select(self.select.read(), 2 * channel, 2)
+        system_select_value = SysSelect()._set_sys_select(system_select_value, 2 * channel, 2, '10')
         self.select.write(system_select_value)
 
     def read(self, reset_counter=False):
@@ -486,8 +485,8 @@ class PWM(ELVISIII):
         self.cntr = self.session.registers['PWM.' + bank + '_' + str(channel) + '.CNTR']
         self.select = self.session.registers['SYS.SELECT' + bank]
 
-        system_select_value = _clear_sys_select(self.select.read(), channel, 1)
-        system_select_value = _set_sys_select(system_select_value, channel, 1, '01')
+        system_select_value = SysSelect()._clear_sys_select(self.select.read(), channel, 1)
+        system_select_value = SysSelect()._set_sys_select(system_select_value, channel, 1, '01')
         self.select.write(system_select_value)
 
     def generate(self, frequency, duty_cycle):
@@ -596,8 +595,7 @@ class I2C(ELVISIII):
         self.dati = self.session.registers['I2C.' + bank + '.DATI']
         self.configure(mode)
 
-        system_select_value = _clear_sys_select(self.select.read(), 14, 2)
-        system_select_value = _set_sys_select(system_select_value, 14, 2, '11')
+        system_select_value = SysSelect()._set_sys_select(self.select.read(), 14, 2, '11')
         self.select.write(system_select_value)
 
     def configure(self, mode):
@@ -865,8 +863,7 @@ class SPI(ELVISIII):
         self.cnfg.write(spi_cnfg & 0xFFFF)
         self.cnt.write(int(top) & 0xFFFF)
 
-        system_select_value = _clear_sys_select(self.select.read(), 5, 3)
-        system_select_value = _set_sys_select(system_select_value, 5, 3, '11')
+        system_select_value = SysSelect()._set_sys_select(self.select.read(), 5, 3, '11')
         self.select.write(system_select_value)
 
         return
@@ -1461,39 +1458,40 @@ def calculate_clock_settings(requested_frequency,
             break
     return actual_frequency, actual_top, actual_clock_divisor
 
-def _clear_sys_select(register_value, start_channel, number_of_channels_to_write):
-    """
-    Clear the system select register for DIO, PWM, Encoder, SPI, and I2C.
-    Args:
-        register_value
-        start_channel (int): 
-            The start channel of the channels to write to.
-        number_of_channels_to_write: 
-            Number of channels to write to. DIO and PWM are one; Encoder and
-            I2C are two. SPI is three.
-    """
-    for i in range(number_of_channels_to_write):
-        register_value = ~(~register_value | (int('11', 2) << ((start_channel + i) * 2)))
-    return register_value
+class SysSelect():
+    def _clear_sys_select(self, register_value, start_channel, number_of_channels_to_write):
+        """
+        Clear the system select register for DIO, PWM, Encoder, SPI, and I2C.
+        Args:
+            register_value
+            start_channel (int): 
+                The start channel of the channels to write to.
+            number_of_channels_to_write: 
+                Number of channels to write to. DIO and PWM are one; Encoder and
+                I2C are two. SPI is three.
+        """
+        for i in range(number_of_channels_to_write):
+            register_value &= ~(int('11', 2) << ((start_channel + i) * 2))
+        return register_value
 
-def _set_sys_select(register_value, start_channel, number_of_channels_to_write, bits_to_write):
-    """
-    Set the system select register for DIO, PWM, Encoder, SPI, and I2C.
-    Args:
-        register_value
-        start_channel (int): 
-            The start channel of the channels to write to.
-        number_of_channels_to_write (int): 
-            Number of channels to write to. DIO and PWM are one; Encoder and
-            I2C are two. SPI is three.
-        bits_to_write (string):
-            Specify a 2 bits data to write to the channels as shows in the
-            following:
-                DIO             '00'
-                PWM             '01'
-                Encoder         '11'
-                SPI and I2C     '11'
-    """
-    for i in range(number_of_channels_to_write):
-        register_value = register_value | (int(bits_to_write, 2) << ((start_channel + i) * 2))
-    return register_value
+    def _set_sys_select(self, register_value, start_channel, number_of_channels_to_write, bits_to_write):
+        """
+        Set the system select register for DIO, PWM, Encoder, SPI, and I2C.
+        Args:
+            register_value
+            start_channel (int): 
+                The start channel of the channels to write to.
+            number_of_channels_to_write (int): 
+                Number of channels to write to. DIO and PWM are one; Encoder and
+                I2C are two. SPI is three.
+            bits_to_write (string):
+                Specify a 2 bits data to write to the channels as shows in the
+                following:
+                    DIO             '00'
+                    PWM             '01'
+                    Encoder         '11'
+                    SPI and I2C     '11'
+        """
+        for i in range(number_of_channels_to_write):
+            register_value = register_value | (int(bits_to_write, 2) << ((start_channel + i) * 2))
+        return register_value
