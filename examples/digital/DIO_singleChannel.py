@@ -7,11 +7,12 @@ channels. Each time the write function is called, a data point is written to
 the channel; each time the read function is called, a data point is returned
 for the channel.
 
-The DIO configuration consists of one parameter: bank. There are two identical
-banks of DIO channels (A and B). Each bank contains twenty digital input and
-output channels. Each DIO channel contains two directions: write and read. The
-NI ELVIS III helper library (academicIO.py) decides the direction based on the
-function called.
+The DIO configuration consists of two parameters: bank and channel. There are
+two identical banks of DIO channels (A and B). Each bank contains twenty
+digital input and output channels. Each DIO channel contains two directions:
+write and read. List all the channels you use, including read and write
+channels, in an array when configuring a DIO session. The NI ELVIS III helper
+library (academicIO.py) decides the direction based on the function called.
 
 This example uses:
     1. Bank A, Channel DIO2, write direction.
@@ -32,18 +33,18 @@ from enums import Bank, DIOChannel
 
 # specify the bank
 bank = Bank.A
+# specify the DIO channels
+channel2 = DIOChannel.DIO2
+channel4 = DIOChannel.DIO4
 # configure a DIO session
-with academicIO.DigitalInputOutput(bank) as DIO:
-    # specify the DIO channels
-    channel2 = DIOChannel.DIO2
-    channel4 = DIOChannel.DIO4
+with academicIO.DigitalInputOutput(bank, [channel2, channel4]) as DIO:
     # define the value as a Boolean
     value = True
 
     # write the value True to DIO2 on bank A
     # the written value must be a Boolean variable
-    DIO.write(value, channel2)
+    DIO.write(value, [channel2])
     # read value from DIO4 on bank A
-    data = DIO.read(channel4)
+    data = DIO.read([channel4])
     # the value read is [1]
     print data

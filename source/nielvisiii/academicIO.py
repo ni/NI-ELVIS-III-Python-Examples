@@ -275,7 +275,7 @@ class AnalogOutput(ELVISIII):
 
 class DigitalInputOutput(ELVISIII):
     """ NI ELVIS III Digital Input and Output (DIO) API. """
-    def __init__(self, bank=Bank.A):
+    def __init__(self, bank=Bank.A, channels=[]):
         """
         Opens a session to one or more digital input and output channels.
         Then, initialize digital I/O registration on NI ELVIS III.
@@ -284,9 +284,12 @@ class DigitalInputOutput(ELVISIII):
             bank (Bank):
                 Specifies the name of the bank to open a session. The default
                 value is A.
+            channel (array):
+                Specifies the names of the digital I/O channels.
         """
         super(DigitalInputOutput, self).__init__()
         assert bank in Bank
+        assert channels
         bank = bank.value
         self.write_registration = self.session.registers['DIO.' + bank + '_19:0.OUT']
         self.read_registration = self.session.registers['DIO.' + bank + '_19:0.IN']
@@ -294,31 +297,18 @@ class DigitalInputOutput(ELVISIII):
         self.select = self.session.registers['SYS.SELECT' + bank]
         self.direction.write(0x00)
 
-    def to_write(self, *channels):
-        """
-        Changes direction of the digital I/O channels to the write direction.
-        This function is used internally and should not be used in other
-        examples.
-
-        Args:
-            *channels (DIOChannel):
-                Specifies the names of the digital I/O channels. This value
-                can be a single channel (ex: 7) or a list of channels
-                (ex: 7, 8 ,9).
-        """
-        dir = int('00000000000000000000', 2)
-        for channel in channels[0]:
+        for channel in channels:
             assert DIOChannel.DIO0 <= channel <= DIOChannel.DIO19
-            channel = channel.value
-            dir |= (1 << channel)
-        self.direction.write(dir)
+            system_select_value = SysSelect()._clear_sys_select(self.select.read(), channel, 1)
+            self.select.write(system_select_value)
+        self.channels = channels
 
-    def read(self, *channels):
+    def read(self, channels_to_read=[]):
         """
         Reads the logic levels of one or more digital I/O channels. (1 sample)
 
         Args:
-            *channels (DIOChannel):
+            *channels_to_read (DIOChannel):
                 Specifies the names of the digital I/O channels to read from.
                 This value can be a single channel (ex: 7) or a list of
                 channels (ex: 7, 8 ,9).
@@ -330,14 +320,12 @@ class DigitalInputOutput(ELVISIII):
         """
         return_value = []
         value = self.read_registration.read()
-        for channel in channels:
-            assert DIOChannel.DIO0 <= channel <= DIOChannel.DIO19
-            channel = channel.value
-            self._sys_select(channel)
-            return_value.append(int(0 < (int(value) & (1 << channel))))
+        for channel in channels_to_read:
+            assert channel in self.channels
+            return_value.append(int(0 < (int(value) & (1 << channel.value))))
         return return_value
 
-    def write(self, value, *channels):
+    def write(self, value, channels_to_write=[]):
         """
         Write the value to all channels initialized. (1 sample)
 
@@ -349,25 +337,21 @@ class DigitalInputOutput(ELVISIII):
                 channel automatic changes to output before this function
                 writes the logic level. You must specify a value for channels
                 that you open.
-            *channels (DIOChannel):
+            *channels_to_write (DIOChannel):
                 Specifies the names of the digital I/O channels to write to.
                 This value can be a single channel (ex: 7) or a list of
                 channels (ex: 7, 8 ,9).
         """
         assert type(value) == bool
-        self.to_write(channels)
-        value = int(value)
-        for channel in channels:
-            assert DIOChannel.DIO0 <= channel <= DIOChannel.DIO19
-            channel = channel.value
-            self._sys_select(channel)
-            write_values = int('0000000000000000000', 2)  
-            write_values |= (value << channel)
-        self.write_registration.write(write_values)
+        direction_value = int('00000000000000000000', 2)
+        write_value = int('0000000000000000000', 2)  
+        for channel in channels_to_write:
+            assert channel in self.channels
+            direction_value |= (1 << channel.value)
+            write_value |= (int(value) << channel.value)
+        self.direction.write(direction_value)
+        self.write_registration.write(write_value)      
 
-    def _sys_select(self, channel):
-        system_select_value = SysSelect()._clear_sys_select(self.select.read(), channel, 1)
-        self.select.write(system_select_value)
 
 class Encoder(ELVISIII):
     """ NI ELVIS III Encoder API. """
@@ -805,8 +789,8 @@ class SPI(ELVISIII):
         assert clock_phase in SPIClockPhase
         assert clock_polarity in SPIClockPolarity
         assert data_direction in SPIDataDirection
-        with DigitalInputOutput(bank) as dio:
-            dio.to_write({DIOChannel.DIO0})
+        with DigitalInputOutput(bank, [DIOChannel.DIO0]) as dio:
+            dio.write(False, [DIOChannel.DIO0])
         bank = bank.value
         clock_phase = clock_phase.value
         clock_polarity = clock_polarity.value
