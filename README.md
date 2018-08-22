@@ -8,6 +8,8 @@ In this document we will walk you through the setup, transfer of files, and the 
   * [Configuring the NI ELVIS III Device](#configuring-the-ni-elvis-iii-device)
   * [Installing Prerequisite Software for NI ELVIS III Python](#installing-prerequisite-software-for-ni-elvis-iii-python)
   * [Installing NI ELVIS III Python Examples](#installing-ni-elvis-iii-python-examples)
+    + [Downloading through GitHub using PuTTY](#downloading-through-github-using-putty)
+    + [Downloading through GitHub and transfering files through FileZilla](#downloading-through-github-and-transfering-files-through-filezilla)
 - [Running the Example](#running-the-example)
 - [Examples Overview](#examples-overview)
   * [Analog](#analog)
@@ -70,35 +72,59 @@ In this section we will install the software needed to execute the NI ELVIS III 
    pip install pyvisa
    ```
 
-## Installing NI ELVIS III Python Examples
+## Installing NI ELVIS III Python Examples 
+
 In this section we will download the NI ELVIS III Python examples.
 
-1. Configure GitHub.
-   - Generate SSH keys and add them to your GitHub account. If you are new to GitHub, you can type `ssh-keygen -t rsa -C "example@email.com"`  on Putty to generate an SSH key and add it to your GitHub account. See [Connecting to GitHub with SSH](https://help.github.com/articles/connecting-to-github-with-ssh/) for more help.
+### Downloading through GitHub using PuTTY
+
+1. Open PuTTY, install Git.
+
+   ```
+   opkg install git
+   ```
 2. Download the NI ELVIS III Python helper library and Python Example from GitHub.
    - Download NI ELVIS III Python.
    
      ```
-     git clone --recursive git@github.com:ni/NI-ELVIS-III-Python.git
+     git clone https://github.com/ni/NI-ELVIS-III-Python-Examples.git
      ```
-   - You can now find **NI-ELVIS-III-Python** in your current directory. The default directory is `/home/admin`.
-   - You will see information similar to the following one when the download finishes successfully. 
-     > admin@NI-ELVIS-III-0000000: ~# git clone --recursive git@github.com:ni/NI-ELVIS-III-Python<br/>
-     > Cloning into 'NI-ELVIS-III-Python'...<br/>
-     > remote: Counting objects: 407, done.<br/>
-     > remote: Total 407 (delta 0), reused 0 (delta 0), pack-reused 407<br/>
-     > Receiving objects: 100% (407/407), 1.31 MiB | 265.00 KiB/s, done.<br/>
-     > Resolving deltas: 100% (263/263), done.<br/>
-     > git: 'submodule' is not a git command. See 'git --help'.<br/>
+   - You can now find **NI-ELVIS-III-Python-Examples** in your current directory. The default directory is `/home/admin`.
+
+<p align="right"><a href="#top">↥ back to top</a>
+
+### Downloading through GitHub and transfering files through FileZilla
+
+1. Open the [NI ELVIS III Python Examples GitHub website](https://github.com/ni/NI-ELVIS-III-Python-Examples).
+2. Click **Clone or download**.
+3. Click **Download ZIP**.
+   ![](docs/resource/clone_or_download.png)
+4. Extract **NI-ELVIS-III-Python-Examples-master.zip** which is the file you just downloaded.
+   ![](docs/resource/extract_file.png)
+5. Download and install [FileZilla](https://filezilla-project.org/download.php).
+6. Configure FileZilla as following:
+   ![](docs/resource/filezilla.png)
+   - **Host**: \<IP Address of the NI ELVIS III\>
+   - **Username**: admin
+   - **Password**: (Just press **Enter**. There is no password by default.)
+   - **Port**: 22
+
+7. Click **Quickconnect**.
+8. Upload **NI-ELVIS-III-Python-Examples-master/** into the directory `/home/admin`.
+   ![](docs/resource/filezilla-directory.png)
 
 <p align="right"><a href="#top">↥ back to top</a>
 
 # Running the Example
 
-1. In the same directory where you clone from GitHub in the earlier session, change the directory to `NI-ELVIS-III-Python/`:
+1. In the same directory where you clone from GitHub in the earlier session, change the directory to NI-ELVIS-III-Python/ example:
 
    ```
-   cd NI-ELVIS-III-Python/
+   cd NI-ELVIS-III-Python-Examples
+   ```
+   or
+   ```
+   cd NI-ELVIS-III-Python-Examples-master/
    ```
 2. Run the example:
 
