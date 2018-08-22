@@ -98,6 +98,7 @@ In this section we will download the NI ELVIS III Python examples.
 1. Open the [NI ELVIS III Python Examples GitHub website](https://github.com/ni/NI-ELVIS-III-Python-Examples).
 2. Click **Clone or download**.
 3. Click **Download ZIP**.
+
    ![](docs/resource/clone_or_download.png)
 4. Extract **NI-ELVIS-III-Python-Examples-master.zip** which is the file you just downloaded.
    ![](docs/resource/extract_file.png)
