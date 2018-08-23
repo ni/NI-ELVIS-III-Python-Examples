@@ -8,8 +8,8 @@ In this document we will walk you through the setup, transfer of files, and the 
   * [Configuring the NI ELVIS III Device](#configuring-the-ni-elvis-iii-device)
   * [Installing Prerequisite Software for NI ELVIS III Python](#installing-prerequisite-software-for-ni-elvis-iii-python)
   * [Installing NI ELVIS III Python Examples](#installing-ni-elvis-iii-python-examples)
-    + [Downloading through GitHub using PuTTY](#downloading-through-github-using-putty)
-    + [Downloading through GitHub and transfering files through FileZilla](#downloading-through-github-and-transfering-files-through-filezilla)
+    + [GitHub Cloning Method](#github-cloning-method)
+    + [FileZilla Method](#filezilla-method)
 - [Running the Example](#running-the-example)
 - [Examples Overview](#examples-overview)
   * [Analog](#analog)
@@ -76,7 +76,7 @@ In this section we will install the software needed to execute the NI ELVIS III 
 
 In this section we will download the NI ELVIS III Python examples.
 
-### Downloading through GitHub using PuTTY
+### GitHub Cloning Method
 
 1. Open PuTTY, install Git.
 
@@ -93,37 +93,46 @@ In this section we will download the NI ELVIS III Python examples.
 
 <p align="right"><a href="#top">↥ back to top</a>
 
-### Downloading through GitHub and transfering files through FileZilla
+### FileZilla Method
 
 1. Open the [NI ELVIS III Python Examples GitHub website](https://github.com/ni/NI-ELVIS-III-Python-Examples).
-2. Click **Clone or download**.
-3. Click **Download ZIP**.
+2. Download the NI ELVIS III Python helper library and Python Example from GitHub and upzip it.
+   1. Click **Clone or download**.
+   2. Click **Download ZIP**.
 
-   ![](docs/resource/clone_or_download.png)
-4. Extract **NI-ELVIS-III-Python-Examples-master.zip** which is the file you just downloaded.
-   ![](docs/resource/extract_file.png)
-5. Download and install [FileZilla](https://filezilla-project.org/download.php).
-6. Configure FileZilla as following:
-   ![](docs/resource/filezilla.png)
-   - **Host**: \<IP Address of the NI ELVIS III\>
-   - **Username**: admin
-   - **Password**: (Just press **Enter**. There is no password by default.)
-   - **Port**: 22
+      ![](docs/resource/clone_or_download.png)
+   
+   3. Click **Extract Here** to unzip **NI-ELVIS-III-Python-Examples-master.zip** which is the file you just downloaded.
+   
+      ![](docs/resource/extract_file.png)
+      
+3. Fransfer the NI ELVIS III Python Examples to your NI ELVIS III device.
+   1. Download and install [FileZilla](https://filezilla-project.org/download.php). You are free to use any application you are comfortable with to transfer files.
+   2. Configure FileZilla as following:
+   
+      ![](docs/resource/filezilla.png)
+      
+      - **Host**: \<IP Address of the NI ELVIS III\>
+      - **Username**: admin
+      - **Password**: (Just press **Enter**. There is no password by default.)
+      - **Port**: 22
 
-7. Click **Quickconnect**.
-8. Upload **NI-ELVIS-III-Python-Examples-master/** into the directory `/home/admin`.
-   ![](docs/resource/filezilla-directory.png)
+   3. Click **Quickconnect**.
+   4. Upload **NI-ELVIS-III-Python-Examples-master/** into the directory `/home/admin`.
+   
+      ![](docs/resource/filezilla-directory.png)
 
 <p align="right"><a href="#top">↥ back to top</a>
 
 # Running the Example
 
-1. In the same directory where you clone from GitHub in the earlier session, change the directory to NI-ELVIS-III-Python/ example:
+1. In the same directory where you clone from GitHub in the earlier session, change the directory to the NI-ELVIS-III-Python example.
 
+   For GitHub Cloning Method:
    ```
-   cd NI-ELVIS-III-Python-Examples
+   cd NI-ELVIS-III-Python-Examples/
    ```
-   or
+   For FileZilla Method:
    ```
    cd NI-ELVIS-III-Python-Examples-master/
    ```
