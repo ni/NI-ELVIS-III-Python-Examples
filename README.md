@@ -74,7 +74,7 @@ In this section we will install the software needed to execute the NI ELVIS III 
 
 ## Installing NI ELVIS III Python Examples 
 
-In this section we will download the NI ELVIS III Python examples. You are free to choose any option you are comfortable with to download NI ELVIS III Python Examples.
+In this section we will download the NI ELVIS III Python examples. You are free to choose any option you are comfortable with to install NI ELVIS III Python Examples.
 
 ### Option 1 Cloning from GitHub on Device
 
