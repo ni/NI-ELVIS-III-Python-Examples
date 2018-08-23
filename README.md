@@ -8,8 +8,8 @@ In this document we will walk you through the setup, transfer of files, and the 
   * [Configuring the NI ELVIS III Device](#configuring-the-ni-elvis-iii-device)
   * [Installing Prerequisite Software for NI ELVIS III Python](#installing-prerequisite-software-for-ni-elvis-iii-python)
   * [Installing NI ELVIS III Python Examples](#installing-ni-elvis-iii-python-examples)
-    + [Option 1 Cloning from GitHub on the Device](#option-1-cloning-from-github-on-the-device)
-    + [Option 2 Download ZIP File and Upload to the Device via SFTP](#option-2-download-zip-file-and-upload-to-the-device-via-sftp)
+    + [Option 1 Cloning from GitHub on the Device](#option-1---cloning-from-github-on-the-device)
+    + [Option 2 Download ZIP File and Upload to the Device via SFTP](#option-2---download-zip-file-and-upload-to-the-device-via-sftp)
 - [Running the Example](#running-the-example)
 - [Examples Overview](#examples-overview)
   * [Analog](#analog)
@@ -76,7 +76,7 @@ In this section we will install the software needed to execute the NI ELVIS III 
 
 In this section we will download the NI ELVIS III Python Examples. You are free to choose any option you are comfortable with to install NI ELVIS III Python Examples.
 
-### Option 1 Cloning from GitHub on the Device
+### Option 1 - Cloning from GitHub on the Device
 
 1. Open PuTTY, install `git` on the NI ELVIS III device.
 
@@ -93,7 +93,7 @@ In this section we will download the NI ELVIS III Python Examples. You are free 
 
 <p align="right"><a href="#top">↥ back to top</a>
 
-### Option 2 Download ZIP File and Upload to the Device via SFTP
+### Option 2 - Download ZIP File and Upload to the Device via SFTP
 
 1. Open the [NI ELVIS III Python Examples](https://github.com/ni/NI-ELVIS-III-Python-Examples) on GitHub.
 2. Download the NI ELVIS III Python helper library and Python Examples from GitHub and upzip it.
