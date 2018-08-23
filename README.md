@@ -78,7 +78,7 @@ In this section we will download the NI ELVIS III Python examples. You are free 
 
 ### Option 1 Cloning from GitHub on Device
 
-1. Open PuTTY, install Git.
+1. Open PuTTY, install `git` on the NI ELVIS III device.
 
    ```
    opkg install git
