@@ -114,7 +114,7 @@ In this section we will download the NI ELVIS III Python examples. You are free 
       
       - **Host**: \<IP Address of the NI ELVIS III\>
       - **Username**: admin
-      - **Password**: (Just press **Enter**. There is no password by default.)
+      - **Password**: (Blank. There is no password by default.)
       - **Port**: 22
 
    3. Click **Quickconnect**.
