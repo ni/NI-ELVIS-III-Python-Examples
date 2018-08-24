@@ -1,5 +1,5 @@
 """
-NI ELVIS III Analog Input Example – Single Point, Multiple Channels
+NI ELVIS III Analog Input Example - Single Point, Multiple Channels
 This example illustrates how to read values from multiple analog input (AI)
 channels on the NI ELVIS III. The program first defines the configuration for
 the AI channels, and then reads the AI channels in a loop. Each time the read
