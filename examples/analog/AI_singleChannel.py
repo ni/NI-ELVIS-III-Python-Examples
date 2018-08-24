@@ -1,5 +1,5 @@
 """
-NI ELVIS III Analog Input Example – Single Point, Single Channel
+NI ELVIS III Analog Input Example - Single Point, Single Channel
 This example illustrates how to read values from an analog input (AI) channel
 on the NI ELVIS III. The program first defines the configuration for the AI
 channel, and then reads the AI channel in a loop. Each time the read function

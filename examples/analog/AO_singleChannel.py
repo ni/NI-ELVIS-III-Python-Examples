@@ -1,5 +1,5 @@
 """
-NI ELVIS III Analog Output Example – Single Point, Single Channel
+NI ELVIS III Analog Output Example - Single Point, Single Channel
 This example illustrates how to write values to an analog output (AO)
 channel on the NI ELVIS III. The program first defines the configuration for
 the AO channel, and then writes to the AO channel in a loop. Each time the

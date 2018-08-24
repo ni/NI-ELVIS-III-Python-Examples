@@ -1,5 +1,5 @@
 """
-NI ELVIS III Analog Input Example – Configuration Options
+NI ELVIS III Analog Input Example - Configuration Options
 This example illustrates how to configure and read from the AI channels by
 setting different configurations on the NI ELVIS III. The program includes
 five different configurations examples. Each time the read function is called,
