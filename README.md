@@ -43,6 +43,9 @@ In this section we will install the NI Measurement Live Support Files and set up
    1. Click on the ![](docs/resource/time_configuration.png) tab at the left of the page .
    2. Configure the **Date**, **Current time**, and **Time Zone** to your current local time.
       ![](docs/resource/data_and_time.png)
+      
+      Note: Make sure there is a <span style="color:blue">blue mark<span> at the date you selected.
+      
    3. Click **Save**.
 5. Restart the device.
 
@@ -62,7 +65,8 @@ In this section we will install the software needed to execute the NI ELVIS III 
        - **login as**: admin
        - **Password**: (Just press **Enter**. There is no password by default.)
 2. Install prerequisite software by running the following commands:<br />
-   Note: **Time configuration** must be set before running these commands
+   
+   Note: **Time configuration** must be set before running these commands. If you got any error when downloading **nifpga**, make sure your **Time configuration** of the NI ELVIS III is set correctly.
    
    ```
    opkg update
