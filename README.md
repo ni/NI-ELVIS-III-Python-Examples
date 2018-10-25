@@ -44,7 +44,7 @@ In this section we will install the NI Measurement Live Support Files and set up
    2. Configure the **Date**, **Current time**, and **Time Zone** to your current local time.
       ![](docs/resource/data_and_time.png)
       
-      Note: Make sure there is a <span style="color:blue">blue mark<span> at the date you selected.
+      Note: Make sure there is a <span style="color:blue">blue mark</span> at the date you selected.
       
    3. Click **Save**.
 5. Restart the device.
