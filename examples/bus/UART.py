@@ -33,6 +33,9 @@ Result:
     The program writes the string 'Hello World' to the UART device, and
     reads back five bytes of data from the device.
 """
+import sys
+sys.path.append('/home/admin/NI-ELVIS-III-Python-Examples/source/nielvisiii')
+
 import time
 import sys
 sys.path.append('source/nielvisiii')

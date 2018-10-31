@@ -19,9 +19,10 @@ Result:
     BUTTON 0, and the program prints a string. Otherwise, the program does
     nothing.
 """
-import time
 import sys
-sys.path.append('source/nielvisiii')
+sys.path.append('/home/admin/NI-ELVIS-III-Python-Examples/source/nielvisiii')
+
+import time
 import academicIO
 
 # configure a button session

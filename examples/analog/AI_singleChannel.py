@@ -28,9 +28,10 @@ Result:
     Twenty values are acquired from AI0. All values should be around 5V.
     Expect some small variation due to signal noise.
 """
-import time
 import sys
-sys.path.append('source/nielvisiii')
+sys.path.append('/home/admin/NI-ELVIS-III-Python-Examples/source/nielvisiii')
+
+import time
 import academicIO
 from enums import Bank, AIChannel, AIRange, AIMode
 

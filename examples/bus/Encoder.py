@@ -45,9 +45,10 @@ Result:
     counter direction) from the encoder device. The data changes when the knob
     on the KY-040 Arduino Rotary is rotated.
 """
-import time
 import sys
-sys.path.append('source/nielvisiii')
+sys.path.append('/home/admin/NI-ELVIS-III-Python-Examples/source/nielvisiii')
+
+import time
 import academicIO
 from enums import Bank, EncoderChannel, EncoderMode
 

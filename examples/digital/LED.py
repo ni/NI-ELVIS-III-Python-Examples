@@ -15,9 +15,10 @@ Hardware setup:
 Result:
     LED0 flashes for 5 seconds.
 """
-import time
 import sys
-sys.path.append('source/nielvisiii')
+sys.path.append('/home/admin/NI-ELVIS-III-Python-Examples/source/nielvisiii')
+
+import time
 import academicIO
 from enums import Led
 

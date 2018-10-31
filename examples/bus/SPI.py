@@ -47,9 +47,10 @@ Result:
     SPI device. Then the program reads back a value from the 0x00 register of
     the SPI device. The returned value is E5 in hexadecimal.
 """
-import time
 import sys
-sys.path.append('source/nielvisiii')
+sys.path.append('/home/admin/NI-ELVIS-III-Python-Examples/source/nielvisiii')
+
+import time
 import academicIO
 from enums import Bank, SPIClockPhase, SPIClockPolarity, SPIDataDirection
 

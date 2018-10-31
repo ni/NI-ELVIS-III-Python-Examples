@@ -25,9 +25,10 @@ Result:
     The program writes a value to DIO2 and reads back a value from DIO4 on
     bank A.
 """
-import time
 import sys
-sys.path.append('source/nielvisiii')
+sys.path.append('/home/admin/NI-ELVIS-III-Python-Examples/source/nielvisiii')
+
+import time
 import academicIO
 from enums import Bank, DIOChannel
 

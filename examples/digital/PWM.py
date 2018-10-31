@@ -18,9 +18,10 @@ Hardware setup:
 Result:
     Generate a PWM signal from DIO0 on bank B.
 """
-import time
 import sys
-sys.path.append('source/nielvisiii')
+sys.path.append('/home/admin/NI-ELVIS-III-Python-Examples/source/nielvisiii')
+
+import time
 import academicIO
 from enums import Bank, DIOChannel
 
