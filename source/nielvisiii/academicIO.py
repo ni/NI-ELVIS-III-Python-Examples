@@ -1,6 +1,6 @@
 import sys
 path = '/home/admin/NI-ELVIS-III-Python-Examples/'
-sys.path.append( path + 'source/nielvisiii')
+sys.path.append(path + 'source/nielvisiii')
 
 import time
 import pyvisa
