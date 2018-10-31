@@ -44,8 +44,7 @@ Result:
 import sys
 sys.path.append('/home/admin/NI-ELVIS-III-Python-Examples/source/nielvisiii')
 
-import timeimport sys
-sys.path.append('source/nielvisiii')
+import time
 import academicIO
 from enums import Bank, I2CSpeedMode
 

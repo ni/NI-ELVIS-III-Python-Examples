@@ -37,8 +37,6 @@ import sys
 sys.path.append('/home/admin/NI-ELVIS-III-Python-Examples/source/nielvisiii')
 
 import time
-import sys
-sys.path.append('source/nielvisiii')
 import academicIO
 from enums import Bank, UARTBaudRate, UARTDataBits, UARTParity, UARTStopBits, UARTFlowControl
 

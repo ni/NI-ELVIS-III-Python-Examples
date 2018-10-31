@@ -846,13 +846,10 @@ class SPI(ELVISIII):
                 break
             index += 1
         spi_cnfg = spi_cnfg | (index << 14)
-        print "cnfg ", str(spi_cnfg & 0xFFFF)
         self.cnfg.write(spi_cnfg & 0xFFFF)
-        print "cnt ", str(int(top) & 0xFFFF)
         self.cnt.write(int(top) & 0xFFFF)
 
         system_select_value = SysSelect()._set_sys_select(self.select.read(), 5, 3, '11')
-        print "selectReg ", str(system_select_value)
         self.select.write(system_select_value)
 
         return
@@ -905,19 +902,15 @@ class SPI(ELVISIII):
         """
         bytes_to_read = []
         for byte in bytes_to_write:
-            print "dato ", str(byte)
             self.dato.write(byte)
             self.go.write(True)
 
             if self.bank == Bank.A.value:
-                print 'A'
                 irq = 27
             else:
-                print 'B'
                 irq = 26
             irq_status = self.session.wait_on_irqs(irq, -1)
             self.session.acknowledge_irqs(irq_status.irqs_asserted)
-            print "dati ", str(self.dati.read())
             bytes_to_read.append(hex(self.dati.read()).split('x')[-1])
 
         return bytes_to_read
