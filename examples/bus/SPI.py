@@ -84,11 +84,11 @@ with academicIO.SPI(frequency,
                     data_direction,
                     frame_length) as SPI:
     # specify the bytes to write to the SPI channel
-    data_to_write = [0x2D, 0x80]
+    data_to_write = [0x00]
     # write data to the SPI channel
     SPI.write(data_to_write)
     # specify the number of frame (int) to read from the SPI channel
-    number_frames = 2
+    number_frames = 1
     # read one byte of data from SPI channel
     value_array = SPI.read(number_frames)
     # print the data
