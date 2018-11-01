@@ -36,8 +36,9 @@ Result:
     The program writes values to DIO2 and DIO3 and reads back values from DIO4
     and DIO8 on bank A.
 """
+import os
 import sys
-sys.path.append('/home/admin/NI-ELVIS-III-Python-Examples/source/nielvisiii')
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
 
 import time
 import academicIO

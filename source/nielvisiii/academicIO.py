@@ -1,6 +1,6 @@
+import os
 import sys
-path = '/home/admin/NI-ELVIS-III-Python-Examples/'
-sys.path.append(path + 'source/nielvisiii')
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
 
 import time
 import pyvisa
@@ -12,7 +12,8 @@ class ELVISIII(object):
     ResourceName = "RIO0"
 
     def __init__(self):
-        self.session = Session(path + 'bitfile/ELVIS III v1.1 FPGA.lvbitx', ELVISIII.ResourceName)
+        path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'bitfile/ELVIS III v1.1 FPGA.lvbitx')
+        self.session = Session(path, ELVISIII.ResourceName)
 
     def __enter__(self):
         return self

@@ -43,9 +43,11 @@ Result:
         2. Values acquired from AI1 and AI5 should be around -1.7 V.
     Expect some small variation due to signal noise.
 """
-import time
+import os
 import sys
-sys.path.append('source/nielvisiii')
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
+
+import time
 import academicIO
 from enums import Bank, AIChannel, AIRange, AIMode
 

@@ -47,8 +47,9 @@ Result:
     SPI device. Then the program reads back a value from the 0x00 register of
     the SPI device. The returned value is E5 in hexadecimal.
 """
+import os
 import sys
-sys.path.append('/home/admin/NI-ELVIS-III-Python-Examples/source/nielvisiii')
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
 
 import time
 import academicIO
@@ -83,11 +84,11 @@ with academicIO.SPI(frequency,
                     data_direction,
                     frame_length) as SPI:
     # specify the bytes to write to the SPI channel
-    data_to_write = [0x00]
+    data_to_write = [0x2D, 0x80]
     # write data to the SPI channel
     SPI.write(data_to_write)
     # specify the number of frame (int) to read from the SPI channel
-    number_frames = 1
+    number_frames = 2
     # read one byte of data from SPI channel
     value_array = SPI.read(number_frames)
     # print the data
