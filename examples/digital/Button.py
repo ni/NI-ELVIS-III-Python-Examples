@@ -19,9 +19,11 @@ Result:
     BUTTON 0, and the program prints a string. Otherwise, the program does
     nothing.
 """
-import time
+import os
 import sys
-sys.path.append('source/nielvisiii')
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
+
+import time
 import academicIO
 
 # configure a button session

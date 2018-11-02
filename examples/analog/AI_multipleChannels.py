@@ -32,9 +32,11 @@ Result:
     A/AI0 should be around 5 V, and all values from B/AI1 should be around
     3.3 V. Expect some small variation due to signal noise.
 """
-import time
+import os
 import sys
-sys.path.append('source/nielvisiii')
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
+
+import time
 import academicIO
 from enums import Bank, AIChannel, AIRange, AIMode
 

@@ -1,8 +1,10 @@
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
+
 import time
 import pyvisa
 from nifpga import Session
-import sys
-sys.path.append('source/nielvisiii')
 from enums import *
 
 class ELVISIII(object):
@@ -10,7 +12,8 @@ class ELVISIII(object):
     ResourceName = "RIO0"
 
     def __init__(self):
-        self.session = Session("bitfile/ELVIS III v1.1 FPGA.lvbitx", ELVISIII.ResourceName)
+        path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'bitfile/ELVIS III v1.1 FPGA.lvbitx')
+        self.session = Session(path, ELVISIII.ResourceName)
 
     def __enter__(self):
         return self

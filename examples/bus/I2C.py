@@ -41,9 +41,11 @@ Result:
     reads back the value from the same register of the I2C slave device for
     validation. The returned value should be 8 in decimal.
 """
-import time
+import os
 import sys
-sys.path.append('source/nielvisiii')
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
+
+import time
 import academicIO
 from enums import Bank, I2CSpeedMode
 
