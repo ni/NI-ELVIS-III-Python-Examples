@@ -50,7 +50,7 @@ Result:
     The program writes 0x80, which specifies the address to read from, to the
     SPI device. Then the program reads back a value from the 0x00 register of
     the SPI device. The returned value in section 2 is E5 in hexadecimal; and
-    it is E5E5 in section 2.
+    it is ??E5 in section 2.
 """
 import os
 import sys
@@ -74,7 +74,8 @@ clock_polarity = SPIClockPolarity.HIGH
 data_direction = SPIDataDirection.MSB
 # specify the number of bits that make up one SPI transmission frame
 frame_length = 8
-# specify the chip select channel
+# specify the chip select channel, the DIO channel should be low when writing
+# or reading data
 cs_channel = DIOChannel.DIO0
 
 # configure the chip select channel
@@ -93,20 +94,25 @@ with academicIO.SPI(frequency,
                     clock_polarity,
                     data_direction,
                     frame_length) as SPI:
-    # set the chip select of SPI to False
-    cs.write(False, [cs_channel])
     # specify the bytes to write to the SPI channel
     data_to_write = [0x80]
+    # set the chip select of SPI to low
+    cs.write(False, [cs_channel])
     # write data to the SPI channel
     SPI.write(data_to_write)
+    # set the chip select of SPI to high after writing
+    cs.write(True, [cs_channel])
+
     # specify the number of frame (int) to read from the SPI channel
     number_frames = 1
+    # set the chip select of SPI to low
+    cs.write(False, [cs_channel])
     # read one byte of data from SPI channel
     value_array = SPI.read(number_frames)
+    # set the chip select of SPI to high after reading
+    cs.write(True, [cs_channel])
     # print the data
     print "value read from SPI.read: ", value_array[0]
-    # set the chip select of SPI to True
-    cs.write(True, [cs_channel])
 
 ##############################################################################
 # Section 2:
@@ -124,17 +130,17 @@ with academicIO.SPI(frequency,
                     clock_polarity,
                     data_direction,
                     frame_length) as SPI:
-    # set the chip select of SPI to False
-    cs.write(False, [cs_channel])
     # specify the bytes to write to the SPI channel, need a 16-bit value
     # because frame_length is 16
     data_to_write = [0x8000]
+    # set the chip select of SPI to low
+    cs.write(False, [cs_channel])
     # write to and read from the SPI channel
     value_array = SPI.writeread(data_to_write)
+    # set the chip select of SPI high after writing/reading
+    cs.write(True, [cs_channel])
     # print the data
     print "value read from SPI.writeread: ", value_array[0]
-    # set the chip select of SPI to True
-    cs.write(True, [cs_channel])
 
 # close the channel
 cs.close()
