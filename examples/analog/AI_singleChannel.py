@@ -42,13 +42,11 @@ ai_channel = AIChannel.AI0
 ai_range = AIRange.PLUS_OR_MINUS_10V
 ai_mode = AIMode.SINGLE_ENDED
 
-print 1
 # configure the AI channel
 with academicIO.AnalogInput({'bank': ai_bank,
                              'channel': ai_channel,
                              'range': ai_range,
                              'mode': ai_mode}) as AI_single_channel:
-    print 0
     # read from the AI channel and display the values 20 times
     for i in range(0, 20):
         # read the value
@@ -58,4 +56,3 @@ with academicIO.AnalogInput({'bank': ai_bank,
 
         # add a short delay before acquiring the next data point
         time.sleep(0.001)
-print 2
