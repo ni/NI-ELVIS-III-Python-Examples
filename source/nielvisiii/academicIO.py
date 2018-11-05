@@ -759,9 +759,7 @@ class SPI(ELVISIII):
                        clock_phase=SPIClockPhase.LEADING,
                        clock_polarity=SPIClockPolarity.LOW,
                        data_direction=SPIDataDirection.MSB,
-                       frame_length=8,
-                       cs=DIOChannel.DIO0,
-                       cs_value=False):
+                       frame_length=8):
         """
         Open the session to a serial peripheral interface (SPI) channel and
         disables the SPI channels and resets the configuration of the channels.
@@ -789,15 +787,11 @@ class SPI(ELVISIII):
         """
         super(SPI, self).__init__()
         assert 40 <= frequency <= 4000000
-        assert DIOChannel.DIO0 <= cs <= DIOChannel.DIO19
-        assert type(cs_value) == bool
         assert 4 <= frame_length <= 16
         assert bank in Bank
         assert clock_phase in SPIClockPhase
         assert clock_polarity in SPIClockPolarity
         assert data_direction in SPIDataDirection
-        with DigitalInputOutput(bank, [cs]) as dio:
-            dio.write(cs_value, [cs])
         bank = bank.value
         clock_phase = clock_phase.value
         clock_polarity = clock_polarity.value

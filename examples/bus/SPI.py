@@ -16,11 +16,15 @@ of SPI port (A and B). You can configure the port as follows:
     Direction: LSB and MSB
     Frame length: 4 to 16
 
-This example uses ADXL345 as the slave device. The 0x00 hexadecimal data sent
-from the master device requests the slave device to send back a default device 
-code which is equal to 'E5' in hexadecimal or '229' in decimal. This returned
-value is used for validation. All the SPI configuration is set correctly and
-the connection is functioning correctly if the device ID 'E5' is returned.
+This example uses ADXL345 as the slave device. ADXL345 requires a 8-bit data
+with a 7-bit slave address and a writing/reading bit. The most significant bit
+refers to the writing/reading bit. We want to read from the address 0x00,
+which means we have to set the most significant bit of 0x00 to 1. The 0x80
+hexadecimal data sent from the master device requests the slave device to send
+back a default device code which is equal to 'E5' in hexadecimal or '229' in
+decimal. This returned value is used for validation. All the SPI configuration
+is set correctly and the connection is functioning correctly if the device ID
+'E5' is returned.
 
 See http://www.analog.com/media/en/technical-documentation/data-sheets/ADXL345.pdf
 for more details about ADXL345.
@@ -45,7 +49,8 @@ Hardware setup:
 Result:
     The program writes 0x80, which specifies the address to read from, to the
     SPI device. Then the program reads back a value from the 0x00 register of
-    the SPI device. The returned value is E5 in hexadecimal.
+    the SPI device. The returned value in section 2 is E5 in hexadecimal; and
+    it is E5E5 in section 2.
 """
 import os
 import sys
@@ -70,9 +75,13 @@ data_direction = SPIDataDirection.MSB
 # specify the number of bits that make up one SPI transmission frame
 frame_length = 8
 # specify the chip select channel
-cs = DIOChannel.DIO0
+cs_channel = DIOChannel.DIO0
 # specify the value to write to chip select channel
 cs_value = False
+
+# configure the chip select channel
+with academicIO.DigitalInputOutput(bank, [cs_channel]) as dio:
+    dio.write(cs_value, [cs_channel])
 
 ##############################################################################
 # Section 1:
@@ -86,9 +95,7 @@ with academicIO.SPI(frequency,
                     clock_phase,
                     clock_polarity,
                     data_direction,
-                    frame_length,
-                    cs,
-                    cs_value) as SPI:
+                    frame_length) as SPI:
     # specify the bytes to write to the SPI channel
     data_to_write = [0x80]
     # write data to the SPI channel
@@ -115,12 +122,11 @@ with academicIO.SPI(frequency,
                     clock_phase,
                     clock_polarity,
                     data_direction,
-                    frame_length,
-                    cs,
-                    cs_value) as SPI:
-    # specify the bytes to write to the SPI channel
+                    frame_length) as SPI:
+    # specify the bytes to write to the SPI channel, need a 16-bit value
+    # because frame_length is 16
     data_to_write = [0x8000]
     # write to and read from the SPI channel
     value_array = SPI.writeread(data_to_write)
-    # print the data read back from the SPI channel
+    # print the data
     print "value read from SPI.writeread: ", value_array[0]
