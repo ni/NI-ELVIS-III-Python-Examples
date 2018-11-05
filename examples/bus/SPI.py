@@ -136,4 +136,5 @@ with academicIO.SPI(frequency,
     # set the chip select of SPI to True
     cs.write(True, [cs_channel])
 
+# close the channel
 cs.close()
