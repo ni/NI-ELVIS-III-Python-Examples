@@ -76,12 +76,9 @@ data_direction = SPIDataDirection.MSB
 frame_length = 8
 # specify the chip select channel
 cs_channel = DIOChannel.DIO0
-# specify the value to write to chip select channel
-cs_value = False
 
 # configure the chip select channel
-with academicIO.DigitalInputOutput(bank, [cs_channel]) as dio:
-    dio.write(cs_value, [cs_channel])
+cs = academicIO.DigitalInputOutput(bank, [cs_channel])
 
 ##############################################################################
 # Section 1:
@@ -96,6 +93,8 @@ with academicIO.SPI(frequency,
                     clock_polarity,
                     data_direction,
                     frame_length) as SPI:
+    # set the chip select of SPI to False
+    cs.write(False, [cs_channel])
     # specify the bytes to write to the SPI channel
     data_to_write = [0x80]
     # write data to the SPI channel
@@ -106,6 +105,8 @@ with academicIO.SPI(frequency,
     value_array = SPI.read(number_frames)
     # print the data
     print "value read from SPI.read: ", value_array[0]
+    # set the chip select of SPI to True
+    cs.write(True, [cs_channel])
 
 ##############################################################################
 # Section 2:
@@ -123,6 +124,8 @@ with academicIO.SPI(frequency,
                     clock_polarity,
                     data_direction,
                     frame_length) as SPI:
+    # set the chip select of SPI to False
+    cs.write(False, [cs_channel])
     # specify the bytes to write to the SPI channel, need a 16-bit value
     # because frame_length is 16
     data_to_write = [0x8000]
@@ -130,3 +133,7 @@ with academicIO.SPI(frequency,
     value_array = SPI.writeread(data_to_write)
     # print the data
     print "value read from SPI.writeread: ", value_array[0]
+    # set the chip select of SPI to True
+    cs.write(True, [cs_channel])
+
+cs.close()
