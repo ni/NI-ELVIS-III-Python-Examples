@@ -16,11 +16,14 @@ of SPI port (A and B). You can configure the port as follows:
     Direction: LSB and MSB
     Frame length: 4 to 16
 
-This example uses ADXL345 as the slave device. The 0x00 hexadecimal data sent
-from the master device requests the slave device to send back a default device 
-code which is equal to 'E5' in hexadecimal or '229' in decimal. This returned
-value is used for validation. All the SPI configuration is set correctly and
-the connection is functioning correctly if the device ID 'E5' is returned.
+This example uses ADXL345 as the slave device. ADXL345 requires a 8-bit data
+with a 7-bit slave address and a writing/reading bit. The bit 7 refers to the
+writing/reading bit. We want to read from the address 0x00, which means we have
+to set the bit 7 of 0x00 to 1. The 0x80 hexadecimal data sent from the master
+device requests the slave device to send back a default device code which is
+equal to 'E5' in hexadecimal or '229' in decimal. This returned value is used
+for validation. All the SPI configuration is set correctly and the connection
+is functioning correctly if the device ID 'E5' is returned.
 
 See http://www.analog.com/media/en/technical-documentation/data-sheets/ADXL345.pdf
 for more details about ADXL345.
@@ -43,9 +46,10 @@ Hardware setup:
     4. Connect SPI.MOSI (DIO7) on bank A to SPI.MISO of a slave device.
 
 Result:
-    The program writes 0x00, which specifies the address to read from, to the
+    The program writes 0x80, which specifies the address to read from, to the
     SPI device. Then the program reads back a value from the 0x00 register of
-    the SPI device. The returned value is E5 in hexadecimal.
+    the SPI device. The returned value in section 2 is E5 in hexadecimal; and
+    it is ??E5 in section 2.
 """
 import os
 import sys
@@ -53,7 +57,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.
 
 import time
 import academicIO
-from enums import Bank, SPIClockPhase, SPIClockPolarity, SPIDataDirection
+from enums import Bank, DIOChannel, SPIClockPhase, SPIClockPolarity, SPIDataDirection
 
 # specify the bank
 bank = Bank.A
@@ -61,14 +65,20 @@ bank = Bank.A
 frequency = 1000000
 # specify the clock phase at which the data remains stable in the SPI
 # transmission cycle
-clock_phase = SPIClockPhase.LEADING
+clock_phase = SPIClockPhase.TRAILING
 # specify the base level of the clock signal and the logic level of the
 # leading and trailing edges
-clock_polarity = SPIClockPolarity.LOW
+clock_polarity = SPIClockPolarity.HIGH
 # specify the order in which the bits in the SPI frame are transmitted
 data_direction = SPIDataDirection.MSB
 # specify the number of bits that make up one SPI transmission frame
 frame_length = 8
+# specify the chip select channel, the DIO channel should be low when writing
+# or reading data
+cs_channel = DIOChannel.DIO0
+
+# configure the chip select channel
+cs = academicIO.DigitalInputOutput(bank, [cs_channel])
 
 ##############################################################################
 # Section 1:
@@ -84,13 +94,22 @@ with academicIO.SPI(frequency,
                     data_direction,
                     frame_length) as SPI:
     # specify the bytes to write to the SPI channel
-    data_to_write = [0x00]
+    data_to_write = [0x80]
+    # set the chip select of SPI to low
+    cs.write(False, [cs_channel])
     # write data to the SPI channel
     SPI.write(data_to_write)
+    # set the chip select of SPI to high after writing
+    cs.write(True, [cs_channel])
+
     # specify the number of frame (int) to read from the SPI channel
     number_frames = 1
+    # set the chip select of SPI to low
+    cs.write(False, [cs_channel])
     # read one byte of data from SPI channel
     value_array = SPI.read(number_frames)
+    # set the chip select of SPI to high after reading
+    cs.write(True, [cs_channel])
     # print the data
     print "value read from SPI.read: ", value_array[0]
 
@@ -100,6 +119,9 @@ with academicIO.SPI(frequency,
 # is written.
 ##############################################################################
 
+# specify the number of bits that make up one SPI transmission frame
+frame_length = 16
+
 # configure an SPI session
 with academicIO.SPI(frequency,
                     bank,
@@ -107,9 +129,17 @@ with academicIO.SPI(frequency,
                     clock_polarity,
                     data_direction,
                     frame_length) as SPI:
-    # specify the bytes to write to the SPI channel
-    data_to_write = [0x00]
+    # specify the bytes to write to the SPI channel, need a 16-bit value
+    # because frame_length is 16
+    data_to_write = [0x8000]
+    # set the chip select of SPI to low
+    cs.write(False, [cs_channel])
     # write to and read from the SPI channel
     value_array = SPI.writeread(data_to_write)
-    # print the data read back from the SPI channel
+    # set the chip select of SPI high after writing/reading
+    cs.write(True, [cs_channel])
+    # print the data
     print "value read from SPI.writeread: ", value_array[0]
+
+# close the channel
+cs.close()

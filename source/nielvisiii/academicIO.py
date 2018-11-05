@@ -493,7 +493,7 @@ class PWM(ELVISIII):
         assert 40 <= frequency <= 400000
         assert 0 <= duty_cycle <= 1
         clock_divisors = [1, 2, 4, 8, 16, 32, 64]
-        actual_frequency, top, clock_divisor = calculate_clock_settings(frequency, clock_divisors)
+        actual_frequency, top, clock_divisor = calculate_clock_settings(frequency, clock_divisors, True)
         pwm_cs = 0
         for divisor in clock_divisors:
             if divisor == clock_divisor:
@@ -792,8 +792,6 @@ class SPI(ELVISIII):
         assert clock_phase in SPIClockPhase
         assert clock_polarity in SPIClockPolarity
         assert data_direction in SPIDataDirection
-        with DigitalInputOutput(bank, [DIOChannel.DIO0]) as dio:
-            dio.write(False, [DIOChannel.DIO0])
         bank = bank.value
         clock_phase = clock_phase.value
         clock_polarity = clock_polarity.value
@@ -839,8 +837,8 @@ class SPI(ELVISIII):
             spi_cnfg = spi_cnfg | (1 << 3)
         spi_cnfg = spi_cnfg | ((frame_length-1) << 4)
         clock_divisors = [1, 2, 4, 8]
-        actual_frequency, top, clock_divisor = calculate_clock_settings(frequency, clock_divisors, 4000000, 40, 20000000,
-                                                                        65535, 1, True, True)
+        actual_frequency, top, clock_divisor = calculate_clock_settings(frequency, clock_divisors, False, 4000000, 40, 20000000,
+                                                                        65535, 1, True)
         index = 0
         for clock_number in clock_divisors:
             if clock_number == clock_divisor:
@@ -1364,13 +1362,13 @@ class Button(ELVISIII):
 
 def calculate_clock_settings(requested_frequency,
                              clock_divisors,
+                             phase_correct_mode,
                              max_frequency=40000,
                              min_frequency=40,
                              base_clock_frequency=40000000,
                              max_counter=65535,
                              min_counter=100,
-                             coerce_range=True,
-                             phase_correct_mode=False):
+                             coerce_range=True):
     """
     Determine the counter settings that will produce the requested frequency
     or as close a frequency as possible. This function is used internally and
@@ -1384,6 +1382,9 @@ def calculate_clock_settings(requested_frequency,
             The available clock divisors for SPI mode are 1, 2, 4, and 8. The
             available clock divisors for PWM mode are 1, 2, 4, 8, 16, 32, and
             64.
+        phase_correct_mode (bool):
+            The phase_correct_mode should be False for SPI mode; it should be
+            True for PWM mode. 
         max_frequency (int):
             The the default value is 4000000Hz.
         min_frequency (int):
@@ -1402,9 +1403,6 @@ def calculate_clock_settings(requested_frequency,
             also the suggestted value.
         coerce_range (bool):
             The default value is True.
-        phase_correct_mode (bool):
-            The default value is False. The phase_correct_mode should be True
-            for SPI mode; it should be False for PWM mode. 
 
     Returns:
         actual_frequency (float)
@@ -1423,10 +1421,10 @@ def calculate_clock_settings(requested_frequency,
     pwm_requested_frequency = requested_frequency
     for divisor in clock_divisors:
         if phase_correct_mode:
-            top = round(base_clock_frequency/(2*divisor*requested_frequency))
+            top = round(base_clock_frequency/(2*divisor*pwm_requested_frequency))
             frequency = base_clock_frequency/(2*divisor*top)
         else:
-            top = round(base_clock_frequency/(divisor*pwm_requested_frequency)) - 1
+            top = round(base_clock_frequency/(divisor*requested_frequency)) - 1
             frequency = base_clock_frequency/((top + 1)*divisor)
             min_counter -= 1
         requested_frequency = max(min_counter, min(top, max_counter))
