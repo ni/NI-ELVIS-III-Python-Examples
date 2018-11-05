@@ -19,11 +19,11 @@ of SPI port (A and B). You can configure the port as follows:
 This example uses ADXL345 as the slave device. ADXL345 requires a 8-bit data
 with a 7-bit slave address and a writing/reading bit. The bit 7 refers to the
 writing/reading bit. We want to read from the address 0x00, which means we have
-to set the most significant bit of 0x00 to 1. The 0x80 hexadecimal data sent
-from the master device requests the slave device to send back a default device
-code which is equal to 'E5' in hexadecimal or '229' in decimal. This returned
-value is used for validation. All the SPI configuration is set correctly and
-the connection is functioning correctly if the device ID 'E5' is returned.
+to set the bit 7 of 0x00 to 1. The 0x80 hexadecimal data sent from the master
+device requests the slave device to send back a default device code which is
+equal to 'E5' in hexadecimal or '229' in decimal. This returned value is used
+for validation. All the SPI configuration is set correctly and the connection
+is functioning correctly if the device ID 'E5' is returned.
 
 See http://www.analog.com/media/en/technical-documentation/data-sheets/ADXL345.pdf
 for more details about ADXL345.
