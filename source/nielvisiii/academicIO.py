@@ -1427,7 +1427,7 @@ def calculate_clock_settings(requested_frequency,
             frequency = base_clock_frequency/(divisor*(1+top))
             min_counter -= 1
         coerced = frequency != requested_frequency
-        if (coerced):
+        if coerced:
             frequency_comparison = abs(requested_frequency - actual_frequency) <= abs(requested_frequency - frequency)
             if not (frequency_comparison and (actual_frequency != 0)):
                 actual_frequency = frequency
