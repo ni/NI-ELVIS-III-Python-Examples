@@ -152,7 +152,7 @@ In this section we will download the NI ELVIS III Python Examples. You are free 
 <p align="right"><a href="#top">↥ back to top</a>
 
 # Examples Overview
-  Go to the comments area at the top each example to see more details. Click the following links to jump into the example page.
+  Go to the comments area at the top of each example to see more details. Click the following links to jump into the example page.
 
  ### [Analog](examples/analog)
    - [AI_configurationOptions](examples/analog/AI_configurationOptions.py)
