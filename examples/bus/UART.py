@@ -28,6 +28,7 @@ This example uses:
 Hardware setup:
     1. Connect UART.RX (DIO16) on bank A to UART.TX of a UART device.
     2. Connect UART.TX (DIO17) on bank A to UART.RX of a UART device.
+    3. Connect DGND on bank A to GND of a UART device.
 
 Result:
     The program writes the string 'Hello World' to the UART device, and
