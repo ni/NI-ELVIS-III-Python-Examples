@@ -1420,11 +1420,11 @@ def calculate_clock_settings(requested_frequency,
     actual_clock_divisor = 0
     for divisor in clock_divisors:
         if phase_correct_mode:
-            top = round(base_clock_frequency/(2*divisor*requested_frequency))
-            frequency = base_clock_frequency/(2*top*divisor)
+            top = round(base_clock_frequency / (2 * divisor * requested_frequency))
+            frequency = base_clock_frequency / (2 * top * divisor)
         else:
-            top = round(base_clock_frequency/(divisor*requested_frequency)) - 1
-            frequency = base_clock_frequency/(divisor*(1+top))
+            top = round(base_clock_frequency / (divisor * requested_frequency)) - 1
+            frequency = base_clock_frequency / (divisor * (1 + top))
             min_counter -= 1
         coerced = frequency != requested_frequency
         if coerced:
