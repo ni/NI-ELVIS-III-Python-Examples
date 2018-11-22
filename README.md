@@ -43,6 +43,9 @@ In this section we will install the NI Measurement Live Support Files and set up
    1. Click on the ![](docs/resource/time_configuration.png) tab at the left of the page .
    2. Configure the **Date**, **Current time**, and **Time Zone** to your current local time.
       ![](docs/resource/data_and_time.png)
+      
+      Note: Make sure there is a blue mark at the date you selected.
+      
    3. Click **Save**.
 5. Restart the device.
 
@@ -62,7 +65,8 @@ In this section we will install the software needed to execute the NI ELVIS III 
        - **login as**: admin
        - **Password**: (Just press **Enter**. There is no password by default.)
 2. Install prerequisite software by running the following commands:<br />
-   Note: **Time configuration** must be set before running these commands
+   
+   Note: **Time configuration** must be set before running these commands. If you got any error when downloading **nifpga**, make sure your **Time configuration** of the NI ELVIS III is set correctly.
    
    ```
    opkg update
@@ -141,33 +145,37 @@ In this section we will download the NI ELVIS III Python Examples. You are free 
    ```
    python examples/<example_category>/<example_filename>.py
    ```
-   For example: `python examples/analog/AI_singleChannel.py`.                                                                                                  
+   For example: `python examples/analog/AI_singleChannel.py`.      
+   
+   Note: Make sure your application broad is powered on before running any example.
 
 <p align="right"><a href="#top">↥ back to top</a>
 
 # Examples Overview
+  Go to the comments area at the top of each example to see more details. Click the following links to jump into the example page.
+
  ### [Analog](examples/analog)
-   - AI_configurationOptions
-   - AI_multipleChannels
-   - AI_singleChannel
-   - AO_multipleChannels
-   - AO_singleChannel
+   - [AI_configurationOptions](examples/analog/AI_configurationOptions.py)
+   - [AI_multipleChannels](examples/analog/AI_multipleChannels.py)
+   - [AI_singleChannel](examples/analog/AI_singleChannel.py)
+   - [AO_multipleChannels](examples/analog/AO_multipleChannels.py)
+   - [AO_singleChannel](examples/analog/AO_singleChannel.py)
  ### [Bus](examples/bus)
-   - Encoder
-   - I2C
-   - SPI
-   - UART
+   - [Encoder](examples/bus/Encoder.py)
+   - [I2C](examples/bus/I2C.py)
+   - [SPI](examples/bus/SPI.py)
+   - [UART](examples/bus/UART.py)
  ### [Digital](examples/digital)
-   - Button
-   - DIO_multipleChannels
-   - DIO_singleChannel
-   - LED
-   - PWM
+   - [Button](examples/digital/Button.py)
+   - [DIO_multipleChannels](examples/digital/DIO_multipleChannels.py)
+   - [DIO_singleChannel](examples/digital/DIO_singleChannel.py)
+   - [LED](examples/digital/LED.py)
+   - [PWM](examples/digital/PWM.py)
  ### [Interrupt](examples/interrupt)
-   - AIIRQ (Analog Interrupt)
-   - ButtonIRQ (Button Interrupt)
-   - DIIRQ (Digital Interrupt)
-   - TimerIRQ (Timer Interrupt)
+   - [AIIRQ (Analog Interrupt)](examples/interrupt/AIIRQ.py)
+   - [ButtonIRQ (Button Interrupt)](examples/interrupt/ButtonIRQ.py)
+   - [DIIRQ (Digital Interrupt)](examples/interrupt/DIIRQ.py)
+   - [TimerIRQ (Timer Interrupt)](examples/interrupt/TimerIRQ.py)
 
 <p align="right"><a href="#top">↥ back to top</a>
 
