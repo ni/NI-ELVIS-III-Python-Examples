@@ -493,7 +493,7 @@ class PWM(ELVISIII):
         assert 40 <= frequency <= 400000
         assert 0 <= duty_cycle <= 1
         clock_divisors = [1, 2, 4, 8, 16, 32, 64]
-        actual_frequency, top, clock_divisor = calculate_clock_settings(frequency, clock_divisors, True)
+        actual_frequency, top, clock_divisor = calculate_clock_settings(frequency, clock_divisors, False)
         pwm_cs = 0
         for divisor in clock_divisors:
             if divisor == clock_divisor:
@@ -1418,16 +1418,14 @@ def calculate_clock_settings(requested_frequency,
     actual_frequency = 0
     actual_top = 0
     actual_clock_divisor = 0
-    pwm_requested_frequency = requested_frequency
     for divisor in clock_divisors:
         if phase_correct_mode:
-            top = round(base_clock_frequency/(2*divisor*pwm_requested_frequency))
-            frequency = base_clock_frequency/(2*divisor*top)
+            top = round(base_clock_frequency / (2 * divisor * requested_frequency))
+            frequency = base_clock_frequency / (2 * top * divisor)
         else:
-            top = round(base_clock_frequency/(divisor*requested_frequency)) - 1
-            frequency = base_clock_frequency/((top + 1)*divisor)
+            top = round(base_clock_frequency / (divisor * requested_frequency)) - 1
+            frequency = base_clock_frequency / (divisor * (1 + top))
             min_counter -= 1
-        requested_frequency = max(min_counter, min(top, max_counter))
         coerced = frequency != requested_frequency
         if coerced:
             frequency_comparison = abs(requested_frequency - actual_frequency) <= abs(requested_frequency - frequency)
