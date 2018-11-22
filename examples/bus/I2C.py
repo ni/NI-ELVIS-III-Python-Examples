@@ -35,6 +35,8 @@ This example uses:
 Hardware setup:
     1. Connect an I2C.SCL of a slave device to I2C.SCL (DIO14) on bank A.
     2. Connect an I2C.SDA of a slave device to I2C.SDA (DIO15) on bank A.
+    3. Connect Vcc of a slave device to Vcc (+3.3V) of Bank A.
+    4. Connect GND of a slave device to DGND of Bank A.
 
 Result:
     The program sets the power control of the I2C device to measure mode and

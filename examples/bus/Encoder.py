@@ -39,6 +39,8 @@ Hardware setup:
        device.
     2. Connect ENC.B 0 (DIO1) on bank A to ENC.B of an encoder
        device.
+    3. Connect +5V on bank A to Vcc of an encoder device.
+    4. Connect DGND on bank A to GND of an encoder device.
 
 Result:
     The program reads back twenty data points (including counter value and
