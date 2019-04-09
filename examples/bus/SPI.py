@@ -44,6 +44,8 @@ Hardware setup:
     2. Connect SPI.CLK (DIO5) on bank A to SPI.CLK of a slave device.
     3. Connect SPI.MISO (DIO6) on bank A to SPI.MOSI of a slave device.
     4. Connect SPI.MOSI (DIO7) on bank A to SPI.MISO of a slave device.
+    5. Connect Vcc (+3.3V) of Bank A to Vcc of a slave device.
+    6. Connect DGND of Bank A to GND of a slave device.
 
 Result:
     The program writes 0x80, which specifies the address to read from, to the
