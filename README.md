@@ -14,6 +14,10 @@ NI-ELVIS-III-Python-Examples supports Python 2.7, 3.4+.
     + [Option 2 - Download ZIP File and Upload to the Device via SFTP](#option-2---download-zip-file-and-upload-to-the-device-via-sftp)
 - [Running the Example](#running-the-example)
 - [Examples Overview](#examples-overview)
+  * [Analog](#analog)
+  * [Bus](#bus)
+  * [Digital](#digital)
+  * [Interrupt](#interrupt)
 - [Opening a Session](#opening-a-session)
 - [Function Select Register](#function-select-register)
 - [NI ELVIS III Shipping Personality Reference](#ni-elvis-iii-shipping-personality-reference)
@@ -154,9 +158,9 @@ In this section we will download the NI ELVIS III Python Examples. You are free 
 2. Run the example:
 
    ```
-   python examples/<python_version>/<example_category>/<example_filename>.py
+   python examples/<example_category>/<example_filename>.py
    ```
-   For example: `python examples/2.7/analog/AI_singleChannel.py`.      
+   For example: `python examples/analog/AI_singleChannel.py`.      
    
    Note: Make sure your application broad is powered on before running any example.
 
@@ -165,29 +169,29 @@ In this section we will download the NI ELVIS III Python Examples. You are free 
 # Examples Overview
   Go to the comments area at the top of each example to see more details. Click the following links to jump into the example page.
 
- ### Analog [2.7](examples/2.7/analog) [3.4+](examples/3.4/analog)
-   - AI_configurationOptions
-   - AI_multipleChannels
-   - AI_singleChannel
-   - AO_multipleChannels
-   - AO_singleChannel
- ### Bus [2.7](examples/2.7/bus) [3.4+](examples/3.4/bus)
-   - Encoder
-   - I2C
-   - SPI
-   - UART
+ ### [Analog](examples/analog)
+   - [AI_configurationOptions](examples/analog/AI_configurationOptions.py)
+   - [AI_multipleChannels](examples/analog/AI_multipleChannels.py)
+   - [AI_singleChannel](examples/analog/AI_singleChannel.py)
+   - [AO_multipleChannels](examples/analog/AO_multipleChannels.py)
+   - [AO_singleChannel](examples/analog/AO_singleChannel.py)
+ ### [Bus](examples/bus)
+   - [Encoder](examples/bus/Encoder.py)
+   - [I2C](examples/bus/I2C.py)
+   - [SPI](examples/bus/SPI.py)
+   - [UART](examples/bus/UART.py)
      - If a **pyvisa** error is shown, make sure the [NI-VISA](#nivisa) is installed on NI ELVIS III.
- ### Digital [2.7](examples/2.7/digital) [3.4+](examples/3.4/digital)
-   - Button
-   - DIO_multipleChannels
-   - DIO_singleChannel
-   - LED
-   - PWM
- ### Interrupt [2.7](examples/2.7/interrupt) [3.4+](examples/3.4/interrupt)
-   - AIIRQ (Analog Interrupt)
-   - ButtonIRQ (Button Interrupt)
-   - DIIRQ (Digital Interrupt)
-   - TimerIRQ (Timer Interrupt)
+ ### [Digital](examples/digital)
+   - [Button](examples/digital/Button.py)
+   - [DIO_multipleChannels](examples/digital/DIO_multipleChannels.py)
+   - [DIO_singleChannel](examples/digital/DIO_singleChannel.py)
+   - [LED](examples/digital/LED.py)
+   - [PWM](examples/digital/PWM.py)
+ ### [Interrupt](examples/interrupt)
+   - [AIIRQ (Analog Interrupt)](examples/interrupt/AIIRQ.py)
+   - [ButtonIRQ (Button Interrupt)](examples/interrupt/ButtonIRQ.py)
+   - [DIIRQ (Digital Interrupt)](examples/interrupt/DIIRQ.py)
+   - [TimerIRQ (Timer Interrupt)](examples/interrupt/TimerIRQ.py)
 
 <p align="right"><a href="#top">↥ back to top</a>
 
