@@ -49,7 +49,7 @@ Result:
 """
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), 'source/nielvisiii'))
 
 import time
 import academicIO
@@ -79,12 +79,12 @@ with academicIO.Encoder(bank, channel, mode) as encoder:
         counter_value, counter_direction_decrease = encoder.read(reset_counter)
         # print the counter value. The counter value must be in the range
         # -2,147,483,648 to 2,147,483,647
-        print counter_value,
+        print(counter_value, end = "")
         # print the counter direction
         if counter_direction_decrease:
-            print ", direction is decreasing"
+            print(", direction is decreasing")
         else:
-            print ", direction is increasing"
+            print(", direction is increasing")
 
         # add a short delay before acquiring the next data point
         time.sleep(1.5)

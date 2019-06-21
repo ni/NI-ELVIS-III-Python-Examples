@@ -55,7 +55,7 @@ Result:
 """
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), 'source/nielvisiii'))
 
 import time
 import academicIO
@@ -113,7 +113,7 @@ with academicIO.SPI(frequency,
     # set the chip select of SPI to high after reading
     cs.write(True, [cs_channel])
     # print the data
-    print "value read from SPI.read: ", value_array[0]
+    print("value read from SPI.read: ", value_array[0])
 
 ##############################################################################
 # Section 2:
@@ -141,7 +141,7 @@ with academicIO.SPI(frequency,
     # set the chip select of SPI high after writing/reading
     cs.write(True, [cs_channel])
     # print the data
-    print "value read from SPI.writeread: ", value_array[0]
+    print("value read from SPI.writeread: ", value_array[0])
 
 # close the channel
 cs.close()

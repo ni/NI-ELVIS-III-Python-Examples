@@ -45,7 +45,7 @@ Result:
 """
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), 'source/nielvisiii'))
 
 import time
 import academicIO
@@ -70,7 +70,7 @@ with academicIO.AnalogInput({'bank': ai_bank,
     # read the value
     value_array = AI_single_channel.read()
     # print the value
-    print "Range ", ai_range.value, ": ", value_array[0]
+    print("Range ", ai_range.value, ": ", value_array[0])
 
 ##############################################################################
 # Section 1:
@@ -87,7 +87,7 @@ with academicIO.AnalogInput({'bank': ai_bank,
     # read the value
     value_array = AI_single_channel.read()
     # print the value
-    print "Range ", ai_range.value, ": ", value_array[0]
+    print("Range ", ai_range.value, ": ", value_array[0])
 
 ##############################################################################
 # Section 1:
@@ -103,7 +103,7 @@ with academicIO.AnalogInput({'bank': ai_bank,
     # read the value
     value_array = AI_single_channel.read()
     # print the value
-    print "Range ", ai_range.value, ": ", value_array[0]
+    print("Range ", ai_range.value, ": ", value_array[0])
 
 ##############################################################################
 # Section 2: 
@@ -119,7 +119,7 @@ with academicIO.AnalogInput({'bank': ai_bank,
     # read the value
     value_array = AI_single_channel.read()
     # print the value
-    print "Single-Ended: ", value_array[0]
+    print("Single-Ended: ", value_array[0])
 
 ##############################################################################
 # Section 2: 
@@ -135,4 +135,4 @@ with academicIO.AnalogInput({'bank': ai_bank,
     # read the value
     value_array = AI_single_channel.read()
     # print the value
-    print "Differential: ", value_array[0]
+    print("Differential: ", value_array[0])

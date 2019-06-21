@@ -45,7 +45,7 @@ Result:
 """
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), 'source/nielvisiii'))
 
 import time
 import academicIO
@@ -80,4 +80,4 @@ with academicIO.I2C(bank, speed) as I2C:
     # read data from the I2C slave device
     return_value = I2C.read(slave_device_address, number_bytes_to_read)
     # print the data
-    print return_value
+    print(return_value)

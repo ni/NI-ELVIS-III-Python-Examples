@@ -3,6 +3,8 @@ How to use NI ELVIS III with Python
 # Overview
 In this document we will walk you through the setup, transfer of files, and the use of a Python example on the NI ELVIS III. The NI ELVIS III solution for project-based learning can be programmed with python to help students or educators who are familiar with Python syntax to rapidly acquire measurements by using common SSH clients. Attached to this file are a total of 18 examples which illustrate the use of the NI ELVIS III helper library ([academicIO.py](source/nielvisiii/academicIO.py)).
 
+NI-ELVIS-III-Python-Examples supports Python 2.7, 3.4+.
+
 # Table of Contents
 - [Software Setup](#software-setup)
   * [Configuring the NI ELVIS III Device](#configuring-the-ni-elvis-iii-device)
@@ -69,13 +71,25 @@ In this section we will install the software needed to execute the NI ELVIS III 
    
    Note: **Time configuration** must be set before running these commands. If you got any error when downloading **nifpga**, make sure your **Time configuration** of the NI ELVIS III is set correctly.
    
-   ```
-   opkg update
-   opkg install python
-   opkg install python-pip
-   pip install nifpga
-   pip install pyvisa
-   ```
+   - Python 2.7
+     ```
+     opkg update
+     opkg install python
+     opkg install python-pip
+     pip install nifpga
+     pip install pyvisa
+     ```
+   
+   - Python 3.4+
+     ```
+     opkg update
+     opkg install python3
+     opkg install python3 python3-misc
+     curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py | python3
+     python3 get-pip.py
+     python3 -m pip install nifpga
+     python3 -m pip install pyvisa
+     ```
 
 ## Installing NI ELVIS III Python Examples 
 

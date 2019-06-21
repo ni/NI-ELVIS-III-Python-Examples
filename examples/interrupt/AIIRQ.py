@@ -46,10 +46,10 @@ Result:
 """
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), 'source/nielvisiii'))
 
 import time
-import thread
+import threading
 import academicIO
 from enums import AIIRQChannel, IRQNumber, AIIRQType, Led
 
@@ -107,7 +107,8 @@ with academicIO.AIIRQ(irq_channel,
     led_on_off = True
 
     # create a thread to wait for the interrupt
-    thread.start_new_thread(AI_IRQ.wait, ())
+    irq_thread = threading.Thread(target=AI_IRQ.wait)
+    irq_thread.start()
 
     # write values 50 times, which makes LED0 flash for 25 seconds
     for x in range(0, 50):

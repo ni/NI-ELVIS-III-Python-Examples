@@ -34,7 +34,7 @@ Result:
 """
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), 'source/nielvisiii'))
 
 import time
 import academicIO
@@ -65,7 +65,7 @@ with academicIO.AnalogInput({'bank': ai_bankA,           # define first channel:
         # use a loop to print all values
         for value in value_array:
             # print the values
-            print value
+            print(value)
 
         # add a short delay before acquiring the next data point
         time.sleep(0.001)

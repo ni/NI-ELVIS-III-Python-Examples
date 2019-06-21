@@ -36,7 +36,7 @@ Result:
 """
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))), 'source/nielvisiii'))
 
 import time
 import academicIO
@@ -72,4 +72,4 @@ with academicIO.UART(bank,
     # read five bytes of data from the device
     return_value = uart.read(bytes_to_read)
     # print the data read from the UART device
-    print return_value
+    print(return_value)

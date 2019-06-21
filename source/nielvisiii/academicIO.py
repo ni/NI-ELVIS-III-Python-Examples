@@ -630,7 +630,7 @@ class I2C(ELVISIII):
                 a single byte before timing out. The default is 1000.
         """
         assert 0 <= slave_address <= 127, "You must specify the slave address using the seven most significant bits (MSB) to 7 bit."
-        assert bytes_to_write >= 0
+        assert len(bytes_to_write) >= 0
         self.addr.write(slave_address << 1)
         timeout = False
         error = False
@@ -935,14 +935,14 @@ class IRQ(ELVISIII):
         """
         assert timeout >= 0
         assert 0 <= irq_number <= IRQNumber.IRQ8
-        print "waiting for IRQ..."
+        print("waiting for IRQ...")
         irq_status = self.session.wait_on_irqs([irq_number], timeout)
         if irq_number in irq_status.irqs_asserted:
-            print irq_number, "was asserted. IRQ occured."
+            print(str(irq_number) + " was asserted. IRQ occured.")
             self.callback_function()
             self.acknowledge(irq_number)
         else:
-            print irq_number, "was not asserted. Timeout."
+            print(str(irq_number), "was not asserted. Timeout.")
 
     def acknowledge(self, irq_number):
         """
