@@ -1,9 +1,9 @@
 """
-NI ELVIS III Analog Input Example - Single Point, Single Channel
+NI ELVIS III Analog Input Example - Single Channel
 This example illustrates how to read values from an analog input (AI) channel
 on the NI ELVIS III. The program first defines the configuration for the AI
 channel, and then reads the AI channel in a loop. Each time the read function
-is called, a single point of data is returned for the channel. The interval
+is called, a single point/multiple points of data is returned for the channel. The interval
 between reads is not precisely timed, and is controlled by a software delay.
 
 The AI configuration consists of four parameters: bank, channel, range, and
@@ -42,6 +42,11 @@ ai_channel = AIChannel.AI0
 ai_range = AIRange.PLUS_OR_MINUS_10V
 ai_mode = AIMode.SINGLE_ENDED
 
+##############################################################################
+# Section 1: Single Point
+# You use the read() function to read a single point of data back from the channel.
+##############################################################################
+print('Single Point, Single Channel')
 # configure the AI channel
 with academicIO.AnalogInput({'bank': ai_bank,
                              'channel': ai_channel,
@@ -53,6 +58,31 @@ with academicIO.AnalogInput({'bank': ai_bank,
         value_array = AI_single_channel.read()
         # print the value
         print(value_array[0])
+
+        # add a short delay before acquiring the next data point
+        time.sleep(0.001)
+
+##############################################################################
+# Section 2: Mutiple Points
+# You use the read(number_of_samples, sample_rate) function to read multiple points of data from the
+# channel.
+##############################################################################
+print('Multiple Points, Single Channel')
+# configure the AI channel
+with academicIO.AnalogInput({'bank': ai_bank,
+                             'channel': ai_channel,
+                             'range': ai_range,
+                             'mode': ai_mode}) as AI_single_channel:
+    number_of_samples = 10
+    sample_rate = 1000
+    # read from the AI channel and display the values 20 times
+    for i in range(0, 1):
+        # read the value
+        value_array = AI_single_channel.read(number_of_samples, sample_rate)
+
+        # print the value
+        for value in value_array[0]:
+            print(value)
 
         # add a short delay before acquiring the next data point
         time.sleep(0.001)

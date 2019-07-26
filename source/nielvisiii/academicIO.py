@@ -51,15 +51,14 @@ class AnalogInput(ELVISIII):
         # create a new AI session
         super(AnalogInput, self).__init__()
 
-        # define a list to store all the necessary information for AI
-        self.channel_list = []
-
         # define local variables which are used to track whether bank A and
         # bank B is used or is opened
         self.a_used = False
         self.b_used = False
         a_open = False
         b_open = False
+
+        configuration_list = []
 
         # initialize and store all channels within *configuration
         for configuration_details in configuration:
@@ -107,6 +106,10 @@ class AnalogInput(ELVISIII):
                 self.a_ready = self.session.registers['AI.A.VAL.RDY']
                 self.a_cnt = self.session.registers['AI.A.CNT']
                 self.a_cntr = self.session.registers['AI.A.CNTR']
+                self.a_stat = self.session.registers['AI.A.STAT']
+
+                self.a_dma_enable = self.session.registers['AI.A.DMA_ENA']
+                self.a_dma = self.session.fifos['AI.A.DMA']
 
                 # congifure the AI channels to read
                 self.a_cnfg.write([8,9,10,11,12,13,14,15,0,1,2,3])
@@ -128,6 +131,10 @@ class AnalogInput(ELVISIII):
                 self.b_ready = self.session.registers['AI.B.VAL.RDY']
                 self.b_cnt = self.session.registers['AI.B.CNT']
                 self.b_cntr = self.session.registers['AI.B.CNTR']
+                self.b_stat = self.session.registers['AI.A.STAT']
+
+                self.b_dma_enable = self.session.registers['AI.B.DMA_ENA']
+                self.b_dma = self.session.fifos['AI.B.DMA']
 
                 # congifure the AI channels to read
                 self.b_cnfg.write([8,9,10,11,12,13,14,15,0,1,2,3])
@@ -144,42 +151,54 @@ class AnalogInput(ELVISIII):
             configuration['bank'] = configuration_details['bank']
             configuration['channel'] = configuration_details['channel']
             configuration['mode'] = configuration_details['mode']
-            self.channel_list.append(configuration)
+            
+            configuration_list.append(configuration)
 
-    def read(self):
+        self.configureAIChannels(configuration_list)
+
+    def read(self, *args):
+        """
+        Reads values from one or more analog input channels. You use the read() function
+        to read a single point of data back from the channel. You use the
+        read(number_of_samples, sample_rate) function to read multiple points of data from the
+        channel.
+
+        Args:
+            If you want to read a single point of data at one time, do not pass any args.
+            If you want to read multiple points of data at one time, Args should contain:
+                number_of_samples (number): 
+                    Specifies the number of samples to read. Valid values are between 0 and 10,000. 
+                sample_rate (number):
+                    Specifies the sampling frequency in hertz of the input signal.
+
+        Returns:
+            return_value (array):
+                Returns the value that this function reads from the analog
+                input channel that you select.
+        """
+        if len(args) == 0:
+            return self.readSinglePoint()
+        elif len(args) == 2:
+            return self.readMultiplePoints(args[0], args[1])
+        else:
+            raise TypeError('Should contain 0 parameter when reading single point or 2 parameters(number_of_samples, sample_rate) when reading multiple points')
+
+    def readSinglePoint(self):
         """
         Reads values from one or more analog input channels. (1 sample)
 
         Returns:
-            return_value (float array):
+            return_value (array):
                 Returns the value that this function reads from the analog
                 input channel that you select.
         """
-        # save the detail information for the AI event into a array
-        # the information is different based on whether it is differential mode
-        channel_list = []
-        for channel in self.channel_list:
-            configuration = {'bank': channel['bank'], 'channel': AIChannel.AI0.value, 'value': channel['value'], 'cnfgval': 0}
-            if channel['mode']:
-                # differential mode
-                configuration['channel'] = 7 + channel['channel']
-                configuration['value'] = self.session.registers['AI.DIFF_' + channel['bank'] + '_' + str(channel['channel']) + '.VAL']
-                configuration['cnfgval'] = int(bin(channel['channel']), 2) | int('1000', 2) | channel['cnfgval']
-            else:
-                # single ended mode
-                configuration['channel'] = 7 + channel['channel']
-                configuration['value'] = self.session.registers['AI.' + channel['bank'] + '_' + str(channel['channel']) + '.VAL']
-                configuration['cnfgval'] = int(bin(channel['channel']), 2) | int('1000', 2) | channel['cnfgval']
-            channel_list.append(configuration)
-
-        # define local variables
         a_current_cnfg = ""
         b_current_cnfg = ""
         a_check = False
         b_check = False
 
         # set the current configuration for all channels within channel_list
-        for channel in channel_list:
+        for channel in self.channel_list:
             if channel['bank'] == Bank.A.value:
                 # set bank A registration and the local variable of it
                 a_current_cnfg = self.a_cnfg.read()
@@ -209,13 +228,213 @@ class AnalogInput(ELVISIII):
                 if b_current_cnfg == check and self.b_ready.read():
                     stop = False
 
-       # append all the read back values and return the array
+        # append all the read back values and return the array
         return_value = []
-        for channellist_details in channel_list:
+        for channellist_details in self.channel_list:
             return_value.append(float(channellist_details['value'].read()))
         return return_value
 
-    def toBinary(self, num):
+    def readMultiplePoints(self, number_of_samples, sample_rate):
+        """
+        Reads values from one or more analog input channels. (n samples)
+
+        Args:
+            number_of_samples (number): 
+                Specifies the number of samples to read. Valid values are between 0 and 10,000. 
+            sample_rate (number):
+                Specifies the sampling frequency in hertz of the input signal. Valid values are between 1 and 1,000 k.
+
+        Returns:
+            return_value (array):
+                Returns the value that this function reads from the analog
+                input channel that you select.
+        """
+        assert 0 <= number_of_samples <= 10000
+        assert 1 <= sample_rate <= 1000000
+        a_check = False
+        b_check = False
+        alist = []
+        blist = []
+
+        for channel in self.channel_list:
+            if channel['bank'] == 'A':
+                alist.append(channel['cnfgval'])
+                a_check = True
+            else:
+                blist.append(channel['cnfgval'])
+                b_check = True
+
+        return_value = []
+        if a_check:
+            return_value.append(self.readBankAMultiplePoints(alist, number_of_samples, sample_rate))
+        if b_check:
+            return_value.append(self.readBankBMultiplePoints(blist, number_of_samples, sample_rate))
+
+        return return_value
+
+    def configureAIChannels(self, configuration_list):
+        """
+        Calculate the configuration for the selected channels.
+
+        Args:
+            configuration_list (Object): 
+                Specifies the information of selected channels. 
+        """
+        self.channel_list = []
+        for channel in configuration_list:
+            configuration = {'bank': channel['bank'], 'channel': AIChannel.AI0.value, 'value': channel['value'], 'cnfgval': 0}
+            if channel['mode']:
+                # differential mode
+                configuration['value'] = self.session.registers['AI.DIFF_' + channel['bank'] + '_' + str(channel['channel']) + '.VAL']
+                configuration['cnfgval'] = channel['channel'] | channel['cnfgval']
+            else:
+                # single ended mode
+                configuration['value'] = self.session.registers['AI.' + channel['bank'] + '_' + str(channel['channel']) + '.VAL']
+                configuration['cnfgval'] = int(bin(channel['channel']), 2) | int('1000', 2) | channel['cnfgval']
+            self.channel_list.append(configuration)
+
+    def readBankAMultiplePoints(self, channels_list, number_of_samples, sample_rate):
+        """
+        Reads values from one or more analog input Bank A channels. (n samples)
+
+        Args:
+            channels_list (Object): 
+                Specifies the configuration for selected channels. 
+            number_of_samples (number): 
+                Specifies the number of samples to read. Valid values are between 0 and 10,000. 
+            sample_rate (number):
+                Specifies the sampling frequency in hertz of the input signal. Valid values are between 1 and 1,000 k.
+
+        Returns:
+            return_value (array):
+                Returns the value that this function reads from the analog
+                input channel that you select.
+        """
+        number_of_channels = len(channels_list)
+        if number_of_channels < 12:
+            for x in range(0, 12 - number_of_channels):
+                channels_list.append(0)
+
+        count, actual_sample_rate = self.calculateSampleRateToTicks(sample_rate * number_of_channels)
+
+        self.a_cnt.write(0)
+        self.a_cnfg.write(channels_list)
+        self.a_cntr.write(count)
+        self.a_dma_enable.write(True)
+        while True:
+            if self.a_cnt.read() == 0 and self.a_cnfg.read() == channels_list and self.a_cntr.read() == count and self.a_dma_enable.read() == True:
+                break
+        self.a_dma.start()
+        self.a_dma.stop()
+        self.a_cnt.write(number_of_channels)
+        while True:
+            if self.a_cnt.read() == number_of_channels:
+                break
+
+        max_readback_samples = 10000
+        number_of_expected_samples = number_of_channels * number_of_samples
+        readvalue = []
+        while True:
+            if number_of_expected_samples <= max_readback_samples:
+                readvalue.extend(self.a_dma.read(number_of_expected_samples, timeout_ms=-1))
+                break
+            else:
+                readvalue.extend(self.a_dma.read(max_readback_samples, timeout_ms=-1))
+                number_of_expected_samples = number_of_expected_samples - max_readback_samples
+        readvalue = readvalue[0]
+        self.a_dma_enable.write(False)
+        self.a_cnt.write(0)
+        while True:
+            if self.a_stat.read() == 0:
+                break
+        result = []
+        for index in range(0, number_of_channels):
+            result.append(readvalue[index::number_of_channels])
+        return result
+
+    def readBankBMultiplePoints(self, channels_list, number_of_samples, sample_rate):
+        """
+        Reads values from one or more analog input Bank B channels. (n samples)
+
+        Args:
+            channels_list (Object): 
+                Specifies the configuration for selected channels. 
+            number_of_samples (number): 
+                Specifies the number of samples to read. Valid values are between 0 and 10,000. 
+            sample_rate (number):
+                Specifies the sampling frequency in hertz of the input signal. Valid values are between 1 and 1,000 k.
+
+        Returns:
+            return_value (array):
+                Returns the value that this function reads from the analog
+                input channel that you select.
+        """
+        number_of_channels = len(channels_list)
+        if number_of_channels < 12:
+            for x in range(0, 12 - number_of_channels):
+                channels_list.append(0)
+
+        count, actual_sample_rate = self.calculateSampleRateToTicks(sample_rate * number_of_channels)
+
+        self.b_cnt.write(0)
+        self.b_cnfg.write(channels_list)
+        self.b_cntr.write(count)
+        self.b_dma_enable.write(True)
+        while True:
+            if self.b_cnt.read() == 0 and self.b_cnfg.read() == channels_list and self.b_cntr.read() == count and self.b_dma_enable.read() == True:
+                break
+        self.b_dma.start()
+        self.b_dma.stop()
+        self.b_cnt.write(number_of_channels)
+        while True:
+            if self.b_cnt.read() == number_of_channels:
+                break
+
+        max_readback_samples = 10000
+        number_of_expected_samples = number_of_channels * number_of_samples
+        readvalue = []
+        while True:
+            if number_of_expected_samples <= max_readback_samples:
+                readvalue.extend(self.b_dma.read(number_of_expected_samples, timeout_ms=-1))
+                break
+            else:
+                readvalue.extend(self.b_dma.read(max_readback_samples, timeout_ms=-1))
+                number_of_expected_samples = number_of_expected_samples - max_readback_samples
+        readvalue = readvalue[0]
+        self.b_dma_enable.write(False)
+        self.b_cnt.write(0)
+        while True:
+            if self.b_stat.read() == 0:
+                break
+        result = []
+        for index in range(0, number_of_channels):
+            result.append(readvalue[index::number_of_channels])
+        return result
+
+    def calculateSampleRateToTicks(self, sample_rate):
+        """
+        Calculate and return the actual sample rate(S/s) and count(tick/s).
+
+        Args:
+            sample_rate (number):
+                The expected sample rate you inputted.
+
+        Returns:
+            count (array):
+                The actual count for AI.
+            actual_sample_rate (number):
+                The actual sample rate for AI.
+        """
+        minimum = 1000
+        maximum = 30000
+        if sample_rate < minimum: sample_rate = minimum
+        if sample_rate > maximum: sample_rate = maximum
+        fpga_clock_rate = 40000000
+        count = round(fpga_clock_rate / sample_rate)
+        actual_sample_rate = fpga_clock_rate / count
+        return count, actual_sample_rate
+
+    def _toBinary(self, num):
         return bin(int(num))
 
 
