@@ -1,4 +1,5 @@
 import os
+import logging
 import sys
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
 
@@ -935,14 +936,17 @@ class IRQ(ELVISIII):
         """
         assert timeout >= 0
         assert 0 <= irq_number <= IRQNumber.IRQ8
-        print("waiting for IRQ...")
+        logging.getLogger().setLevel(logging.INFO)
+        logging.info('waiting for IRQ...')
         irq_status = self.session.wait_on_irqs([irq_number], timeout)
         if irq_number in irq_status.irqs_asserted:
-            print(str(irq_number) + " was asserted. IRQ occured.")
+            message = str(irq_number) + " was asserted. IRQ occured."
+            logging.info(message)
             self.callback_function()
             self.acknowledge(irq_number)
         else:
-            print(str(irq_number), "was not asserted. Timeout.")
+            message = str(irq_number), "was not asserted. Timeout."
+            logging.info(message)
 
     def acknowledge(self, irq_number):
         """
