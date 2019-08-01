@@ -13,19 +13,19 @@ from enums import *
 
 bank = Bank.A
 
-class TestReadSingleChannel(unittest.TestCase):
+class Test_AnalogInput_ReadSingleChannel(unittest.TestCase):
     def setUp(self):
         self.AI_single_channel = academicIO.AnalogInput({'bank': bank, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_5V, 'mode': AIMode.SINGLE_ENDED})
 
     def tearDown(self):
         self.AI_single_channel.close()
 
-    def test_singlePoint(self):
+    def test_ReadSinglePoint_ReturnExpectedReadBack(self):
         value_array = self.AI_single_channel.read()
         for value in value_array:
             self.assertEqual(value, pytest.approx(3.3, 0.1))
 
-class TestReadMultipleChannels(unittest.TestCase):
+class Test_AnalogInput_ReadMultipleChannels(unittest.TestCase):
     def setUp(self):
         self.AI_multiple_channels = academicIO.AnalogInput({'bank': bank, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_10V},
                                                            {'bank': bank, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL})
@@ -33,7 +33,7 @@ class TestReadMultipleChannels(unittest.TestCase):
     def tearDown(self):
         self.AI_multiple_channels.close()
 
-    def test_singlePoint(self):
+    def test_ReadSinglePoint_ReturnExpectedReadBack(self):
         value_array = self.AI_multiple_channels.read()
         for index, value in enumerate(value_array):
             if index == 0:
@@ -41,19 +41,19 @@ class TestReadMultipleChannels(unittest.TestCase):
             else:
                 self.assertEqual(value, pytest.approx(-1.7, 0.1))
 
-class TestOpenAssertion(unittest.TestCase):
-    def test_invalidBank(self):
+class Test_AnalogInput_Assertion(unittest.TestCase):
+    def test_OpenWithInvalidBank_ShowAssertion(self):
         with self.assertRaises(AssertionError):
             academicIO.AnalogInput({'bank': 'C', 'channel': AIChannel.AI0, 'mode': AIMode.SINGLE_ENDED})
 
-    def test_invalidChannelInSingleEndedMode(self):
+    def test_OpenWithInvalidChannelInSingleEndedMode_ShowAssertion(self):
         with self.assertRaises(AssertionError):
             academicIO.AnalogInput({'bank': bank, 'channel': 8, 'mode': AIMode.SINGLE_ENDED})
 
-    def test_invalidChannelInDifferentialMode(self):
+    def test_OpenWithInvalidChannelInDifferentialMode_ShowAssertion(self):
         with self.assertRaises(AssertionError):
             academicIO.AnalogInput({'bank': bank, 'channel': AIChannel.AI4, 'mode': AIMode.DIFFERENTIAL})
 
-    def test_invalidRange(self):
+    def test_OpenWithInvalidRange_ShowAssertion(self):
         with self.assertRaises(AssertionError):
             academicIO.AnalogInput({'bank': bank, 'channel': AIChannel.AI2, 'range': '+/-20V'})
