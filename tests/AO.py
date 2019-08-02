@@ -48,7 +48,7 @@ class Test_AnalogOutput_WriteSingleChannel(unittest.TestCase):
         AO_multiple_channels.close()
         AI_multiple_channels.close()
 
-class Test_AnalogOutput_WriteMultipleChannels(unittest.TestCase):
+class Test_AnalogOutput_WriteTwoChannels(unittest.TestCase):
     def setUp(self):
         self.AO_multiple_channels = academicIO.AnalogOutput({'bank': bank, 'channel': AOChannel.AO0}, 
                                                             {'bank': bank, 'channel': AOChannel.AO1})
