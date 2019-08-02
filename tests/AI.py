@@ -25,7 +25,7 @@ class Test_AnalogInput_ReadSingleChannel(unittest.TestCase):
         for value in value_array:
             self.assertEqual(value, pytest.approx(3.3, 0.1))
 
-class Test_AnalogInput_ReadMultipleChannels(unittest.TestCase):
+class Test_AnalogInput_ReadTwoChannels(unittest.TestCase):
     def setUp(self):
         self.AI_multiple_channels = academicIO.AnalogInput({'bank': bank, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_10V},
                                                            {'bank': bank, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL})
