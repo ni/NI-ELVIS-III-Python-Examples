@@ -1,18 +1,15 @@
 #### To run the unittest, uploads /tests and /source folders to `/home/admin`, and executes the following commands:
 ```
-python tests/filename.py
+python -m unittest tests/filename.py
 ```
-For example: use `python tests/ButtonIRQ.py` to run ButtonIRQ unittest. You will see things like this when the unittest is run successfully.
-> waiting for IRQ...</br>
-> 1 was asserted. IRQ occured.</br>
-> Button interrupt is triggered. Now it is callback time.</br>
-> Caught the error - rising and falling interrupt type can't be false at the same time.</br>
-> Caught the error - 0 can't be irq_number of ButtonIRQ.</br>
-> Caught the error - the timeout value should be greater than 0.</br>
-> Caught the error - the number of edges of the signal should be greater than 0.</br>
-> Caught the error - the number of edges of the signal should be less than 4294967296.</br>
+For example: use `python -m unittest tests/AI.py` to run AI unittest. You will see things like this when the unittest is run successfully.
+```
+........
+----------------------------------------------------------------------
+Ran 8 tests in 15.529s
 
-If no 'Caught the error' is shown, it means the assert is not functional.
+OK
+```
 
 #### The hardware connection for Python unit tests is as following.
 
