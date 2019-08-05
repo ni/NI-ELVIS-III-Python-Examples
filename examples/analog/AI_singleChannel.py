@@ -78,10 +78,10 @@ with academicIO.AnalogInput({'bank': ai_bank,
                              'range': ai_range,
                              'mode': ai_mode}) as AI_single_channel:
     # specify the number of samples to read and the sampling frequency in hertz of the input signal
-    number_of_samples = 10
+    number_of_samples = 100
     sample_rate = 1000
     # read from the AI channel and display the values 20 times
-    for i in range(0, 1):
+    for i in range(0, 20):
         # read the value
         value_array = AI_single_channel.read(number_of_samples, sample_rate)
 

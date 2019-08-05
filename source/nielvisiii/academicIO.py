@@ -63,6 +63,8 @@ class AnalogInput(ELVISIII):
         # initialize and store all channels within *configuration
         for configuration_details in configuration:
             # check that user inputted bank is correct
+            assert 'bank' in configuration_details
+            assert 'channel' in configuration_details
             assert configuration_details['bank'] in Bank
 
             # give default values for mode
@@ -111,15 +113,6 @@ class AnalogInput(ELVISIII):
                 self.a_dma_enable = self.session.registers['AI.A.DMA_ENA']
                 self.a_dma = self.session.fifos['AI.A.DMA']
 
-                # congifure the AI channels to read
-                self.a_cnfg.write([8,9,10,11,12,13,14,15,0,1,2,3])
-                # regsiter the number of valid channels
-                self.a_cnt.write(12)
-                # register the analog sample rate
-                # 1000 = 40MHz FPGA Clock Frequency / 40KHz (desired rate)
-                # thus 1000 indicates 40KHz rate here
-                self.a_cntr.write(1000)
-
                 self.a_used = True
                 a_open = True
 
@@ -136,15 +129,6 @@ class AnalogInput(ELVISIII):
                 self.b_dma_enable = self.session.registers['AI.B.DMA_ENA']
                 self.b_dma = self.session.fifos['AI.B.DMA']
 
-                # congifure the AI channels to read
-                self.b_cnfg.write([8,9,10,11,12,13,14,15,0,1,2,3])
-                # regsiter the number of valid channels
-                self.b_cnt.write(12)
-                # register the analog sample rate
-                # 1000 = 40MHz FPGA Clock Frequency / 40KHz (desired rate).
-                # thus 1000 indicates 40KHz rate here.
-                self.b_cntr.write(1000)
-
                 self.b_used = True
                 b_open = True
 
@@ -159,7 +143,7 @@ class AnalogInput(ELVISIII):
                 configuration = {'bank': channel['bank'], 'value': channel['value'], 'cnfgval': 0}
                 if channel['mode']:
                     # differential mode
-                    configuration['channel'] = channel['channel'] + 7
+                    configuration['channel'] = channel['channel'] + 8
                     configuration['value'] = self.session.registers['AI.DIFF_' + channel['bank'] + '_' + str(channel['channel']) + '.VAL']
                     configuration['cnfgval'] = channel['channel'] | channel['cnfgval']
                 else:
@@ -214,6 +198,26 @@ class AnalogInput(ELVISIII):
         b_current_cnfg = ""
         a_check = False
         b_check = False
+
+        if self.a_used:
+            # congifure the AI channels to read
+            self.a_cnfg.write([8,9,10,11,12,13,14,15,0,1,2,3])
+            # regsiter the number of valid channels
+            self.a_cnt.write(12)
+            # register the analog sample rate
+            # 1000 = 40MHz FPGA Clock Frequency / 40KHz (desired rate)
+            # thus 1000 indicates 40KHz rate here
+            self.a_cntr.write(1000)
+
+        if self.b_used:
+            # congifure the AI channels to read
+            self.b_cnfg.write([8,9,10,11,12,13,14,15,0,1,2,3])
+            # regsiter the number of valid channels
+            self.b_cnt.write(12)
+            # register the analog sample rate
+            # 1000 = 40MHz FPGA Clock Frequency / 40KHz (desired rate).
+            # thus 1000 indicates 40KHz rate here.
+            self.b_cntr.write(1000)
 
         # set the current configuration for all channels within channel_list
         for channel in self.channel_list:
@@ -271,9 +275,9 @@ class AnalogInput(ELVISIII):
         """
         number_of_channels = len(self.channel_list)
         if number_of_channels == 1:
-            assert 1 <= sample_rate <= 1000000, 'If user selects only 1 channel, then the min sample rate is 1 and the max sample rate can be 1MHz.'
+            assert 1 <= sample_rate <= 1000000, 'If you select only 1 channel, then the min sample rate is 1 and the max sample rate can be 1MHz.'
         else:
-            assert 1 <= sample_rate <= 500000, 'If user selects multiple channels, then the min sample rate is 1 and the shared max sample rate is 500KHz.'
+            assert 1 <= sample_rate <= 500000, 'If you select multiple channels, then the min sample rate is 1 and the shared max sample rate is 500KHz.'
         assert 0 <= number_of_samples <= 10000
 
         a_check = False
@@ -337,12 +341,11 @@ class AnalogInput(ELVISIII):
         readvalue = []
         while True:
             if number_of_expected_samples <= max_readback_samples:
-                readvalue.extend(self.a_dma.read(number_of_expected_samples, timeout_ms=-1))
+                readvalue.extend(self.a_dma.read(number_of_expected_samples, timeout_ms=-1)[0])
                 break
             else:
-                readvalue.extend(self.a_dma.read(max_readback_samples, timeout_ms=-1))
+                readvalue.extend(self.a_dma.read(max_readback_samples, timeout_ms=-1)[0])
                 number_of_expected_samples = number_of_expected_samples - max_readback_samples
-        readvalue = readvalue[0]
         self.a_dma_enable.write(False)
         self.a_cnt.write(0)
         while True:
@@ -387,12 +390,11 @@ class AnalogInput(ELVISIII):
         readvalue = []
         while True:
             if number_of_expected_samples <= max_readback_samples:
-                readvalue.extend(self.b_dma.read(number_of_expected_samples, timeout_ms=-1))
+                readvalue.extend(self.b_dma.read(number_of_expected_samples, timeout_ms=-1)[0])
                 break
             else:
-                readvalue.extend(self.b_dma.read(max_readback_samples, timeout_ms=-1))
+                readvalue.extend(self.b_dma.read(max_readback_samples, timeout_ms=-1)[0])
                 number_of_expected_samples = number_of_expected_samples - max_readback_samples
-        readvalue = readvalue[0]
         self.b_dma_enable.write(False)
         self.b_cnt.write(0)
         while True:
