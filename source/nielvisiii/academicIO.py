@@ -237,21 +237,22 @@ class AnalogOutput(ELVISIII):
         """
         super(AnalogOutput, self).__init__()
         self.channel_list = []
-        channel_value = {'value': '0'}
         for configuration_details in configuration:
+            assert 'bank' in configuration_details
+            assert 'channel' in configuration_details
             assert configuration_details['bank'] in Bank
             assert AOChannel.AO0 <= configuration_details['channel'] <= AOChannel.AO1
+
             configuration_details['bank'] = configuration_details['bank'].value
             configuration_details['channel'] = configuration_details['channel'].value
-            self.value = self.session.registers['AO.' + configuration_details['bank'] + '_' + str(configuration_details['channel']) + '.VAL']
+            configuration_details['value_address'] = self.session.registers['AO.' + configuration_details['bank'] + '_' + str(configuration_details['channel']) + '.VAL']
             self.go = self.session.registers['AO.SYS.GO']
             self.stat = self.session.registers['AO.SYS.STAT']
             self.lsb_weights = 4882813.0 / 1E+9
             self.offset = 0.0 / 1E+9
             self.signed = True
             self.enamask = configuration_details['channel']^2
-            channel_value['value'] = self.value
-            self.channel_list.append(channel_value['value'])
+            self.channel_list.append(configuration_details)
 
     def write(self, value):
         """
@@ -265,9 +266,12 @@ class AnalogOutput(ELVISIII):
                 specified value to the nearest valid value when you execute
                 the program.
         """
+        if type(value) != int and type(value) != float:
+            raise TypeError('write() takes a int or a float argument, but given %s' % type(value))
+ 
         for channel in self.channel_list:
             stat_value = self.stat.read()
-            self.value = channel
+            self.value = channel['value_address']
             self.value.write(value)
             self.go.write(True)
             stat_current = stat_value
