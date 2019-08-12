@@ -138,7 +138,7 @@ class AnalogInput(ELVISIII):
             
             configuration_list[configuration['bank']].append(configuration)
 
-        def calculate_configuration_values(configuration_settings):
+        def _calculate_configuration_values(configuration_settings):
             for channel in configuration_settings:
                 configuration = {'bank': channel['bank'], 'value': channel['value'], 'cnfgval': 0}
                 if channel['mode']:
@@ -154,8 +154,8 @@ class AnalogInput(ELVISIII):
                 self.channel_list.append(configuration)
         
         self.channel_list = []
-        calculate_configuration_values(configuration_list['A'])
-        calculate_configuration_values(configuration_list['B'])
+        _calculate_configuration_values(configuration_list['A'])
+        _calculate_configuration_values(configuration_list['B'])
 
     def read(self, *args):
         """
@@ -179,13 +179,13 @@ class AnalogInput(ELVISIII):
         """
         args_len = len(args)
         if args_len == 0:
-            return self.readSinglePoint()
+            return self._readSinglePoint()
         elif args_len == 2:
-            return self.readMultiplePoints(args[0], args[1])
+            return self._readMultiplePoints(args[0], args[1])
         else:
             raise TypeError('read() takes either 0 (single point) or 2 (multiple points) arguments, but given %d' % args_len)
 
-    def readSinglePoint(self):
+    def _readSinglePoint(self):
         """
         Reads values from one or more analog input channels. (1 sample)
 
@@ -256,7 +256,7 @@ class AnalogInput(ELVISIII):
             return_value.append(float(channellist_details['value'].read()))
         return return_value
 
-    def readMultiplePoints(self, number_of_samples, sample_rate):
+    def _readMultiplePoints(self, number_of_samples, sample_rate):
         """
         Reads values from one or more analog input channels. (n samples)
 
@@ -297,17 +297,17 @@ class AnalogInput(ELVISIII):
                 bank_B_number_of_channels = bank_B_number_of_channels + 1
                 b_check = True
 
-        count, actual_sample_rate = self.calculateSampleRateToTicks(sample_rate * number_of_channels)
+        count, actual_sample_rate = self._calculateSampleRateToTicks(sample_rate * number_of_channels)
 
         return_value = []
         if a_check:
-            return_value.append(self.readBankAMultiplePoints(bank_A_configuration_values, bank_A_number_of_channels, number_of_samples, count))
+            return_value.append(self._readBankAMultiplePoints(bank_A_configuration_values, bank_A_number_of_channels, number_of_samples, count))
         if b_check:
-            return_value.append(self.readBankBMultiplePoints(bank_B_configuration_values, bank_B_number_of_channels, number_of_samples, count))
+            return_value.append(self._readBankBMultiplePoints(bank_B_configuration_values, bank_B_number_of_channels, number_of_samples, count))
 
         return return_value
 
-    def readBankAMultiplePoints(self, channels_list, number_of_channels, number_of_samples, count):
+    def _readBankAMultiplePoints(self, channels_list, number_of_channels, number_of_samples, count):
         """
         Reads values from one or more analog input Bank A channels. (n samples)
 
@@ -356,7 +356,7 @@ class AnalogInput(ELVISIII):
             result.append(readvalue[index::number_of_channels])
         return result
 
-    def readBankBMultiplePoints(self, channels_list, number_of_channels, number_of_samples, count):
+    def _readBankBMultiplePoints(self, channels_list, number_of_channels, number_of_samples, count):
         """
         Reads values from one or more analog input Bank B channels. (n samples)
 
@@ -405,7 +405,7 @@ class AnalogInput(ELVISIII):
             result.append(readvalue[index::number_of_channels])
         return result
 
-    def calculateSampleRateToTicks(self, sample_rate):
+    def _calculateSampleRateToTicks(self, sample_rate):
         """
         Calculate and return the actual sample rate(S/s) and count(tick/s).
 

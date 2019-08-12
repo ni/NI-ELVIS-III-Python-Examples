@@ -223,37 +223,37 @@ class Test_AnalogInput_CalculateSampleRateToTicks(unittest.TestCase):
         self.AI.close()
         
     def test_GivenMin_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI.calculateSampleRateToTicks(limits['sampleRate']['min'])
+        count, actual_sample_rate = self.AI._calculateSampleRateToTicks(limits['sampleRate']['min'])
 
         self.assertEqual(count, 40000)
         self.assertEqual(actual_sample_rate, 1000)
 
     def test_GivenAThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI.calculateSampleRateToTicks(1000)
+        count, actual_sample_rate = self.AI._calculateSampleRateToTicks(1000)
 
         self.assertEqual(count, 40000)
         self.assertEqual(actual_sample_rate, 1000)
 
     def test_GivenFiveThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI.calculateSampleRateToTicks(5000)
+        count, actual_sample_rate = self.AI._calculateSampleRateToTicks(5000)
 
         self.assertEqual(count, 8000)
         self.assertEqual(actual_sample_rate, 5000)
 
     def test_GivenTenThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI.calculateSampleRateToTicks(10000)
+        count, actual_sample_rate = self.AI._calculateSampleRateToTicks(10000)
 
         self.assertEqual(count, 4000)
         self.assertEqual(actual_sample_rate, 10000)
 
     def test_GivenFiftyThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI.calculateSampleRateToTicks(50000)
+        count, actual_sample_rate = self.AI._calculateSampleRateToTicks(50000)
 
         self.assertEqual(count, 1333)
         self.assertEqual(actual_sample_rate, pytest.approx(30007.5, 0.01))
 
     def test_GivenMax_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI.calculateSampleRateToTicks(limits['sampleRate']['max'])
+        count, actual_sample_rate = self.AI._calculateSampleRateToTicks(limits['sampleRate']['max'])
 
         self.assertEqual(count, 1333)
         self.assertEqual(actual_sample_rate, pytest.approx(30007.5, 0.01))
