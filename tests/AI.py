@@ -139,6 +139,49 @@ class Test_AnalogInput_ReadTwoChannels(unittest.TestCase):
         
         self.checkMultiplePointsReadBackValues(value_array, number_of_samples)
 
+class Test_AnalogInput_openTwoNsampleAtTheSameTime(unittest.TestCase):
+    def open_first_ai(self):
+        self.first_ai = academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_10V},
+                                                {'bank': bankA, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL})
+    def open_second_ai(self):
+        self.second_ai = academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI6, 'range': AIRange.PLUS_OR_MINUS_10V})
+
+    def close_first_ai(self):
+        self.first_ai.close()
+
+    def close_second_ai(self):
+        self.second_ai.close()
+
+    def checkReadbankValue(self, value_array, expected_value, expected_number_of_samples):
+        self.assertEqual(len(value_array), expected_number_of_samples)
+        for value in value_array:
+            self.assertEqual(float(value), pytest.approx(expected_value, 0.1))
+
+    def test_readTwoAiNsampleAndCloseItThenReadAgain_ReturnExpectedReadBack(self):
+        number_of_samples = 100
+        sample_rate = 1000
+        self.open_first_ai()
+        self.open_second_ai()
+        
+        first_ai_value_array = self.first_ai.read(number_of_samples, sample_rate)
+        second_ai_value_array = self.second_ai.read(number_of_samples, sample_rate)
+
+        self.checkReadbankValue(first_ai_value_array[0][0], 3.3, number_of_samples)
+        self.checkReadbankValue(first_ai_value_array[0][1], -1.7, number_of_samples)
+        self.checkReadbankValue(second_ai_value_array[0][0], 5, number_of_samples)
+
+        self.close_first_ai()
+        self.close_second_ai()
+
+        self.open_first_ai()
+
+        first_ai_value_array = self.first_ai.read(number_of_samples, sample_rate)
+
+        self.checkReadbankValue(first_ai_value_array[0][0], 3.3, number_of_samples)
+        self.checkReadbankValue(first_ai_value_array[0][1], -1.7, number_of_samples)
+
+        self.close_first_ai()
+
 class Test_AnalogInput_OpenAssertion(unittest.TestCase):
     def test_OpenWithoutBank_ShowAssertion(self):
         with self.assertRaises(AssertionError):
@@ -223,37 +266,37 @@ class Test_AnalogInput_CalculateSampleRateToTicks(unittest.TestCase):
         self.AI.close()
         
     def test_GivenMin_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI._calculateSampleRateToTicks(limits['sampleRate']['min'])
+        count, actual_sample_rate = self.AI._calculate_sample_rate_to_ticks(limits['sampleRate']['min'])
 
         self.assertEqual(count, 40000)
         self.assertEqual(actual_sample_rate, 1000)
 
     def test_GivenAThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI._calculateSampleRateToTicks(1000)
+        count, actual_sample_rate = self.AI._calculate_sample_rate_to_ticks(1000)
 
         self.assertEqual(count, 40000)
         self.assertEqual(actual_sample_rate, 1000)
 
     def test_GivenFiveThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI._calculateSampleRateToTicks(5000)
+        count, actual_sample_rate = self.AI._calculate_sample_rate_to_ticks(5000)
 
         self.assertEqual(count, 8000)
         self.assertEqual(actual_sample_rate, 5000)
 
     def test_GivenTenThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI._calculateSampleRateToTicks(10000)
+        count, actual_sample_rate = self.AI._calculate_sample_rate_to_ticks(10000)
 
         self.assertEqual(count, 4000)
         self.assertEqual(actual_sample_rate, 10000)
 
     def test_GivenFiftyThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI._calculateSampleRateToTicks(50000)
+        count, actual_sample_rate = self.AI._calculate_sample_rate_to_ticks(50000)
 
         self.assertEqual(count, 1333)
         self.assertEqual(actual_sample_rate, pytest.approx(30007.5, 0.01))
 
     def test_GivenMax_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI._calculateSampleRateToTicks(limits['sampleRate']['max'])
+        count, actual_sample_rate = self.AI._calculate_sample_rate_to_ticks(limits['sampleRate']['max'])
 
         self.assertEqual(count, 1333)
         self.assertEqual(actual_sample_rate, pytest.approx(30007.5, 0.01))
@@ -308,6 +351,8 @@ class Test_AnalogInput_CalculateCnfgValue(unittest.TestCase):
             self.assertEqual(channel_settings['channel'], expectedResults[index]['channel'])
             self.assertEqual(channel_settings['cnfgval'], expectedResults[index]['cnfgval'])
 
+        AI.close()
+
     def test_OpenFiveChannelsInBankAAndThreeChannelsInBankB_HaveExpectedCnfgvalue(self):
         expectedResults = [
             {'bank': 'A', 'channel': AIChannel.AI3 + 8, 'cnfgval': 3},
@@ -333,3 +378,5 @@ class Test_AnalogInput_CalculateCnfgValue(unittest.TestCase):
             self.assertEqual(channel_settings['bank'], expectedResults[index]['bank'])
             self.assertEqual(channel_settings['channel'], expectedResults[index]['channel'])
             self.assertEqual(channel_settings['cnfgval'], expectedResults[index]['cnfgval'])
+
+        AI.close()

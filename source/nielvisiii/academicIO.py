@@ -4,7 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.
 
 import time
 import pyvisa
-from nifpga import Session
+from nifpga import Session, Status
 from enums import *
 
 class ELVISIII(object):
@@ -26,6 +26,9 @@ class ELVISIII(object):
 
 
 class AnalogInput(ELVISIII):
+    number_of_n_sample = { 'A': 0, 'B': 0 }
+    dma = { 'A': None, 'B': None }
+
     """ NI ELVIS III Analog Input (AI) API. """
     def __init__(self, *configuration):
         """
@@ -34,7 +37,7 @@ class AnalogInput(ELVISIII):
 
         Args:
             *configuration (array):
-                bank (Bank):specifies the name of the bank to open a session:
+                bank (Bank):
                     Specifies the name of the bank to open a session.
                 channel (AIOChannel):
                     Specifies the names of the analog input channels to open a
@@ -53,10 +56,30 @@ class AnalogInput(ELVISIII):
 
         # define local variables which are used to track whether bank A and
         # bank B is used or is opened
-        self.a_used = False
-        self.b_used = False
         a_open = False
         b_open = False
+
+        self.ready = { 'A': None, 'B': None }
+        self.cnt = { 'A': None, 'B': None }
+        self.cnfg = { 'A': None, 'B': None }
+        self.cntr = { 'A': None, 'B': None }
+        self.stat = { 'A': None, 'B': None }
+        self.is_onesample_opened  = { 'A': False, 'B': False }
+        self.is_nsample_opened = { 'A': False, 'B': False }
+        self.dma_enabled = { 'A': None, 'B': None }
+        
+        self.is_bank_A_n_sample_opened = False
+        self.is_bank_B_n_sample_opened = False
+
+        def __set_registration_addresses(bank):
+            # get registration addresses
+                self.cnfg[bank] = self.session.registers['AI.%s.CNFG' % bank]
+                self.ready[bank] = self.session.registers['AI.%s.VAL.RDY' % bank]
+                self.cnt[bank] = self.session.registers['AI.%s.CNT' % bank]
+                self.cntr[bank] = self.session.registers['AI.%s.CNTR' % bank]
+                self.stat[bank] = self.session.registers['AI.%s.STAT' % bank]
+
+                self.dma_enabled[bank] = self.session.registers['AI.%s.DMA_ENA' % bank]
 
         configuration_list = { 'A': [], 'B': [] }
 
@@ -102,34 +125,22 @@ class AnalogInput(ELVISIII):
 
             # get the bank A registration addresses and initialize them
             if configuration_details['bank'] == Bank.A.value and not a_open:
+                bank = Bank.A.value
 
                 # get registration addresses
-                self.a_cnfg = self.session.registers['AI.A.CNFG']
-                self.a_ready = self.session.registers['AI.A.VAL.RDY']
-                self.a_cnt = self.session.registers['AI.A.CNT']
-                self.a_cntr = self.session.registers['AI.A.CNTR']
-                self.a_stat = self.session.registers['AI.A.STAT']
+                __set_registration_addresses(bank)
 
-                self.a_dma_enable = self.session.registers['AI.A.DMA_ENA']
-                self.a_dma = self.session.fifos['AI.A.DMA']
-
-                self.a_used = True
+                self.is_onesample_opened[bank] = True
                 a_open = True
 
             # get the bank B registration addresses and initialize them
             if configuration_details['bank'] == Bank.B.value and not b_open:
+                bank = Bank.B.value
 
                 # get registration addresses
-                self.b_cnfg = self.session.registers['AI.B.CNFG']
-                self.b_ready = self.session.registers['AI.B.VAL.RDY']
-                self.b_cnt = self.session.registers['AI.B.CNT']
-                self.b_cntr = self.session.registers['AI.B.CNTR']
-                self.b_stat = self.session.registers['AI.A.STAT']
+                __set_registration_addresses(bank)
 
-                self.b_dma_enable = self.session.registers['AI.B.DMA_ENA']
-                self.b_dma = self.session.fifos['AI.B.DMA']
-
-                self.b_used = True
+                self.is_onesample_opened[bank] = True
                 b_open = True
 
             configuration['bank'] = configuration_details['bank']
@@ -138,7 +149,7 @@ class AnalogInput(ELVISIII):
             
             configuration_list[configuration['bank']].append(configuration)
 
-        def _calculate_configuration_values(configuration_settings):
+        def __calculate_configuration_values(configuration_settings):
             for channel in configuration_settings:
                 configuration = {'bank': channel['bank'], 'value': channel['value'], 'cnfgval': 0}
                 if channel['mode']:
@@ -154,8 +165,8 @@ class AnalogInput(ELVISIII):
                 self.channel_list.append(configuration)
         
         self.channel_list = []
-        _calculate_configuration_values(configuration_list['A'])
-        _calculate_configuration_values(configuration_list['B'])
+        __calculate_configuration_values(configuration_list[Bank.A.value])
+        __calculate_configuration_values(configuration_list[Bank.B.value])
 
     def read(self, *args):
         """
@@ -179,13 +190,13 @@ class AnalogInput(ELVISIII):
         """
         args_len = len(args)
         if args_len == 0:
-            return self._readSinglePoint()
+            return self.__read_single_point()
         elif args_len == 2:
-            return self._readMultiplePoints(args[0], args[1])
+            return self.__read_multiple_points(args[0], args[1])
         else:
             raise TypeError('read() takes either 0 (single point) or 2 (multiple points) arguments, but given %d' % args_len)
 
-    def _readSinglePoint(self):
+    def __read_single_point(self):
         """
         Reads values from one or more analog input channels. (1 sample)
 
@@ -196,59 +207,45 @@ class AnalogInput(ELVISIII):
         """
         a_current_cnfg = ""
         b_current_cnfg = ""
-        a_check = False
-        b_check = False
+        a_opened = False
+        b_opened = False
 
-        if self.a_used:
-            # congifure the AI channels to read
-            self.a_cnfg.write([8,9,10,11,12,13,14,15,0,1,2,3])
-            # regsiter the number of valid channels
-            self.a_cnt.write(12)
-            # register the analog sample rate
-            # 1000 = 40MHz FPGA Clock Frequency / 40KHz (desired rate)
-            # thus 1000 indicates 40KHz rate here
-            self.a_cntr.write(1000)
+        def __initialize_bank_configuration(bank):
+            if self.is_onesample_opened[bank]:
+                # congifure the AI channels to read
+                self.cnfg[bank].write([8,9,10,11,12,13,14,15,0,1,2,3])
+                # regsiter the number of valid channels
+                self.cnt[bank].write(12)
+                # register the analog sample rate
+                # 1000 = 40MHz FPGA Clock Frequency / 40KHz (desired rate)
+                # thus 1000 indicates 40KHz rate here
+                self.cntr[bank].write(1000)
 
-        if self.b_used:
-            # congifure the AI channels to read
-            self.b_cnfg.write([8,9,10,11,12,13,14,15,0,1,2,3])
-            # regsiter the number of valid channels
-            self.b_cnt.write(12)
-            # register the analog sample rate
-            # 1000 = 40MHz FPGA Clock Frequency / 40KHz (desired rate).
-            # thus 1000 indicates 40KHz rate here.
-            self.b_cntr.write(1000)
+        for bank in Bank:
+            __initialize_bank_configuration(bank.value)
 
         # set the current configuration for all channels within channel_list
         for channel in self.channel_list:
             if channel['bank'] == Bank.A.value:
                 # set bank A registration and the local variable of it
-                a_current_cnfg = self.a_cnfg.read()
+                a_current_cnfg = self.cnfg['A'].read()
                 a_current_cnfg[channel['channel']] = channel['cnfgval']
-                a_check = True
+                a_opened = True
             else:
                 # set bank B registration and the local variable of it
-                b_current_cnfg = self.b_cnfg.read()
+                b_current_cnfg = self.cnfg['B'].read()
                 b_current_cnfg[channel['channel']] = channel['cnfgval']
-                b_check = True
+                b_opened = True
 
-        # set the configure registration for all bank A
-        if a_check:
-            self.a_cnfg.write(a_current_cnfg)
-            stop = True
-            while stop:
-                check = self.a_cnfg.read()
-                if a_current_cnfg == check and self.a_ready.read():
-                    stop = False
+        def __write_to_cnfg_register(is_opened, bank, cnfg):
+            if is_opened:
+                self.cnfg[bank].write(cnfg)
+                while not(cnfg == self.cnfg[bank].read() and self.ready[bank].read()):
+                    pass
 
         # set the configure registration for all bank B
-        if b_check:
-            self.b_cnfg.write(b_current_cnfg)
-            stop = True
-            while stop:
-                check = self.b_cnfg.read()
-                if b_current_cnfg == check and self.b_ready.read():
-                    stop = False
+        __write_to_cnfg_register(a_opened, Bank.A.value, a_current_cnfg)
+        __write_to_cnfg_register(b_opened, Bank.B.value, b_current_cnfg)
 
         # append all the read back values and return the array
         return_value = []
@@ -256,7 +253,7 @@ class AnalogInput(ELVISIII):
             return_value.append(float(channellist_details['value'].read()))
         return return_value
 
-    def _readMultiplePoints(self, number_of_samples, sample_rate):
+    def __read_multiple_points(self, number_of_samples, sample_rate):
         """
         Reads values from one or more analog input channels. (n samples)
 
@@ -273,139 +270,105 @@ class AnalogInput(ELVISIII):
                 Returns the value that this function reads from the analog
                 input channel that you select.
         """
+        max_samples = 10000
         number_of_channels = len(self.channel_list)
         if number_of_channels == 1:
             assert 1 <= sample_rate <= 1000000, 'If you select only 1 channel, then the min sample rate is 1 and the max sample rate can be 1MHz.'
         else:
             assert 1 <= sample_rate <= 500000, 'If you select multiple channels, then the min sample rate is 1 and the shared max sample rate is 500KHz.'
-        assert 0 <= number_of_samples <= 10000
+        assert 0 <= number_of_samples <= max_samples
 
-        a_check = False
-        b_check = False
-        bank_A_configuration_values = [0 for i in range(12)]
-        bank_B_configuration_values = [0 for i in range(12)]
+        bank_A_configuration = [0 for i in range(12)]
+        bank_B_configuration = [0 for i in range(12)]
         bank_A_number_of_channels = 0
         bank_B_number_of_channels = 0
 
         for channel in self.channel_list:
-            if channel['bank'] == 'A':
-                bank_A_configuration_values[bank_A_number_of_channels] = channel['cnfgval']
+            if channel['bank'] == Bank.A.value:
+                bank_A_configuration[bank_A_number_of_channels] = channel['cnfgval']
                 bank_A_number_of_channels = bank_A_number_of_channels + 1
-                a_check = True
             else:
-                bank_B_configuration_values[bank_B_number_of_channels] = channel['cnfgval']
+                bank_B_configuration[bank_B_number_of_channels] = channel['cnfgval']
                 bank_B_number_of_channels = bank_B_number_of_channels + 1
-                b_check = True
 
-        count, actual_sample_rate = self._calculateSampleRateToTicks(sample_rate * number_of_channels)
+        count, actual_sample_rate = self._calculate_sample_rate_to_ticks(sample_rate * number_of_channels)
 
         return_value = []
-        if a_check:
-            return_value.append(self._readBankAMultiplePoints(bank_A_configuration_values, bank_A_number_of_channels, number_of_samples, count))
-        if b_check:
-            return_value.append(self._readBankBMultiplePoints(bank_B_configuration_values, bank_B_number_of_channels, number_of_samples, count))
+        if any(bank_A_configuration):
+            return_value.append(self.__read_multiple_points_from_specific_bank(Bank.A.value, bank_A_configuration, bank_A_number_of_channels, number_of_samples, count, max_samples))
+        if any(bank_B_configuration):
+            return_value.append(self.__read_multiple_points_from_specific_bank(Bank.B.value, bank_B_configuration, bank_B_number_of_channels, number_of_samples, count, max_samples))
 
         return return_value
 
-    def _readBankAMultiplePoints(self, channels_list, number_of_channels, number_of_samples, count):
+    def __read_multiple_points_from_specific_bank(self, bank, configuration, number_of_channels, number_of_samples, count, max_samples):
         """
         Reads values from one or more analog input Bank A channels. (n samples)
 
         Args:
-            channels_list (Object): 
-                Specifies the configuration for selected channels. 
+            bank (Bank):
+                Specifies the name of the bank to open a session:
+            configuration (Object): 
+                Specifies the configuration for selected channels.
+            number_of_channels (number):
+                Specifies the number of channels to read.
             number_of_samples (number): 
                 Specifies the number of samples to read. Valid values are between 0 and 10,000. 
+            count (number):
+                Specifies the actual count for AI.
+            max_samples (number):
+                Specifies the max samples for the AI N sample.
 
         Returns:
             return_value (array):
                 Returns the value that this function reads from the analog
                 input channel that you select.
         """
-        self.a_cnt.write(0)
-        self.a_cnfg.write(channels_list)
-        self.a_cntr.write(count)
-        self.a_dma_enable.write(True)
-        while True:
-            if self.a_cnt.read() == 0 and self.a_cnfg.read() == channels_list and self.a_cntr.read() == count and self.a_dma_enable.read() == True:
-                break
-        self.a_dma.start()
-        self.a_dma.stop()
-        self.a_cnt.write(number_of_channels)
-        while True:
-            if self.a_cnt.read() == number_of_channels:
-                break
+        if AnalogInput.dma[bank] is None:
+            AnalogInput.dma[bank] = self.session.fifos['AI.%s.DMA' % bank]
+            AnalogInput.dma[bank].configure(max_samples * 100)
 
-        max_readback_samples = 10000
+        if not self.is_nsample_opened[bank]:
+            self.is_nsample_opened[bank] = True
+            AnalogInput.number_of_n_sample[bank] += 1
+
+        self.cnt[bank].write(0)
+        self.cnfg[bank].write(configuration)
+        self.cntr[bank].write(count)
+        self.dma_enabled[bank].write(True)
+        while not(self.cnt[bank].read() == 0 and self.cnfg[bank].read() == configuration and self.cntr[bank].read() == count and self.dma_enabled[bank].read() == True):
+            pass
+
+        AnalogInput.dma[bank].start()
+        AnalogInput.dma[bank].stop()
+
+        self.cnt[bank].write(number_of_channels)
+        while not(self.cnt[bank].read() == number_of_channels):
+            pass
+
+        max_readback_samples = max_samples
         number_of_expected_samples = number_of_channels * number_of_samples
         readvalue = []
         while True:
             if number_of_expected_samples <= max_readback_samples:
-                readvalue.extend(self.a_dma.read(number_of_expected_samples, timeout_ms=-1)[0])
+                readvalue.extend(AnalogInput.dma[bank].read(number_of_expected_samples, timeout_ms=-1)[0])
                 break
             else:
-                readvalue.extend(self.a_dma.read(max_readback_samples, timeout_ms=-1)[0])
+                readvalue.extend(AnalogInput.dma[bank].read(max_readback_samples, timeout_ms=-1)[0])
                 number_of_expected_samples = number_of_expected_samples - max_readback_samples
-        self.a_dma_enable.write(False)
-        self.a_cnt.write(0)
-        while True:
-            if self.a_stat.read() == 0:
-                break
+
+        self.dma_enabled[bank].write(False)
+
+        self.cnt[bank].write(0)
+        while not(self.stat[bank].read() == 0):
+            pass
+
         result = []
         for index in range(0, number_of_channels):
             result.append(readvalue[index::number_of_channels])
         return result
 
-    def _readBankBMultiplePoints(self, channels_list, number_of_channels, number_of_samples, count):
-        """
-        Reads values from one or more analog input Bank B channels. (n samples)
-
-        Args:
-            channels_list (Object): 
-                Specifies the configuration for selected channels. 
-            number_of_samples (number): 
-                Specifies the number of samples to read. Valid values are between 0 and 10,000. 
-
-        Returns:
-            return_value (array):
-                Returns the value that this function reads from the analog
-                input channel that you select.
-        """
-        self.b_cnt.write(0)
-        self.b_cnfg.write(channels_list)
-        self.b_cntr.write(count)
-        self.b_dma_enable.write(True)
-        while True:
-            if self.b_cnt.read() == 0 and self.b_cnfg.read() == channels_list and self.b_cntr.read() == count and self.b_dma_enable.read() == True:
-                break
-        self.b_dma.start()
-        self.b_dma.stop()
-        self.b_cnt.write(number_of_channels)
-        while True:
-            if self.b_cnt.read() == number_of_channels:
-                break
-
-        max_readback_samples = 10000
-        number_of_expected_samples = number_of_channels * number_of_samples
-        readvalue = []
-        while True:
-            if number_of_expected_samples <= max_readback_samples:
-                readvalue.extend(self.b_dma.read(number_of_expected_samples, timeout_ms=-1)[0])
-                break
-            else:
-                readvalue.extend(self.b_dma.read(max_readback_samples, timeout_ms=-1)[0])
-                number_of_expected_samples = number_of_expected_samples - max_readback_samples
-        self.b_dma_enable.write(False)
-        self.b_cnt.write(0)
-        while True:
-            if self.b_stat.read() == 0:
-                break
-        result = []
-        for index in range(0, number_of_channels):
-            result.append(readvalue[index::number_of_channels])
-        return result
-
-    def _calculateSampleRateToTicks(self, sample_rate):
+    def _calculate_sample_rate_to_ticks(self, sample_rate):
         """
         Calculate and return the actual sample rate(S/s) and count(tick/s).
 
@@ -414,10 +377,10 @@ class AnalogInput(ELVISIII):
                 The expected sample rate you inputted.
 
         Returns:
-            count (array):
-                The actual count for AI.
+            count (number):
+                Specifies the actual count for AI.
             actual_sample_rate (number):
-                The actual sample rate for AI.
+                Specifies the actual sample rate for AI.
         """
         minimum = 1000
         maximum = 30000
@@ -430,6 +393,21 @@ class AnalogInput(ELVISIII):
 
     def _toBinary(self, num):
         return bin(int(num))
+
+    def close(self):
+        def __update_number_of_opened_n_sample(bank):
+            if self.is_nsample_opened[bank]:
+                AnalogInput.number_of_n_sample[bank] -= 1
+
+        def __clear_dma_reference(bank):
+            if AnalogInput.number_of_n_sample[bank] == 0:
+                AnalogInput.dma[bank] = None
+
+        for bank in Bank:
+            __update_number_of_opened_n_sample(bank.value)
+            __clear_dma_reference(bank.value)
+    
+        super(AnalogInput, self).close()
 
 
 class AnalogOutput(ELVISIII):
