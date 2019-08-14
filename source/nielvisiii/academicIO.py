@@ -4,7 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.
 
 import time
 import pyvisa
-from nifpga import Session, Status
+from nifpga import Session
 from enums import *
 
 class ELVISIII(object):
