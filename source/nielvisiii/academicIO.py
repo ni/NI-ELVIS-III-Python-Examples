@@ -73,13 +73,13 @@ class AnalogInput(ELVISIII):
 
         def __set_registration_addresses(bank):
             # get registration addresses
-                self.cnfg[bank] = self.session.registers['AI.%s.CNFG' % bank]
-                self.ready[bank] = self.session.registers['AI.%s.VAL.RDY' % bank]
-                self.cnt[bank] = self.session.registers['AI.%s.CNT' % bank]
-                self.cntr[bank] = self.session.registers['AI.%s.CNTR' % bank]
-                self.stat[bank] = self.session.registers['AI.%s.STAT' % bank]
+            self.cnfg[bank] = self.session.registers['AI.%s.CNFG' % bank]
+            self.ready[bank] = self.session.registers['AI.%s.VAL.RDY' % bank]
+            self.cnt[bank] = self.session.registers['AI.%s.CNT' % bank]
+            self.cntr[bank] = self.session.registers['AI.%s.CNTR' % bank]
+            self.stat[bank] = self.session.registers['AI.%s.STAT' % bank]
 
-                self.dma_enabled[bank] = self.session.registers['AI.%s.DMA_ENA' % bank]
+            self.dma_enabled[bank] = self.session.registers['AI.%s.DMA_ENA' % bank]
 
         configuration_list = { 'A': [], 'B': [] }
 
