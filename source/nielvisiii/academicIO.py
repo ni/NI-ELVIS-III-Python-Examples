@@ -349,13 +349,10 @@ class AnalogInput(ELVISIII):
         max_readback_samples = max_samples
         number_of_expected_samples = number_of_channels * number_of_samples
         readvalue = []
-        while True:
-            if number_of_expected_samples <= max_readback_samples:
-                readvalue.extend(AnalogInput.dma[bank].read(number_of_expected_samples, timeout_ms=-1)[0])
-                break
-            else:
-                readvalue.extend(AnalogInput.dma[bank].read(max_readback_samples, timeout_ms=-1)[0])
-                number_of_expected_samples = number_of_expected_samples - max_readback_samples
+        while number_of_expected_samples > max_readback_samples:
+            readvalue.extend(AnalogInput.dma[bank].read(max_readback_samples, timeout_ms=-1)[0])
+            number_of_expected_samples = number_of_expected_samples - max_readback_samples
+        readvalue.extend(AnalogInput.dma[bank].read(number_of_expected_samples, timeout_ms=-1)[0])
 
         self.dma_enabled[bank].write(False)
 
