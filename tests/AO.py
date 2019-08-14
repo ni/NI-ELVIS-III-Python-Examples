@@ -69,4 +69,29 @@ class Test_AnalogOutput_WriteTwoChannels(unittest.TestCase):
 class Test_AnalogOutput_Assertion(unittest.TestCase):
     def test_OpenWithInvalidBank_ShowAssertion(self):
         with self.assertRaises(AssertionError):
+            academicIO.AnalogOutput({'bank': 'C', 'channel': AOChannel.AO0})
+
+    def test_OpenWithInvalidChannel_ShowAssertion(self):
+        with self.assertRaises(AssertionError):
             academicIO.AnalogOutput({'bank': bank, 'channel': 2})
+
+    def test_WriteWithInvalidValue_ShowAssertion(self):
+        AO = academicIO.AnalogOutput({'bank': bank, 'channel': AOChannel.AO0})
+        
+        with self.assertRaises(TypeError):
+            AO.write('a')
+        with self.assertRaises(TypeError):
+            AO.write()
+
+    def test_OpenWithoutBank_ShowAssertion(self):
+        with self.assertRaises(AssertionError):
+            academicIO.AnalogOutput({'channel': AOChannel.AO0})
+
+    def test_OpenWithoutChannel_ShowAssertion(self):
+        with self.assertRaises(AssertionError):
+            academicIO.AnalogOutput({'bank': bank})
+
+    def test_WriteWithoutValue_ShowAssertion(self):
+        AO = academicIO.AnalogOutput({'bank': bank, 'channel': AOChannel.AO0})
+        with self.assertRaises(TypeError):
+            AO.write()
