@@ -198,11 +198,11 @@ class AnalogInput(ELVISIII):
 
     def __read_single_point(self):
         """
-        Reads values from one or more analog input channels. (1 sample)
+        Reads values of AI channels listed in AI channel list amd popluates the output array (values) with the result. (1 sample)
 
         Returns:
             return_value (array):
-                Returns the value that this function reads from the analog
+                Returns the value, in volts, that this function reads from the analog
                 input channel that you select.
         """
         a_current_cnfg = ""
@@ -255,7 +255,7 @@ class AnalogInput(ELVISIII):
 
     def __read_multiple_points(self, number_of_samples, sample_rate):
         """
-        Reads values from one or more analog input channels. (n samples)
+        Reads values of AI channels listed in AI channel list amd popluates the output array (values) with the result. (n samples)
 
         Args:
             number_of_samples (number): 
@@ -267,8 +267,8 @@ class AnalogInput(ELVISIII):
 
         Returns:
             return_value (array):
-                Returns the value that this function reads from the analog
-                input channel that you select.
+                Returns the values, in volts, that this function reads from the analog
+                input channel that you select. The structure of the returned values is [ [bank_A_values], [bank_B_values] ].
         """
         max_samples = 10000
         number_of_channels = len(self.channel_list)
@@ -303,7 +303,7 @@ class AnalogInput(ELVISIII):
 
     def __read_multiple_points_from_specific_bank(self, bank, configuration, number_of_channels, number_of_samples, count, max_samples):
         """
-        Reads values from one or more analog input Bank A channels. (n samples)
+        Reads values of analog channels specified in the configuration using the DMA. (n samples)
 
         Args:
             bank (Bank):
@@ -321,8 +321,8 @@ class AnalogInput(ELVISIII):
 
         Returns:
             return_value (array):
-                Returns the value that this function reads from the analog
-                input channel that you select.
+                Returns the values, in volts, that this function reads from the analog
+                input channel that you select. The structure of the returned values is [ [first_channel_values], [second_channel_values], ...].
         """
         if AnalogInput.dma[bank] is None:
             AnalogInput.dma[bank] = self.session.fifos['AI.%s.DMA' % bank]

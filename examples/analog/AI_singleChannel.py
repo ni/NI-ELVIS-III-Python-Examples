@@ -18,8 +18,10 @@ references the selected channel to another channel as indicated in this table:
    AI2: AI2 to AI6
    AI3: AI3 to AI7
 
-Analog Input Read Multiple Points has a gap between each read function. Click the following link which
-illustrates the gap between sequential n samples acquisitions when using the Analog Input API.
+Analog Input (Multiple Points) has a time gap between the end of one signal
+acquisition andthe start of the next signal acquisition. Refer to the following
+link for more information about the time gap. The option is only when you specifcy
+Analog Input (number_of_samples, sample_rate) mode.
 https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/NI_ELVIS_III_Understanding_Gaps.md
 
 This example uses:
@@ -48,7 +50,8 @@ ai_mode = AIMode.SINGLE_ENDED
 
 ##############################################################################
 # Section 1: Single Point
-# You use the read() function to read a single point of data back from the channel.
+# You use the read() function to read a single point of data back from the channel. The hardware acquires
+# one sample for a channel.
 ##############################################################################
 print('Single Point, Single Channel')
 # configure the AI channel
@@ -69,7 +72,7 @@ with academicIO.AnalogInput({'bank': ai_bank,
 ##############################################################################
 # Section 2: Mutiple Points
 # You use the read(number_of_samples, sample_rate) function to read multiple points of data from the
-# channel.
+# channel. The hardware acquires a finite number of samples for a channel.
 ##############################################################################
 print('Multiple Points, Single Channel')
 # configure the AI channel
