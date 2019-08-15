@@ -205,6 +205,8 @@ class AnalogInput(ELVISIII):
                 Returns the value, in volts, that this function reads from the analog
                 input channel that you select.
         """
+        current_cnfg = { 'A': None, 'B': None }
+        is_opened  = { 'A': None, 'B': None }
         a_current_cnfg = ""
         b_current_cnfg = ""
         a_opened = False
@@ -221,31 +223,28 @@ class AnalogInput(ELVISIII):
                 # thus 1000 indicates 40KHz rate here
                 self.cntr[bank].write(1000)
 
+        def __get_cnfgval(bank, cnfgval):
+            current_cnfg = self.cnfg[bank].read()
+            current_cnfg[channel['channel']] = cnfgval
+            return current_cnfg
+
+        def __write_to_cnfg_register(bank, cnfg):
+            self.cnfg[bank].write(cnfg)
+            while not(cnfg == self.cnfg[bank].read() and self.ready[bank].read()):
+                pass
+
         for bank in Bank:
             __initialize_bank_configuration(bank.value)
 
         # set the current configuration for all channels within channel_list
         for channel in self.channel_list:
-            if channel['bank'] == Bank.A.value:
-                # set bank A registration and the local variable of it
-                a_current_cnfg = self.cnfg['A'].read()
-                a_current_cnfg[channel['channel']] = channel['cnfgval']
-                a_opened = True
-            else:
-                # set bank B registration and the local variable of it
-                b_current_cnfg = self.cnfg['B'].read()
-                b_current_cnfg[channel['channel']] = channel['cnfgval']
-                b_opened = True
+            bank = channel['bank']
+            current_cnfg[bank] = __get_cnfgval(bank, channel['cnfgval'])
+            is_opened[bank] = True
 
-        def __write_to_cnfg_register(is_opened, bank, cnfg):
-            if is_opened:
-                self.cnfg[bank].write(cnfg)
-                while not(cnfg == self.cnfg[bank].read() and self.ready[bank].read()):
-                    pass
-
-        # set the configure registration for all bank B
-        __write_to_cnfg_register(a_opened, Bank.A.value, a_current_cnfg)
-        __write_to_cnfg_register(b_opened, Bank.B.value, b_current_cnfg)
+        for bank_name in is_opened:
+            if is_opened[bank_name]:
+                __write_to_cnfg_register(bank_name, current_cnfg[bank_name])
 
         # append all the read back values and return the array
         return_value = []
