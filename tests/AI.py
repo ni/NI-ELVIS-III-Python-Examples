@@ -257,46 +257,38 @@ class Test_AnalogInput_ReadAssertion(unittest.TestCase):
             self.AI_single_channel.read(self.approx_number_of_samples, limits['sampleRate']['min'] - 1)
 
 class Test_AnalogInput_CalculateSampleRateToTicks(unittest.TestCase):
-    @classmethod
-    def setUpClass(self):
-        self.AI = academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI2})
-   
-    @classmethod
-    def tearDownClass(self):
-        self.AI.close()
-        
     def test_GivenMin_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI._calculate_sample_rate_to_ticks(limits['sampleRate']['min'])
+        count, actual_sample_rate = academicIO._calculate_sample_rate_to_ticks(limits['sampleRate']['min'])
 
         self.assertEqual(count, 40000)
         self.assertEqual(actual_sample_rate, 1000)
 
     def test_GivenAThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI._calculate_sample_rate_to_ticks(1000)
+        count, actual_sample_rate = academicIO._calculate_sample_rate_to_ticks(1000)
 
         self.assertEqual(count, 40000)
         self.assertEqual(actual_sample_rate, 1000)
 
     def test_GivenFiveThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI._calculate_sample_rate_to_ticks(5000)
+        count, actual_sample_rate = academicIO._calculate_sample_rate_to_ticks(5000)
 
         self.assertEqual(count, 8000)
         self.assertEqual(actual_sample_rate, 5000)
 
     def test_GivenTenThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI._calculate_sample_rate_to_ticks(10000)
+        count, actual_sample_rate = academicIO._calculate_sample_rate_to_ticks(10000)
 
         self.assertEqual(count, 4000)
         self.assertEqual(actual_sample_rate, 10000)
 
     def test_GivenFiftyThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI._calculate_sample_rate_to_ticks(50000)
+        count, actual_sample_rate = academicIO._calculate_sample_rate_to_ticks(50000)
 
         self.assertEqual(count, 1333)
         self.assertEqual(actual_sample_rate, pytest.approx(30007.5, 0.01))
 
     def test_GivenMax_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = self.AI._calculate_sample_rate_to_ticks(limits['sampleRate']['max'])
+        count, actual_sample_rate = academicIO._calculate_sample_rate_to_ticks(limits['sampleRate']['max'])
 
         self.assertEqual(count, 1333)
         self.assertEqual(actual_sample_rate, pytest.approx(30007.5, 0.01))

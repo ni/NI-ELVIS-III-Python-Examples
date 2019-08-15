@@ -291,7 +291,7 @@ class AnalogInput(ELVISIII):
                 bank_B_configuration[bank_B_number_of_channels] = channel['cnfgval']
                 bank_B_number_of_channels = bank_B_number_of_channels + 1
 
-        count, actual_sample_rate = self._calculate_sample_rate_to_ticks(sample_rate * number_of_channels)
+        count, actual_sample_rate = _calculate_sample_rate_to_ticks(sample_rate * number_of_channels)
 
         return_value = []
         if any(bank_A_configuration):
@@ -364,29 +364,6 @@ class AnalogInput(ELVISIII):
         for index in range(0, number_of_channels):
             result.append(readvalue[index::number_of_channels])
         return result
-
-    def _calculate_sample_rate_to_ticks(self, sample_rate):
-        """
-        Calculate and return the actual sample rate(S/s) and count(tick/s).
-
-        Args:
-            sample_rate (number):
-                The expected sample rate you inputted.
-
-        Returns:
-            count (number):
-                Specifies the actual count for AI.
-            actual_sample_rate (number):
-                Specifies the actual sample rate for AI.
-        """
-        minimum = 1000
-        maximum = 30000
-        if sample_rate < minimum: sample_rate = minimum
-        if sample_rate > maximum: sample_rate = maximum
-        fpga_clock_rate = 40000000
-        count = round(fpga_clock_rate / sample_rate)
-        actual_sample_rate = fpga_clock_rate / count
-        return count, actual_sample_rate
 
     def _toBinary(self, num):
         return bin(int(num))
@@ -1547,6 +1524,28 @@ class Button(ELVISIII):
         """
         return self.user_button.read() > 0
 
+def _calculate_sample_rate_to_ticks(sample_rate):
+    """
+    Calculate and return the actual sample rate(S/s) and count(tick/s).
+
+    Args:
+        sample_rate (number):
+            The expected sample rate you inputted.
+
+    Returns:
+        count (number):
+            Specifies the actual count for AI.
+        actual_sample_rate (number):
+            Specifies the actual sample rate for AI.
+    """
+    minimum = 1000
+    maximum = 30000
+    if sample_rate < minimum: sample_rate = minimum
+    if sample_rate > maximum: sample_rate = maximum
+    fpga_clock_rate = 40000000
+    count = round(fpga_clock_rate / sample_rate)
+    actual_sample_rate = fpga_clock_rate / count
+    return count, actual_sample_rate
 
 def calculate_clock_settings(requested_frequency,
                              clock_divisors,
