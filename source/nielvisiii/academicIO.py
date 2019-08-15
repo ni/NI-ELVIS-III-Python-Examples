@@ -335,6 +335,7 @@ class AnalogInput(ELVISIII):
         self.cnfg[bank].write(configuration)
         self.cntr[bank].write(count)
         self.dma_enabled[bank].write(True)
+        ## make sure the following registers are set correcrly: cnt, cnfg, cntr, dma_enabled
         while not(self.cnt[bank].read() == 0 and self.cnfg[bank].read() == configuration and self.cntr[bank].read() == count and self.dma_enabled[bank].read() == True):
             pass
 
