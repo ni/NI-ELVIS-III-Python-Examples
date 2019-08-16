@@ -83,9 +83,9 @@ with academicIO.AnalogInput({'bank': ai_bankA,           # define the first chan
         time.sleep(0.001)
 
 ##############################################################################
-# Section 2: Mutiple Points (N sample)
+# Section 2: Multiple Points (N sample)
 # Use the read function to read multiple points of data from the channel. You
-# have to pass two argeuments to the read function: number_of_samples and
+# have to pass two arguments to the read function: number_of_samples and
 # sample_rate. The hardware acquires a finite number of samples for a channel.
 ##############################################################################
 print('Multiple Points, Multiple Channels')
