@@ -3,7 +3,7 @@ NI ELVIS III Analog Input Example - Single Channel
 This example illustrates how to read values from an analog input (AI) channel
 on the NI ELVIS III. The program first defines the configuration for the AI
 channel, and then reads the AI channel in a loop. Each time the read function
-is called, a single point/multiple points of data is returned for the channel. The interval
+is called, a single point or multiple points of data is returned for the channel. The interval
 between reads is not precisely timed, and is controlled by a software delay.
 
 The AI configuration consists of four parameters: bank, channel, range, and
@@ -18,10 +18,10 @@ references the selected channel to another channel as indicated in this table:
    AI2: AI2 to AI6
    AI3: AI3 to AI7
 
-Analog Input (Multiple Points) has a time gap between the end of one signal
-acquisition andthe start of the next signal acquisition. Refer to the following
-link for more information about the time gap. The option is only when you specifcy
-Analog Input (number_of_samples, sample_rate) mode.
+A time gap exists between the end of one signal acquisition and the start of
+the next signal acquisition when you specify n sample (reading multiple
+points) mode for Analog Input API. Refers to the following link for more
+information about the time gap.
 https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/NI_ELVIS_III_Understanding_Gaps.md
 
 This example uses:
@@ -49,8 +49,8 @@ ai_range = AIRange.PLUS_OR_MINUS_10V
 ai_mode = AIMode.SINGLE_ENDED
 
 ##############################################################################
-# Section 1: Single Point
-# You use the read() function to read a single point of data back from the channel. The hardware acquires
+# Section 1: Single Point (1 Sample)
+# Use the read function to read a single point of data back from the channel. The hardware acquires
 # one sample for a channel.
 ##############################################################################
 print('Single Point, Single Channel')
@@ -70,9 +70,10 @@ with academicIO.AnalogInput({'bank': ai_bank,
         time.sleep(0.001)
 
 ##############################################################################
-# Section 2: Mutiple Points
-# You use the read(number_of_samples, sample_rate) function to read multiple points of data from the
-# channel. The hardware acquires a finite number of samples for a channel.
+# Section 2: Mutiple Points (n sample)
+# Use the read function to read multiple points of data from the channel. You
+# have to pass two arguments to the read function: number_of_samples and
+# sample_rate. The hardware acquires a finite number of samples for a channel.
 ##############################################################################
 print('Multiple Points, Single Channel')
 # configure the AI channel
@@ -80,7 +81,7 @@ with academicIO.AnalogInput({'bank': ai_bank,
                              'channel': ai_channel,
                              'range': ai_range,
                              'mode': ai_mode}) as AI_single_channel:
-    # specify the number of samples to read and the sampling frequency in hertz of the input signal
+    # specify the number of samples to read and the sampling frequency, in hertz, of the input signal
     number_of_samples = 100
     sample_rate = 1000
     # read from the AI channel and display the values 20 times

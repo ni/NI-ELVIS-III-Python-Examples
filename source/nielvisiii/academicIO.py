@@ -41,7 +41,7 @@ class AnalogInput(ELVISIII):
                     Specifies the name of the bank to open a session.
                 channel (AIOChannel):
                     Specifies the names of the analog input channels to open a
-                    session. When the mode is DIFFERENTIAL, the vaild AI
+                    session. When the mode is DIFFERENTIAL, the valid AI
                     channels are AI0 to AI3.
                 range (AIRange):
                     Specifies the minimum and maximum voltage, in volts, that
@@ -55,7 +55,7 @@ class AnalogInput(ELVISIII):
         super(AnalogInput, self).__init__()
 
         # define local variables which are used to track whether bank A and
-        # bank B is used or is opened
+        # bank B are used or opened
         a_open = False
         b_open = False
 
@@ -85,16 +85,16 @@ class AnalogInput(ELVISIII):
 
         # initialize and store all channels within *configuration
         for configuration_details in configuration:
-            # check that user inputted bank is correct
+            # check whether the bank that the user configured is correct
             assert 'bank' in configuration_details
             assert 'channel' in configuration_details
             assert configuration_details['bank'] in Bank
 
-            # give default values for mode
+            # set default values for mode
             if 'mode' not in configuration_details:
                 configuration_details['mode'] = AIMode.SINGLE_ENDED
 
-            # check that user inputted channel is correct
+            # check whether the channel that the user configured is correct
             if configuration_details['mode'] == AIMode.SINGLE_ENDED:
                 assert AIChannel.AI0 <= configuration_details['channel'] <= AIChannel.AI7
             elif configuration_details['mode'] == AIMode.DIFFERENTIAL:   # differential mode
@@ -158,7 +158,7 @@ class AnalogInput(ELVISIII):
                     configuration['value'] = self.session.registers['AI.DIFF_' + channel['bank'] + '_' + str(channel['channel']) + '.VAL']
                     configuration['cnfgval'] = channel['channel'] | channel['cnfgval']
                 else:
-                    # single ended mode
+                    # single-ended mode
                     configuration['channel'] = channel['channel']
                     configuration['value'] = self.session.registers['AI.' + channel['bank'] + '_' + str(channel['channel']) + '.VAL']
                     configuration['cnfgval'] = int(bin(channel['channel']), 2) | int('1000', 2) | channel['cnfgval']
@@ -170,18 +170,18 @@ class AnalogInput(ELVISIII):
 
     def read(self, *args):
         """
-        Reads values from one or more analog input channels. You use the read() function
-        to read a single point of data back from the channel. You use the
+        Reads values from one or more analog input channels. Use the read() function
+        to read a single point of data back from the channel. Use the
         read(number_of_samples, sample_rate) function to read multiple points of data from the
         channel.
 
         Args:
-            If you want to read a single point of data at one time, do not pass any args.
-            If you want to read multiple points of data at one time, Args should contain:
+            If you want to read a single point of data at one time, do not pass any arguments.
+            If you want to read multiple points of data at one time, arguments should contain:
                 number_of_samples (number): 
                     Specifies the number of samples to read. Valid values are between 0 and 10,000. 
                 sample_rate (number):
-                    Specifies the sampling frequency in hertz of the input signal.
+                    Specifies the sampling frequency, in hertz, of the input signal.
 
         Returns:
             return_value (array):
@@ -198,7 +198,7 @@ class AnalogInput(ELVISIII):
 
     def __read_single_point(self):
         """
-        Reads values of AI channels listed in AI channel list amd popluates the output array (values) with the result. (1 sample)
+        Reads values from AI channels in AI channel list and popluates the output array (values) with the result. (1 sample)
 
         Returns:
             return_value (array):
@@ -219,8 +219,8 @@ class AnalogInput(ELVISIII):
                 # regsiter the number of valid channels
                 self.cnt[bank].write(12)
                 # register the analog sample rate
-                # 1000 = 40MHz FPGA Clock Frequency / 40KHz (desired rate)
-                # thus 1000 indicates 40KHz rate here
+                # 1000 = 40 MHz FPGA Clock Frequency / 40 KHz (desired rate)
+                # thus 1000 indicates a sample rate of 40 KHz here
                 self.cntr[bank].write(1000)
 
         def __get_cnfgval(bank, cnfgval):
@@ -254,16 +254,15 @@ class AnalogInput(ELVISIII):
 
     def __read_multiple_points(self, number_of_samples, sample_rate):
         """
-        Reads values of AI channels listed in AI channel list amd popluates the output array (values) with the result. (n samples)
+        Reads values from AI channels in AI channel list and popluates the output array (values) with the result. (n samples)
 
         Args:
             number_of_samples (number): 
                 Specifies the number of samples to read. Valid values are between 0 and 10,000. 
             sample_rate (number):
-                Specifies the sampling frequency in hertz of the input signal. 
-                If user selects only 1 channel, then the min sample rate is 1 and the max sample rate can be 1MHz.
-                If user selects multiple channels, then the min sample rate is 1 and the shared max sample rate is 500KHz.
-
+                Specifies the sampling frequency, in hertz, of the input signal. 
+                If you select only one channel, the valid range for sample rate is between 1 Hz and 1 MHz. 
+                If you select multiple channels, the valid range for sample rate is between 1 Hz and 500 KHz. 
         Returns:
             return_value (array):
                 Returns the values, in volts, that this function reads from the analog
@@ -302,11 +301,11 @@ class AnalogInput(ELVISIII):
 
     def __read_multiple_points_from_specific_bank(self, bank, configuration, number_of_channels, number_of_samples, count, max_samples):
         """
-        Reads values of analog channels specified in the configuration using the DMA. (n samples)
+        Reads values from analog channels specified in the configuration using the DMA. (n samples)
 
         Args:
             bank (Bank):
-                Specifies the name of the bank to open a session:
+                Specifies the name of the bank to open a session.
             configuration (Object): 
                 Specifies the configuration for selected channels.
             number_of_channels (number):
@@ -316,7 +315,7 @@ class AnalogInput(ELVISIII):
             count (number):
                 Specifies the actual count for AI.
             max_samples (number):
-                Specifies the max samples for the AI N sample.
+                Specifies the maximum number of samples for the AI N sample.
 
         Returns:
             return_value (array):
@@ -1526,11 +1525,11 @@ class Button(ELVISIII):
 
 def _calculate_sample_rate_to_ticks(sample_rate):
     """
-    Calculate and return the actual sample rate(S/s) and count(tick/s).
+    Calculate and return the actual sample rate (S/s) and count (tick/s).
 
     Args:
         sample_rate (number):
-            The expected sample rate you inputted.
+            The expected sample rate you input.
 
     Returns:
         count (number):
