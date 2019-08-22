@@ -1,5 +1,8 @@
-How to use NI ELVIS III with Python
+How to use [NI ELVIS III](http://www.ni.com/en-us/shop/select/ni-elvis) with Python
 =======
+
+<p align="center"><img width="700px" src="docs/resource/ni_elvis_iii.png"/></p>
+
 # Overview
 In this document we will walk you through the setup, transfer of files, and the use of a Python example on the NI ELVIS III. The NI ELVIS III solution for project-based learning can be programmed with python to help students or educators who are familiar with Python syntax to rapidly acquire measurements by using common SSH clients. Attached to this file are a total of 18 examples which illustrate the use of the NI ELVIS III helper library ([academicIO.py](source/nielvisiii/academicIO.py)).
 
@@ -29,40 +32,27 @@ NI-ELVIS-III-Python-Examples supports Python 2.7, 3.4+.
 In this section we will install the NI Measurement Live Support Files and set up the software environment for the NI ELVIS III.
 
 1. Install the [NI Measurement Live Support Files](http://www.ni.com/download/labview-elvis-iii-toolkit-2018/7639/en/).
-2. Connect the NI ELVIS III to the Internet by using the Ethernet Port, Wifi, or USB connection so that the Python libraries can be installed from the Internet. We recommend that you use either Ethernet Port or Wifi.
-3. Enable the **Secure Shell Server**.
-   1. Open Internet Explorer and visit the NI ELVIS III Configuration website: \<IP Address of the NI ELVIS III\>/WIF.html<br/>
-      ![](docs/resource/url.png)<br/>
-      Note: The IP Address can be found on the display of the NI ELVIS III. Press BUTTON 0 until the IP address appears. Enter the IP address from the display.<br />
-      ![](docs/resource/IPaddress.jpg)
-   2. Navigate to the![](docs/resource/system_configuration.png)tab at the left of the page if not already there.
-   3. Enable the **Secure Shell Server (sshd)** checkbox in the **Startup Settings** section.
-       ![](docs/resource/sshd.png)
-   4. Click **Save**.
-4. Set up **Time Configuration**.
-   On the NI ELVIS III configuration website:
-   1. Click on the ![](docs/resource/time_configuration.png) tab at the left of the page .
-   2. Configure the **Date**, **Current time**, and **Time Zone** to your current local time.
-      ![](docs/resource/data_and_time.png)
-      
-      Note: Make sure there is a blue mark at the date you selected.
-      
-   3. Click **Save**.
-5. Restart the device.
+2. Connect the NI ELVIS III to the Internet by using the [Ethernet Port](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connecting-device-via-ethernet/#GUID-816EF92E-4CB5-47AA-BDE3-7CF57758FB0E), [Wifi](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connnecting-device-via-wireless-network/#GUID-14BF448A-CC19-4DF5-915E-6ED43E5B63E9), or [USB](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connecting-device-via-usb/#GUID-640DA3EF-F496-47A0-A68B-A01AA0F7CC16) connection so that the Python libraries can be installed from the Internet. We recommend that you use either Ethernet Port or USB.
+3. Open **Internet Explorer** and visit the NI ELVIS III Configuration website: \<IP Address of the NI ELVIS III\>/WIF.html<br/>
+   ![](docs/resource/open_setup_page.gif)
+   Note: The IP Address can be found on the display of the NI ELVIS III. Press [BUTTON 0](https://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/user-programmable-button/) until the IP address appears. Enter the IP address from the display.<br />
+4. Enable the **Secure Shell Server** and click **Restart** to restart the device.
+   ![](docs/resource/open_ssh.gif)
+5. Set up **Time Configuration**. Configure the **Date**, **Current time**, and **Time Zone** to your current local time.
+   ![](docs/resource/set_time_zone.gif)
+   
+   Note: Make sure there is a blue mark at the date you selected.
 6. <a name="nivisa">Install NI-VISA through **NI MAX** custom software installation if you want to run the UART example.</a>
 
 ## Installing Prerequisite Software for NI ELVIS III Python
 In this section we will install the software needed to execute the NI ELVIS III Python examples and the required packages to use the Python FPGA API.
 
-1. Install and open your favorite SSH client. If you do not have one, we recommend that you use [PuTTY](https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe): 
+1. Install and open your favorite SSH client. If you do not have one, we recommend that you use [PuTTY](https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe):
+   ![](docs/resource/putty_connect_to_device.gif)
    - Configure PuTTY or another client as follows:
-    
-     ![](docs/resource/putty.png)
-        
       - **Host Name**: \<IP Address of the NI ELVIS III\>
       - **Port**: 22
       - **Connection Type**: SSH
-   - Click **Open**.
    - Once the connection opens, log in as:
        - **login as**: admin
        - **Password**: (Just press **Enter**. There is no password by default.)
@@ -98,30 +88,40 @@ In this section we will download the NI ELVIS III Python Examples.
 
 1. Open the [NI ELVIS III Python Examples](https://github.com/ni/NI-ELVIS-III-Python-Examples) on GitHub.
 2. Download the NI ELVIS III Python helper library and Python Examples from GitHub and upzip it.
-   1. Click **Clone or download**.
-   2. Click **Download ZIP**.
-
-      ![](docs/resource/clone_or_download.png)
+   1. Download the Example.
+   ![](docs/resource/download_from_github.gif)
    
-   3. Click **Extract Here** to unzip **NI-ELVIS-III-Python-Examples-master.zip** which is the file you just downloaded.
+   3. Unzip the file you just downloaded.
    
-      ![](docs/resource/extract_file.png)
+      ![](docs/resource/unzip_folder.gif)
       
 3. Transfer the NI ELVIS III Python Examples to your NI ELVIS III device.
-   1. Download and install [FileZilla](https://filezilla-project.org/download.php). You are free to use any application you are comfortable with to transfer files.
-   2. Configure FileZilla as the following:
-   
-      ![](docs/resource/filezilla.png)
-      
-      - **Host**: \<IP Address of the NI ELVIS III\>
-      - **Username**: admin
-      - **Password**: (Blank. There is no password by default.)
-      - **Port**: 22
 
-   3. Click **Quickconnect**.
-   4. Upload **NI-ELVIS-III-Python-Examples-master/** into the directory `/home/admin`.
+    - Option 1: Transfer through scp.
+
+      ```
+      scp -r <folder_name> admin@<id_address>:/home/admin/
+      ```
+
+      For example: `scp -r NI-ELVIS-III-Python-Examples/ admin@172.22.11.2:/home/admin/`
+
+      Note: **Password**: (Blank. There is no password by default.)
+
+   - Option 2: Transfer through FileZilla.
+
+      1. Download and install [FileZilla](https://filezilla-project.org/download.php). You are free to use any application you are comfortable with to transfer files.
+      2. Configure FileZilla as the following:
    
-      ![](docs/resource/filezilla-directory.png)
+         ![](docs/resource/filezilla_connect_to_device.gif)
+      
+         - **Host**: \<IP Address of the NI ELVIS III\>
+         - **Username**: admin
+         - **Password**: (Blank. There is no password by default.)
+         - **Port**: 22
+
+      3. Upload **NI-ELVIS-III-Python-Examples-master/** into the directory `/home/admin`.
+      
+         ![](docs/resource/filezilla_transfer_folder.gif)
 
 <p align="right"><a href="#top">↥ back to top</a>
 
