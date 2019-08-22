@@ -158,8 +158,9 @@ In this section we will download the NI ELVIS III Python Examples.
    - [AO_multipleChannels](examples/analog/AO_multipleChannels.py)
    - [AO_singleChannel](examples/analog/AO_singleChannel.py)
 
- #### Related Information
-   [1 Sample, N Samples, and Continuous Modes](docs/1_Sample_N_Samples_and_Continuous_Modes.md)
+     #### Related Information
+       [1 Sample, N Samples, and Continuous Modes](docs/1_Sample_N_Samples_and_Continuous_Modes.md)
+       
  ### [Bus](examples/bus)
    - [Encoder](examples/bus/Encoder.py)
    - [I2C](examples/bus/I2C.py)
