@@ -1,8 +1,9 @@
 from setuptools import setup, find_packages
-from os import path
+import os
 
 def get_long_description():
-    with open(path.join(here, 'README.md'), encoding='utf-8') as readme:
+    this_dir = os.path.dirname(os.path.abspath(__file__))
+    with open(os.path.join(this_dir, 'README.md'), encoding='utf-8') as readme:
         return readme.read()
 
 setup(name="nielvis",
@@ -12,7 +13,10 @@ setup(name="nielvis",
       version='2.2.0',
       packages=find_packages(),
       install_requires=['nifpga', 'pyvisa'],
-      author="National Instruments",
+      author='National Instruments',
+      author_email="opensource@ni.com",
+      maintainer="National Instruments",
+      maintainer_email="opensource@ni.com",
       url="https://github.com/ni/NI-ELVIS-III-Python-Examples",
       license="MIT",
       classifiers=[
