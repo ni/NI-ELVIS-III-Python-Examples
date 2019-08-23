@@ -109,7 +109,7 @@ In this section we will download the NI ELVIS III Python Examples.
 
       *Note:* **Password**: (Blank. There is no password by default.)
 
-   - Option 2: Transfer through FileZilla.
+   - Option 2: Transfer files through FileZilla.
 
       1. Download and install [FileZilla](https://filezilla-project.org/download.php). You are free to use any other application you are comfortable with to transfer files.
       2. Configure FileZilla as the following:
