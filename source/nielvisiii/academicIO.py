@@ -1684,7 +1684,10 @@ def _calculate_sample_rate_to_ticks(sample_rate, minimum = 1000, maximum = 30000
     Args:
         sample_rate (number):
             The expected sample rate you input.
-
+        minimum (number):
+            The minimum sample rate.
+        maximum (number):
+            The maximum sample rate.
     Returns:
         count (number):
             Specifies the actual count for AI.

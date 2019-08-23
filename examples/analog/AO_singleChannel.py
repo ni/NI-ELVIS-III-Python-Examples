@@ -68,7 +68,7 @@ with academicIO.AnalogOutput({'bank': bank,
                               'channel': channel}) as AO_single_channel:
 
     # write to the AO channel 20 times
-    for i in range(0, 1):
+    for i in range(0, 20):
         # define the value as a floating-point number
         input_value = [1.0, 2.5]
         sample_rate = 1000
