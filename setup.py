@@ -32,6 +32,6 @@ setup(name="nielvis",
         "Natural Language :: English",
         "Topic :: Education",
         "Topic :: Scientific/Engineering",
-        "Topic :: Software Deveopment",
+        "Topic :: Software Development",
         "Topic :: System :: Hardware"]
       )
