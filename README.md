@@ -34,7 +34,7 @@ In this section we will install the NI Measurement Live Support Files and set up
 1. Install the [NI Measurement Live Support Files](http://www.ni.com/download/labview-elvis-iii-toolkit-2018/7639/en/).
 2. Connect the NI ELVIS III to the Internet by using the [Ethernet Port](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connecting-device-via-ethernet/#GUID-816EF92E-4CB5-47AA-BDE3-7CF57758FB0E), [Wifi](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connnecting-device-via-wireless-network/#GUID-14BF448A-CC19-4DF5-915E-6ED43E5B63E9), or [USB](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connecting-device-via-usb/#GUID-640DA3EF-F496-47A0-A68B-A01AA0F7CC16) connection so that the Python libraries can be installed from the Internet. We recommend that you use either Ethernet Port or USB.
 3. Open **Internet Explorer** and visit the NI ELVIS III Configuration website: \<IP Address of the NI ELVIS III\>/WIF.html<br/>
-   ![](docs/resource/open_setup_page.gif)
+   ![](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/open_setup_page.gif)
    Note: The IP Address can be found on the display of the NI ELVIS III. Press [BUTTON 0](https://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/user-programmable-button/) until the IP address appears. Enter the IP address from the display.<br />
 4. Enable the **Secure Shell Server** and click **Restart** to restart the device.
    ![](docs/resource/open_ssh.gif)
