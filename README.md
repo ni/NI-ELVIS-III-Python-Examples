@@ -90,7 +90,7 @@ In this section we will download the NI ELVIS III Python Examples.
 ### Download ZIP File and Upload to the Device via SFTP
 
 1. Open the [NI ELVIS III Python Examples](https://github.com/ni/NI-ELVIS-III-Python-Examples) on GitHub.
-2. Download the NI ELVIS III Python helper library and Python Examples from GitHub and upzip it.
+2. Download the NI ELVIS III Python helper library and Python Examples from GitHub and unzip it.
    1. Download the Example.
    ![](docs/resource/download_from_github.gif)
    
@@ -100,7 +100,7 @@ In this section we will download the NI ELVIS III Python Examples.
       
 3. Transfer the NI ELVIS III Python Examples to your NI ELVIS III device.
 
-    - Option 1: Transfer through scp.
+    - Option 1: Transfer files through scp.
 
       ```
       scp -r <folder_name> admin@<id_address>:/home/admin/
@@ -112,7 +112,7 @@ In this section we will download the NI ELVIS III Python Examples.
 
    - Option 2: Transfer through FileZilla.
 
-      1. Download and install [FileZilla](https://filezilla-project.org/download.php). You are free to use any application you are comfortable with to transfer files.
+      1. Download and install [FileZilla](https://filezilla-project.org/download.php). You are free to use any other application you are comfortable with to transfer files.
       2. Configure FileZilla as the following:
    
          ![](docs/resource/filezilla_connect_to_device.gif)
