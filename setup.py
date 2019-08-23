@@ -31,7 +31,7 @@ setup(name="nielvis",
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Topic :: Education",
-        "Topic :: Engineering",
+        "Topic :: Scientific/Engineering",
         "Topic :: Software Deveopment",
         "Topic :: System :: Hardware"]
       )
