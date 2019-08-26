@@ -34,13 +34,8 @@ Result:
     The program writes the string 'Hello World' to the UART device, and
     reads back five bytes of data from the device.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
-import academicIO
-from enums import Bank, UARTBaudRate, UARTDataBits, UARTParity, UARTStopBits, UARTFlowControl
+from nielvis import UART, Bank, UARTBaudRate, UARTDataBits, UARTParity, UARTStopBits, UARTFlowControl
 
 # specify the bank
 bank = Bank.A
@@ -56,12 +51,12 @@ parity = UARTParity.NO
 # set the type of control used by the transfer mechanism
 flow_control = UARTFlowControl.NONE
 # configure a UART session
-with academicIO.UART(bank,
-                     baud_rate,
-                     data_bits,
-                     stop_bits,
-                     parity,
-                     flow_control) as uart:
+with UART(bank,
+          baud_rate,
+          data_bits,
+          stop_bits,
+          parity,
+          flow_control) as uart:
     # specify the data to write to the UART device
     value = 'Hello World'
     # write the data to the UART device

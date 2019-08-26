@@ -19,15 +19,11 @@ Result:
     BUTTON 0, and the program prints a string. Otherwise, the program does
     nothing.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
-import academicIO
+from nielvis import Button
 
 # configure a button session
-with academicIO.Button() as button:
+with Button() as button:
     # read values 20 times
     for x in range(0, 20):
         # when you press the button, the if statement is True

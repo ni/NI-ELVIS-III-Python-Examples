@@ -25,14 +25,9 @@ Result:
     flash for 3 seconds. While LED1 is flashing, LED0 will also keep flashing
     until the program ends.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
 import threading
-import academicIO
-from enums import Led
+from nielvis import TimerIRQ, LEDs, Led
 
 def irq_handler():
     """
@@ -41,7 +36,7 @@ def irq_handler():
     make an LED flash in this example.
     """
     # open an LED session
-    with academicIO.LEDs() as LED:
+    with LEDs() as LED:
         # specify the LED which you want to control
         led = Led.LED1
         # specify the LED status
@@ -60,9 +55,9 @@ def irq_handler():
 # starts and when an interrupt occurs
 irq_interval= 5000000    # 5000000us = 5s
 # configure a timer interrupt session
-with academicIO.TimerIRQ(irq_handler, irq_interval) as Timer_IRQ:
+with TimerIRQ(irq_handler, irq_interval) as Timer_IRQ:
     # open the LED session
-    LED = academicIO.LEDs()
+    LED = LEDs()
     # specify the LED which you want to control
     led = Led.LED0
     # specify the LED status

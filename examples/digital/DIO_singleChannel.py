@@ -25,13 +25,8 @@ Result:
     The program writes a value to DIO2 and reads back a value from DIO4 on
     bank A.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
-import academicIO
-from enums import Bank, DIOChannel
+from nielvis import DigitalInputOutput, Bank, DIOChannel
 
 # specify the bank
 bank = Bank.A
@@ -39,7 +34,7 @@ bank = Bank.A
 channel2 = DIOChannel.DIO2
 channel4 = DIOChannel.DIO4
 # configure a DIO session
-with academicIO.DigitalInputOutput(bank, [channel2, channel4]) as DIO:
+with DigitalInputOutput(bank, [channel2, channel4]) as DIO:
     # define the value as a Boolean
     value = True
 

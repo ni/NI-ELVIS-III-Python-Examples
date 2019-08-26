@@ -44,14 +44,9 @@ Result:
     While LED1 is flashing, LED0 will also keep flashing until the program
     ends.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
 import threading
-import academicIO
-from enums import AIIRQChannel, IRQNumber, AIIRQType, Led
+from nielvis import AIIRQ, LEDs, AIIRQChannel, IRQNumber, AIIRQType, Led
 
 def irq_handler():
     """
@@ -60,7 +55,7 @@ def irq_handler():
     make an LED flash in this example.
     """
     # open an LED session
-    with academicIO.LEDs() as LED:
+    with LEDs() as LED:
         # specify the LED which you want to control
         led = Led.LED1
         # specify the LED status
@@ -92,7 +87,7 @@ hysteresis = 0.05
 # edge of the analog input signal
 irq_type = AIIRQType.RISING
 # configure an analog input interrupt session
-with academicIO.AIIRQ(irq_channel,
+with AIIRQ(irq_channel,
                       irq_handler,
                       irq_number,
                       timeout,
@@ -100,7 +95,7 @@ with academicIO.AIIRQ(irq_channel,
                       hysteresis,
                       irq_type) as AI_IRQ:
     # open the LED session
-    LED = academicIO.LEDs()
+    LED = LEDs()
     # specify the LED which you want to control
     led = Led.LED0
     # specify the LED status

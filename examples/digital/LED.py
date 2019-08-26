@@ -15,16 +15,11 @@ Hardware setup:
 Result:
     LED0 flashes for 5 seconds.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
-import academicIO
-from enums import Led
+from nielvis import LEDs, Led
 
 # configure an LED session
-with academicIO.LEDs() as LED:
+with LEDs() as LED:
     # specify the LED which you want to control
     led = Led.LED0
     # specify the LED status

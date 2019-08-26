@@ -44,7 +44,7 @@ In this section we will install the NI Measurement Live Support Files and set up
    *Note:*
       - Make sure there is a blue mark at the date you selected.
       - You have to set the **Time Configuration** again after you restart the device.
-6. <a name="nivisa">Install NI-VISA through **NI MAX** custom software installation if you want to run the UART example.</a>
+6. Install NI-VISA through **NI MAX** custom software installation if you want to run the UART example.
 
 ## Installing Prerequisite Software for NI ELVIS III Python
 In this section we will install the software needed to execute the NI ELVIS III Python examples and the required packages to use the Python FPGA API.
@@ -67,8 +67,7 @@ In this section we will install the software needed to execute the NI ELVIS III 
      opkg update
      opkg install python
      opkg install python-pip
-     pip install nifpga
-     pip install pyvisa
+     pip install nielvis
      ```
    
    - Python 3.4+
@@ -78,8 +77,7 @@ In this section we will install the software needed to execute the NI ELVIS III 
      opkg install python3 python3-misc
      curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py | python3
      python3 get-pip.py
-     python3 -m pip install nifpga
-     python3 -m pip install pyvisa
+     python3 -m pip install nielvis
      ```
 
 ## Installing NI ELVIS III Python Examples 
@@ -160,7 +158,6 @@ In this section we will download the NI ELVIS III Python Examples.
    - [I2C](examples/bus/I2C.py)
    - [SPI](examples/bus/SPI.py)
    - [UART](examples/bus/UART.py)
-     - If a **pyvisa** error is shown, make sure the [NI-VISA](#nivisa) is installed on NI ELVIS III.
  ### [Digital](examples/digital)
    - [Button](examples/digital/Button.py)
    - [DIO_multipleChannels](examples/digital/DIO_multipleChannels.py)

@@ -47,13 +47,8 @@ Result:
     counter direction) from the encoder device. The data changes when the knob
     on the KY-040 Arduino Rotary is rotated.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
-import academicIO
-from enums import Bank, EncoderChannel, EncoderMode
+from nielvis import Encoder, Bank, EncoderChannel, EncoderMode
 
 # specify the bank and the encoder channel
 bank = Bank.A
@@ -62,7 +57,7 @@ channel = EncoderChannel.ENC0
 mode = EncoderMode.QUADRATURE
 
 # configure an encoder session
-with academicIO.Encoder(bank, channel, mode) as encoder:
+with Encoder(bank, channel, mode) as encoder:
     # specify whether to reset the encoder device. To reset the encoder, set
     # reset_counter to True
     reset_counter = True
