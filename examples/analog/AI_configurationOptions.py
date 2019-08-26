@@ -43,13 +43,8 @@ Result:
         2. Values acquired from AI1 and AI5 should be around -1.7 V.
     Expect some small variation due to signal noise.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
-import academicIO
-from enums import Bank, AIChannel, AIRange, AIMode
+from nielvis import AnalogInput, Bank, AIChannel, AIRange, AIMode
 
 # specify the bank and channels for the AI sessions
 ai_bank = Bank.A
@@ -64,9 +59,9 @@ ai_channel1 = AIChannel.AI1
 # specify the range
 ai_range = AIRange.PLUS_OR_MINUS_1V
 # configure the AI channel
-with academicIO.AnalogInput({'bank': ai_bank,
-                             'channel': ai_channel0,
-                             'range': ai_range}) as AI_single_channel:
+with AnalogInput({'bank': ai_bank,
+                  'channel': ai_channel0,
+                  'range': ai_range}) as AI_single_channel:
     # read the value
     value_array = AI_single_channel.read()
     # print the value
@@ -81,9 +76,9 @@ with academicIO.AnalogInput({'bank': ai_bank,
 # specify the range
 ai_range = AIRange.PLUS_OR_MINUS_5V
 # configure the AI channel
-with academicIO.AnalogInput({'bank': ai_bank,
-                             'channel': ai_channel0,
-                             'range': ai_range}) as AI_single_channel:
+with AnalogInput({'bank': ai_bank,
+                  'channel': ai_channel0,
+                  'range': ai_range}) as AI_single_channel:
     # read the value
     value_array = AI_single_channel.read()
     # print the value
@@ -97,9 +92,9 @@ with academicIO.AnalogInput({'bank': ai_bank,
 # specify the range
 ai_range = AIRange.PLUS_OR_MINUS_10V
 # configure the AI channel
-with academicIO.AnalogInput({'bank': ai_bank,
-                             'channel': ai_channel0,
-                             'range': ai_range}) as AI_single_channel:
+with AnalogInput({'bank': ai_bank,
+                  'channel': ai_channel0,
+                  'range': ai_range}) as AI_single_channel:
     # read the value
     value_array = AI_single_channel.read()
     # print the value
@@ -113,9 +108,9 @@ with academicIO.AnalogInput({'bank': ai_bank,
 # specify the mode
 ai_mode = AIMode.SINGLE_ENDED
 # configure the AI channel
-with academicIO.AnalogInput({'bank': ai_bank,
-                             'channel': ai_channel0,
-                             'mode': ai_mode}) as AI_single_channel:
+with AnalogInput({'bank': ai_bank,
+                  'channel': ai_channel0,
+                  'mode': ai_mode}) as AI_single_channel:
     # read the value
     value_array = AI_single_channel.read()
     # print the value
@@ -129,9 +124,9 @@ with academicIO.AnalogInput({'bank': ai_bank,
 # specify the mode
 ai_mode = AIMode.DIFFERENTIAL
 # configure the AI channel
-with academicIO.AnalogInput({'bank': ai_bank,
-                             'channel': ai_channel1,
-                             'mode': ai_mode}) as AI_single_channel:
+with AnalogInput({'bank': ai_bank,
+                  'channel': ai_channel1,
+                  'mode': ai_mode}) as AI_single_channel:
     # read the value
     value_array = AI_single_channel.read()
     # print the value

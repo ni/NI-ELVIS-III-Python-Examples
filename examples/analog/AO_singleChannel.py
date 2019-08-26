@@ -20,21 +20,16 @@ Hardware setup:
 Result:
     The program writes values to AO0 on bank A.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
-import academicIO
-from enums import Bank, AOChannel
+from nielvis import AnalogOutput, Bank, AOChannel
 
 # specify the bank and channel for the AO session
 bank = Bank.A
 channel = AOChannel.AO0
 
 # configure the AO channel
-with academicIO.AnalogOutput({'bank': bank,
-                              'channel': channel}) as AO_single_channel:
+with AnalogOutput({'bank': bank,
+                   'channel': channel}) as AO_single_channel:
 
     # write to the AO channel 20 times
     for i in range(0, 20):

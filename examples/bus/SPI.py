@@ -53,13 +53,8 @@ Result:
     the SPI device. The returned value in section 2 is E5 in hexadecimal; and
     it is ??E5 in section 2.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
-import academicIO
-from enums import Bank, DIOChannel, SPIClockPhase, SPIClockPolarity, SPIDataDirection
+from nielvis import SPI, DigitalInputOutput, Bank, DIOChannel, SPIClockPhase, SPIClockPolarity, SPIDataDirection
 
 # specify the bank
 bank = Bank.A
@@ -80,7 +75,7 @@ frame_length = 8
 cs_channel = DIOChannel.DIO0
 
 # configure the chip select channel
-cs = academicIO.DigitalInputOutput(bank, [cs_channel])
+cs = DigitalInputOutput(bank, [cs_channel])
 
 ##############################################################################
 # Section 1:
@@ -89,18 +84,18 @@ cs = academicIO.DigitalInputOutput(bank, [cs_channel])
 ##############################################################################
 
 # configure an SPI session
-with academicIO.SPI(frequency,
-                    bank,
-                    clock_phase,
-                    clock_polarity,
-                    data_direction,
-                    frame_length) as SPI:
+with SPI(frequency,
+         bank,
+         clock_phase,
+         clock_polarity,
+         data_direction,
+         frame_length) as spi:
     # specify the bytes to write to the SPI channel
     data_to_write = [0x80]
     # set the chip select of SPI to low
     cs.write(False, [cs_channel])
     # write data to the SPI channel
-    SPI.write(data_to_write)
+    spi.write(data_to_write)
     # set the chip select of SPI to high after writing
     cs.write(True, [cs_channel])
 
@@ -109,7 +104,7 @@ with academicIO.SPI(frequency,
     # set the chip select of SPI to low
     cs.write(False, [cs_channel])
     # read one byte of data from SPI channel
-    value_array = SPI.read(number_frames)
+    value_array = spi.read(number_frames)
     # set the chip select of SPI to high after reading
     cs.write(True, [cs_channel])
     # print the data
@@ -125,19 +120,19 @@ with academicIO.SPI(frequency,
 frame_length = 16
 
 # configure an SPI session
-with academicIO.SPI(frequency,
-                    bank,
-                    clock_phase,
-                    clock_polarity,
-                    data_direction,
-                    frame_length) as SPI:
+with SPI(frequency,
+         bank,
+         clock_phase,
+         clock_polarity,
+         data_direction,
+         frame_length) as spi:
     # specify the bytes to write to the SPI channel, need a 16-bit value
     # because frame_length is 16
     data_to_write = [0x8000]
     # set the chip select of SPI to low
     cs.write(False, [cs_channel])
     # write to and read from the SPI channel
-    value_array = SPI.writeread(data_to_write)
+    value_array = spi.writeread(data_to_write)
     # set the chip select of SPI high after writing/reading
     cs.write(True, [cs_channel])
     # print the data

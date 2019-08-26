@@ -67,8 +67,7 @@ In this section we will install the software needed to execute the NI ELVIS III 
      opkg update
      opkg install python
      opkg install python-pip
-     pip install nifpga
-     pip install pyvisa
+     pip install nielvis
      ```
    
    - Python 3.4+
@@ -78,8 +77,7 @@ In this section we will install the software needed to execute the NI ELVIS III 
      opkg install python3 python3-misc
      curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py | python3
      python3 get-pip.py
-     python3 -m pip install nifpga
-     python3 -m pip install pyvisa
+     python3 -m pip install nielvis
      ```
 
 ## Installing NI ELVIS III Python Examples 
