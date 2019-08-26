@@ -3,14 +3,14 @@ import os
 
 def get_long_description():
     this_dir = os.path.dirname(os.path.abspath(__file__))
-    with open(os.path.join(this_dir, 'README.md'), encoding='utf-8') as readme:
+    with open(os.path.join(this_dir, 'PIPDESCRIPTION.md'), encoding='utf-8') as readme:
         return readme.read()
 
 setup(name="nielvis",
       description="Python API for interacting with National Instrument's ELVIS III Devices",
       long_description=get_long_description(),
       long_description_content_type='text/markdown',
-      version='2.2.1',
+      version='2.2.2',
       packages=find_packages(),
       install_requires=['nifpga', 'pyvisa'],
       author='National Instruments',

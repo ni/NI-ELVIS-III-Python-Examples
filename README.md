@@ -1,17 +1,6 @@
 How to Program [NI ELVIS III](http://www.ni.com/en-us/shop/select/ni-elvis) with Python
 =======
 
-<table align="center">
-    <tr>
-        <td>Info</td>
-        <td>NI ELVIS III Python API. See <a href="https://github.com/ni/NI-ELVIS-III-Python-Examples">GitHub</a> for the latest source and detailed step-by-step instructions.</td>
-    </tr>
-    <tr>
-        <td>Author</td>
-        <td>National Instruments</td>
-    </tr>
-</table>
-
 <p align="center"><img width="700px" src="https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/ni_elvis_iii.png"/></p>
 
 # Overview
