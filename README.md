@@ -31,17 +31,19 @@ NI-ELVIS-III-Python-Examples supports Python 2.7, 3.4+.
 ## Configuring the NI ELVIS III Device
 In this section we will install the NI Measurement Live Support Files and set up the software environment for the NI ELVIS III.
 
-1. Install the [NI Measurement Live Support Files](http://www.ni.com/download/labview-elvis-iii-toolkit-2018/7639/en/).
-2. Connect the NI ELVIS III to the Internet by using the [Ethernet Port](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connecting-device-via-ethernet/#GUID-816EF92E-4CB5-47AA-BDE3-7CF57758FB0E), [Wifi](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connnecting-device-via-wireless-network/#GUID-14BF448A-CC19-4DF5-915E-6ED43E5B63E9), or [USB](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connecting-device-via-usb/#GUID-640DA3EF-F496-47A0-A68B-A01AA0F7CC16) connection so that the Python libraries can be installed from the Internet. We recommend that you use either Ethernet Port or USB.
+1. Install the [NI Measurement Live Support Files](https://www.ni.com/en-us/support/downloads/software-products/download.measurements-live.html).
+2. Connect the NI ELVIS III to the Internet by using the [Ethernet](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connecting-device-via-ethernet/#GUID-816EF92E-4CB5-47AA-BDE3-7CF57758FB0E) or [Wireless Network](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connnecting-device-via-wireless-network/#GUID-14BF448A-CC19-4DF5-915E-6ED43E5B63E9) so that the Python libraries can be installed from the Internet. We recommend that you use Ethernet Port.
 3. Open **Internet Explorer** and visit the NI ELVIS III Configuration website: \<IP Address of the NI ELVIS III\>/WIF.html<br/>
    ![](docs/resource/open_setup_page.gif)
-   Note: The IP Address can be found on the display of the NI ELVIS III. Press [BUTTON 0](https://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/user-programmable-button/) until the IP address appears. Enter the IP address from the display.<br />
+   *Note:* The IP Address can be found on the OLED display of the NI ELVIS III. Press [BUTTON 0](https://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/user-programmable-button/) until the IP address appears. Enter the IP address from the display.<br />
 4. Enable the **Secure Shell Server** and click **Restart** to restart the device.
    ![](docs/resource/open_ssh.gif)
 5. Set up **Time Configuration**. Configure the **Date**, **Current time**, and **Time Zone** to your current local time.
    ![](docs/resource/set_time_zone.gif)
    
-   Note: Make sure there is a blue mark at the date you selected.
+   *Note:*
+      - Make sure there is a blue mark at the date you selected.
+      - You have to set the **Time Configuration** again after you restart the device.
 6. <a name="nivisa">Install NI-VISA through **NI MAX** custom software installation if you want to run the UART example.</a>
 
 ## Installing Prerequisite Software for NI ELVIS III Python
@@ -58,7 +60,7 @@ In this section we will install the software needed to execute the NI ELVIS III 
        - **Password**: (Just press **Enter**. There is no password by default.)
 2. Install prerequisite software by running the following commands:<br />
    
-   Note: **Time configuration** must be set before running these commands. If you got any error when downloading **nifpga**, make sure your **Time configuration** of the NI ELVIS III is set correctly.
+   *Note:* **Time configuration** must be set before running these commands. If you got any error when downloading **nifpga**, make sure your **Time configuration** of the NI ELVIS III is set correctly.
    
    - Python 2.7
      ```
@@ -87,7 +89,7 @@ In this section we will download the NI ELVIS III Python Examples.
 ### Download ZIP File and Upload to the Device via SFTP
 
 1. Open the [NI ELVIS III Python Examples](https://github.com/ni/NI-ELVIS-III-Python-Examples) on GitHub.
-2. Download the NI ELVIS III Python helper library and Python Examples from GitHub and upzip it.
+2. Download the NI ELVIS III Python helper library and Python Examples from GitHub and unzip it.
    1. Download the Example.
    ![](docs/resource/download_from_github.gif)
    
@@ -97,7 +99,7 @@ In this section we will download the NI ELVIS III Python Examples.
       
 3. Transfer the NI ELVIS III Python Examples to your NI ELVIS III device.
 
-    - Option 1: Transfer through scp.
+    - Option 1: Transfer files through scp.
 
       ```
       scp -r <folder_name> admin@<id_address>:/home/admin/
@@ -105,11 +107,11 @@ In this section we will download the NI ELVIS III Python Examples.
 
       For example: `scp -r NI-ELVIS-III-Python-Examples/ admin@172.22.11.2:/home/admin/`
 
-      Note: **Password**: (Blank. There is no password by default.)
+      *Note:* **Password**: (Blank. There is no password by default.)
 
-   - Option 2: Transfer through FileZilla.
+   - Option 2: Transfer files through FileZilla.
 
-      1. Download and install [FileZilla](https://filezilla-project.org/download.php). You are free to use any application you are comfortable with to transfer files.
+      1. Download and install [FileZilla](https://filezilla-project.org/download.php). You are free to use any other application you are comfortable with to transfer files.
       2. Configure FileZilla as the following:
    
          ![](docs/resource/filezilla_connect_to_device.gif)
@@ -127,13 +129,7 @@ In this section we will download the NI ELVIS III Python Examples.
 
 # Running the Example
 
-1. In the same directory where you clone from GitHub in the earlier session, change the directory to the NI-ELVIS-III-Python example.
-
-   For GitHub Cloning Method:
-   ```
-   cd NI-ELVIS-III-Python-Examples/
-   ```
-   For FileZilla Method:
+1. In the same directory where you upload your example folder to, enter the following command to go to the NI-ELVIS-III-Python example directory.
    ```
    cd NI-ELVIS-III-Python-Examples-master/
    ```
@@ -144,7 +140,7 @@ In this section we will download the NI ELVIS III Python Examples.
    ```
    For example: `python examples/analog/AI_singleChannel.py`.      
    
-   Note: Make sure your application broad is powered on before running any example.
+   *Note:* Make sure your application broad is powered on before running any example.
 
 <p align="right"><a href="#top">↥ back to top</a>
 
@@ -157,10 +153,8 @@ In this section we will download the NI ELVIS III Python Examples.
    - [AI_singleChannel](examples/analog/AI_singleChannel.py)
    - [AO_multipleChannels](examples/analog/AO_multipleChannels.py)
    - [AO_singleChannel](examples/analog/AO_singleChannel.py)
-
      #### Related Information
        [1 Sample, N Samples, and Continuous Modes](docs/1_Sample_N_Samples_and_Continuous_Modes.md)
-       
  ### [Bus](examples/bus)
    - [Encoder](examples/bus/Encoder.py)
    - [I2C](examples/bus/I2C.py)
