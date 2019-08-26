@@ -59,9 +59,8 @@ with academicIO.AnalogOutput({'bank': bank,
 
 ##############################################################################
 # Section 2: Multiple Points (N sample)
-# Use the write function to write multiple points of data to the channel. You
-# have to pass two arguments to the write function: values_list and
-# sample_rate. The hardware generates a finite number of samples for a channel.
+# Use the write function to write multiple points of data to the channel. The
+# hardware generates a finite number of samples for a channel.
 ##############################################################################
 # configure the AO channel
 with academicIO.AnalogOutput({'bank': bank,
@@ -69,8 +68,9 @@ with academicIO.AnalogOutput({'bank': bank,
 
     # write to the AO channel 20 times
     for i in range(0, 20):
-        # define the value as a floating-point number
+        # define a list of floating-point number
         input_value = [1.0, 2.5]
+        # specifies the sampling frequency, in hertz, of the output signal.
         sample_rate = 1000
         # write 1.0 and 2.5 to AO0 on bank A
         AO_single_channel.write(input_value, sample_rate)

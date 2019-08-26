@@ -439,7 +439,8 @@ class AnalogOutput(ELVISIII):
         Writes values to one or more analog output channels. Use the
         write(value) function to write a single point data to the channel. Use
         the write(values, sample_rate) to write multiple points data to the
-        channel.
+        channel. The function does not return until the write to physical I/O
+        operation completes.
 
         Args:
             If you want to read a single point of data at one time, argument should contain:
@@ -457,7 +458,7 @@ class AnalogOutput(ELVISIII):
                     output channel. Ensure this number is greater than 0 and less
                     than or equal to 10,000.
                 sample_rate (number):
-                    Specifies the sampling frequency in hertz of the output signal.
+                    Specifies the sampling frequency, in hertz, of the output signal.
         """
         args_len = len(args)
         if args_len == 1:
