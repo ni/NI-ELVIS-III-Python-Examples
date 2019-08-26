@@ -48,14 +48,9 @@ Result:
     While LED1 is flashing, LED0 will also keep flashing until the program
     ends.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
 import threading
-import academicIO
-from enums import DIOChannel, IRQNumber, Led
+from nielvis import DIIRQ, LEDs, DIOChannel, IRQNumber, Led
 
 def irq_handler():
     """
@@ -64,7 +59,7 @@ def irq_handler():
     make an LED flash in this example.
     """
     # open an LED session
-    with academicIO.LEDs() as LED:
+    with LEDs() as LED:
         # specify the LED which you want to control
         led = Led.LED1
         # specify the LED status
@@ -98,7 +93,7 @@ interrupt_type_falling = False
 # when the DIO channel receives one rising edge
 edge_count = 1
 # configure a digital input interrupt session
-with academicIO.DIIRQ(irq_channel,
+with DIIRQ(irq_channel,
                       irq_handler,
                       irq_number,
                       timeout,
@@ -106,7 +101,7 @@ with academicIO.DIIRQ(irq_channel,
                       interrupt_type_falling,
                       edge_count) as DI_IRQ:
     # open the LED session
-    LED = academicIO.LEDs()
+    LED = LEDs()
     # specify the LED which you want to control
     led = Led.LED0
     # specify the LED status

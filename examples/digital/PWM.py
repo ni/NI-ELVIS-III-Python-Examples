@@ -18,20 +18,15 @@ Hardware setup:
 Result:
     Generate a PWM signal from DIO0 on bank B.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
-import academicIO
-from enums import Bank, DIOChannel
+from nielvis import PWM, Bank, DIOChannel
 
 # specify the bank and channel for the PWM session
 bank = Bank.B
 channel = DIOChannel.DIO0
 
 # configure a PWM session
-with academicIO.PWM(bank, channel) as PWM:
+with PWM(bank, channel) as pwm:
     # specify the frequency (floating-point number) for the PWM signal. The
     # FPGA automatically coerces it to the nearest possible frequency.
     frequency = 1000
@@ -40,7 +35,7 @@ with academicIO.PWM(bank, channel) as PWM:
     duty_cycle = 0.7
 
     # generate the PWM signal
-    PWM.generate(frequency, duty_cycle)
+    pwm.generate(frequency, duty_cycle)
     # begin to generate the PWM signal for 20 seconds
     time.sleep(20)
 # stop generating the PWM signal when the 'with' statement ends

@@ -34,13 +34,8 @@ Result:
     Twenty values are acquired from AI0. All values should be around 5V.
     Expect some small variation due to signal noise.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
-import academicIO
-from enums import Bank, AIChannel, AIRange, AIMode
+from nielvis import AnalogInput, Bank, AIChannel, AIRange, AIMode
 
 # specify the bank, channel, range, and mode
 ai_bank = Bank.A
@@ -55,10 +50,10 @@ ai_mode = AIMode.SINGLE_ENDED
 ##############################################################################
 print('Single Point, Single Channel')
 # configure the AI channel
-with academicIO.AnalogInput({'bank': ai_bank,
-                             'channel': ai_channel,
-                             'range': ai_range,
-                             'mode': ai_mode}) as AI_single_channel:
+with AnalogInput({'bank': ai_bank,
+                  'channel': ai_channel,
+                  'range': ai_range,
+                  'mode': ai_mode}) as AI_single_channel:
     # read from the AI channel and display the values 20 times
     for i in range(0, 20):
         # read the value
@@ -77,10 +72,10 @@ with academicIO.AnalogInput({'bank': ai_bank,
 ##############################################################################
 print('Multiple Points, Single Channel')
 # configure the AI channel
-with academicIO.AnalogInput({'bank': ai_bank,
-                             'channel': ai_channel,
-                             'range': ai_range,
-                             'mode': ai_mode}) as AI_single_channel:
+with AnalogInput({'bank': ai_bank,
+                  'channel': ai_channel,
+                  'range': ai_range,
+                  'mode': ai_mode}) as AI_single_channel:
     # specify the number of samples to read and the sampling frequency, in hertz, of the input signal
     number_of_samples = 100
     sample_rate = 1000
