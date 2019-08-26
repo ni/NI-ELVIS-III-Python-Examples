@@ -10,7 +10,7 @@ import academicIO
 from enums import *
 
 def irq_handler():
-    print "Button interrupt is triggered. Now it is callback time."
+    print("Button interrupt is triggered. Now it is callback time.")
 
 irq_number = IRQNumber.IRQ1
 timeout= 6000
@@ -54,7 +54,7 @@ try:
                             interrupt_type_falling,
                             edge_count)
 except AssertionError:
-    print "Caught the error - rising and falling interrupt type can't be false at the same time."
+    print("Caught the error - rising and falling interrupt type can't be false at the same time.")
 
 try:
     with academicIO.ButtonIRQ(irq_handler,
@@ -65,7 +65,7 @@ try:
                           edge_count) as Button_IRQ:
         Button_IRQ.wait()
 except AssertionError:
-    print "Caught the error - 0 can't be irq_number of ButtonIRQ."
+    print("Caught the error - 0 can't be irq_number of ButtonIRQ.")
 
 try:
     academicIO.ButtonIRQ(irq_handler,
@@ -75,7 +75,7 @@ try:
                          interrupt_type_falling,
                          edge_count)
 except AssertionError:
-    print "Caught the error - the timeout value should be greater than 0."
+    print("Caught the error - the timeout value should be greater than 0.")
 
 try:
     academicIO.ButtonIRQ(irq_handler,
@@ -85,7 +85,7 @@ try:
                          interrupt_type_falling,
                          0)
 except AssertionError:
-    print "Caught the error - the number of edges of the signal should be greater than 0."
+    print("Caught the error - the number of edges of the signal should be greater than 0.")
 
 try:
     academicIO.ButtonIRQ(irq_handler,
@@ -95,4 +95,4 @@ try:
                          interrupt_type_falling,
                          4294967296)
 except AssertionError:
-    print "Caught the error - the number of edges of the signal should be less than 4294967296."
+    print("Caught the error - the number of edges of the signal should be less than 4294967296.")

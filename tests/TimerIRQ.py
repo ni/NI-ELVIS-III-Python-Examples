@@ -10,7 +10,7 @@ import academicIO
 from enums import *
 
 def irq_handler():
-    print "Timer interrupt is triggered. Now it is callback time."
+    print("Timer interrupt is triggered. Now it is callback time.")
 
 irq_interval= 5000000    # 5s
 with academicIO.TimerIRQ(irq_handler, irq_interval) as Timer_IRQ:
