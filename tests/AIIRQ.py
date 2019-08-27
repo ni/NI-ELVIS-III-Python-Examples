@@ -10,7 +10,7 @@ import academicIO
 from enums import *
 
 def irq_handler():
-    print "AI interrupt is triggered. Now it is callback time."
+    print("AI interrupt is triggered. Now it is callback time.")
 
 irq_channel = AIIRQChannel.AI1
 irq_number = IRQNumber.IRQ3
@@ -46,7 +46,7 @@ try:
                       hysteresis,
                       irq_type)
 except AssertionError:
-    print "Caught the error - 0 can't be irq_number of AIIRQ."
+    print("Caught the error - 0 can't be irq_number of AIIRQ.")
 
 try:
     academicIO.AIIRQ(irq_channel,
@@ -57,7 +57,7 @@ try:
                       hysteresis,
                       irq_type)
 except AssertionError:
-    print "Caught the error - the timeout value should be greater than 0."
+    print("Caught the error - the timeout value should be greater than 0.")
 
 try:
     academicIO.AIIRQ(irq_channel,
@@ -68,7 +68,7 @@ try:
                       hysteresis,
                       irq_type)
 except AssertionError:
-    print "Caught the error - the threshold value should be [0-5]."
+    print("Caught the error - the threshold value should be [0-5].")
 
 try:
     academicIO.AIIRQ(irq_channel,
@@ -79,7 +79,7 @@ try:
                       1.2,
                       irq_type)
 except AssertionError:
-    print "Caught the error - the hysteresis value should be [0-1]."
+    print("Caught the error - the hysteresis value should be [0-1].")
 
 irq_channel = 2
 try:
@@ -91,4 +91,4 @@ try:
                     1.2,
                     irq_type)
 except AssertionError:
-    print "Caught the error - The channels available in the AIIRQ should be 0-1."
+    print("Caught the error - The channels available in the AIIRQ should be 0-1.")
