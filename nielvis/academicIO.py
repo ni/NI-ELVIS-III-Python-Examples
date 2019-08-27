@@ -589,7 +589,7 @@ class AnalogOutput(ELVISIII):
 
         def __wait_until_write_done(bank):
             """
-            Configure IRQ and execute and wait until it is asserted. The
+            Configure IRQ, execute it, and wait until it is asserted,
             function will wait unitl the irq asserted which means the write to
             physical I/O operation completes. The irq number is 31 for Bank A and
             30 for Bank B.
