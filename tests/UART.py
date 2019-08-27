@@ -20,4 +20,4 @@ with academicIO.UART(bank,baud_rate, data_bits, stop_bits, parity) as uart:
 
     bytes_to_read = 10
     return_value = uart.read(bytes_to_read)
-    print return_value
+    print(return_value)

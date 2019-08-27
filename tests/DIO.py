@@ -21,32 +21,32 @@ with academicIO.DigitalInputOutput(bank,
     # multiple channels
     DIO.write(value, [DIOChannel.DIO2, DIOChannel.DIO3, DIOChannel.DIO4, DIOChannel.DIO8])
     data = DIO.read([DIOChannel.DIO9, DIOChannel.DIO10, DIOChannel.DIO11, DIOChannel.DIO12])
-    print data
+    print(data)
     assert data == [1, 1, 1, 1]
 
     # a single channel
     DIO.write(not value, [DIOChannel.DIO3])
     data = DIO.read([DIOChannel.DIO10])
-    print data
+    print(data)
     assert data == [0]
 
     # multiple channels
     DIO.write(value, [DIOChannel.DIO2, DIOChannel.DIO4])
     data = DIO.read([DIOChannel.DIO9, DIOChannel.DIO11])
-    print data
+    print(data)
     assert data == [1, 1]
 
     try:
         DIO.write(200, [DIOChannel.DIO1])
     except (AssertionError) as err:
-        print "Caught the error - Only True or False can be written to DI."
+        print("Caught the error - Only True or False can be written to DI.")
 
     try:
         DIO.write(value, [20])
     except (AssertionError) as err:
-        print "Caught the error - The channels available in the DIO should be 0-19."
+        print("Caught the error - The channels available in the DIO should be 0-19.")
 
     try:
         DIO.read([20])
     except (AssertionError) as err:
-        print "Caught the error - The channels available in the DIo should be 0-19."
+        print("Caught the error - The channels available in the DIo should be 0-19.")

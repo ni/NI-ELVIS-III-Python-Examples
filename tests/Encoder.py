@@ -17,15 +17,15 @@ with academicIO.Encoder(bank, channel, EncoderMode.QUADRATURE) as encoder_quadra
     reset_counter = False
     for x in range(0, 5):
         counter_value, counter_direction_decrease = encoder_quadrature_mode.read(reset_counter)
-        print counter_value,
+        print(counter_value)
         if counter_direction_decrease:
-        	print ", direction is decreasing"
+        	print(", direction is decreasing")
         else:
-        	print ", direction is increasing"
+        	print(", direction is increasing")
 
         time.sleep(1)
 
-print "done"
+print("done")
 
 with academicIO.Encoder(bank, channel, EncoderMode.STEP_AND_DIRECTION) as encoder_step_mode:
     reset_counter = True
@@ -33,10 +33,10 @@ with academicIO.Encoder(bank, channel, EncoderMode.STEP_AND_DIRECTION) as encode
     reset_counter = False
     for x in range(0, 5):
         counter_value, counter_direction_decrease = encoder_step_mode.read(reset_counter)
-        print counter_value,
+        print(counter_value)
         if counter_direction_decrease:
-        	print ", direction is decreasing"
+        	print(", direction is decreasing")
         else:
-        	print ", direction is increasing"
+        	print(", direction is increasing")
 
         time.sleep(1)
