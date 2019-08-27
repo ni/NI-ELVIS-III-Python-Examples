@@ -1,10 +1,10 @@
-How to use [NI ELVIS III](http://www.ni.com/en-us/shop/select/ni-elvis) with Python
+How to Program [NI ELVIS III](http://www.ni.com/en-us/shop/select/ni-elvis) with Python
 =======
 
-<p align="center"><img width="700px" src="docs/resource/ni_elvis_iii.png"/></p>
+<p align="center"><img width="700px" src="https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/ni_elvis_iii.png"/></p>
 
 # Overview
-In this document we will walk you through the setup, transfer of files, and the use of a Python example on the NI ELVIS III. The NI ELVIS III solution for project-based learning can be programmed with python to help students or educators who are familiar with Python syntax to rapidly acquire measurements by using common SSH clients. Attached to this file are a total of 18 examples which illustrate the use of the NI ELVIS III helper library ([academicIO.py](source/nielvisiii/academicIO.py)).
+In this document we will walk you through the setup, transfer of files, and the use of a Python example on the NI ELVIS III. The NI ELVIS III solution for project-based learning can be programmed with python to help students or educators who are familiar with Python syntax to rapidly acquire measurements by using common SSH clients. Attached to this file are a total of 18 examples which illustrate the use of the NI ELVIS III helper library ([academicIO.py](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/nielvis/academicIO.py)).
 
 NI-ELVIS-III-Python-Examples supports Python 2.7, 3.4+.
 
@@ -34,12 +34,12 @@ In this section we will install the NI Measurement Live Support Files and set up
 1. Install the [NI Measurement Live Support Files](https://www.ni.com/en-us/support/downloads/software-products/download.measurements-live.html).
 2. Connect the NI ELVIS III to the Internet by using the [Ethernet](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connecting-device-via-ethernet/#GUID-816EF92E-4CB5-47AA-BDE3-7CF57758FB0E) or [Wireless Network](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connnecting-device-via-wireless-network/#GUID-14BF448A-CC19-4DF5-915E-6ED43E5B63E9) so that the Python libraries can be installed from the Internet. We recommend that you use Ethernet Port.
 3. Open **Internet Explorer** and visit the NI ELVIS III Configuration website: \<IP Address of the NI ELVIS III\>/WIF.html<br/>
-   ![](docs/resource/open_setup_page.gif)
+   ![](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/open_setup_page.gif)
    *Note:* The IP Address can be found on the OLED display of the NI ELVIS III. Press [BUTTON 0](https://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/user-programmable-button/) until the IP address appears. Enter the IP address from the display.<br />
 4. Enable the **Secure Shell Server** and click **Restart** to restart the device.
-   ![](docs/resource/open_ssh.gif)
+   ![](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/open_ssh.gif)
 5. Set up **Time Configuration**. Configure the **Date**, **Current time**, and **Time Zone** to your current local time.
-   ![](docs/resource/set_time_zone.gif)
+   ![](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/set_time_zone.gif)
    
    *Note:*
       - Make sure there is a blue mark at the date you selected.
@@ -50,7 +50,7 @@ In this section we will install the NI Measurement Live Support Files and set up
 In this section we will install the software needed to execute the NI ELVIS III Python examples and the required packages to use the Python FPGA API.
 
 1. Install and open your favorite SSH client. If you do not have one, we recommend that you use [PuTTY](https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe):
-   ![](docs/resource/putty_connect_to_device.gif)
+   ![](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/putty_connect_to_device.gif)
    - Configure PuTTY or another client as follows:
       - **Host Name**: \<IP Address of the NI ELVIS III\>
       - **Port**: 22
@@ -89,11 +89,11 @@ In this section we will download the NI ELVIS III Python Examples.
 1. Open the [NI ELVIS III Python Examples](https://github.com/ni/NI-ELVIS-III-Python-Examples) on GitHub.
 2. Download the NI ELVIS III Python helper library and Python Examples from GitHub and unzip it.
    1. Download the Example.
-   ![](docs/resource/download_from_github.gif)
+   ![](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/download_from_github.gif)
    
    3. Unzip the file you just downloaded.
    
-      ![](docs/resource/unzip_folder.gif)
+      ![](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/unzip_folder.gif)
       
 3. Transfer the NI ELVIS III Python Examples to your NI ELVIS III device.
 
@@ -112,7 +112,7 @@ In this section we will download the NI ELVIS III Python Examples.
       1. Download and install [FileZilla](https://filezilla-project.org/download.php). You are free to use any other application you are comfortable with to transfer files.
       2. Configure FileZilla as the following:
    
-         ![](docs/resource/filezilla_connect_to_device.gif)
+         ![](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/filezilla_connect_to_device.gif)
       
          - **Host**: \<IP Address of the NI ELVIS III\>
          - **Username**: admin
@@ -121,7 +121,7 @@ In this section we will download the NI ELVIS III Python Examples.
 
       3. Upload **NI-ELVIS-III-Python-Examples-master/** into the directory `/home/admin`.
       
-         ![](docs/resource/filezilla_transfer_folder.gif)
+         ![](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/filezilla_transfer_folder.gif)
 
 <p align="right"><a href="#top">↥ back to top</a>
 
@@ -145,30 +145,30 @@ In this section we will download the NI ELVIS III Python Examples.
 # Examples Overview
   Go to the comments area at the top of each example to see more details. Click the following links to jump into the example page.
 
- ### [Analog](examples/analog)
-   - [AI_configurationOptions](examples/analog/AI_configurationOptions.py)
-   - [AI_multipleChannels](examples/analog/AI_multipleChannels.py)
-   - [AI_singleChannel](examples/analog/AI_singleChannel.py)
-   - [AO_multipleChannels](examples/analog/AO_multipleChannels.py)
-   - [AO_singleChannel](examples/analog/AO_singleChannel.py)
+ ### [Analog](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/analog/)
+   - [AI_configurationOptions](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/analog/AI_configurationOptions.py)
+   - [AI_multipleChannels](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/analog/AI_multipleChannels.py)
+   - [AI_singleChannel](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/analog/AI_singleChannel.py)
+   - [AO_multipleChannels](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/analog/AO_multipleChannels.py)
+   - [AO_singleChannel](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/analog/AO_singleChannel.py)
      #### Related Information
        [1 Sample, N Samples, and Continuous Modes](docs/1_Sample_N_Samples_and_Continuous_Modes.md)
- ### [Bus](examples/bus)
-   - [Encoder](examples/bus/Encoder.py)
-   - [I2C](examples/bus/I2C.py)
-   - [SPI](examples/bus/SPI.py)
-   - [UART](examples/bus/UART.py)
- ### [Digital](examples/digital)
-   - [Button](examples/digital/Button.py)
-   - [DIO_multipleChannels](examples/digital/DIO_multipleChannels.py)
-   - [DIO_singleChannel](examples/digital/DIO_singleChannel.py)
-   - [LED](examples/digital/LED.py)
-   - [PWM](examples/digital/PWM.py)
- ### [Interrupt](examples/interrupt)
-   - [AIIRQ (Analog Interrupt)](examples/interrupt/AIIRQ.py)
-   - [ButtonIRQ (Button Interrupt)](examples/interrupt/ButtonIRQ.py)
-   - [DIIRQ (Digital Interrupt)](examples/interrupt/DIIRQ.py)
-   - [TimerIRQ (Timer Interrupt)](examples/interrupt/TimerIRQ.py)
+ ### [Bus](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/bus)
+   - [Encoder](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/bus/Encoder.py)
+   - [I2C](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/bus/I2C.py)
+   - [SPI](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/bus/SPI.py)
+   - [UART](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/bus/UART.py)
+ ### [Digital](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/digital)
+   - [Button](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/digital/Button.py)
+   - [DIO_multipleChannels](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/digital/DIO_multipleChannels.py)
+   - [DIO_singleChannel](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/digital/DIO_singleChannel.py)
+   - [LED](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/digital/LED.py)
+   - [PWM](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/digital/PWM.py)
+ ### [Interrupt](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/interrupt)
+   - [AIIRQ (Analog Interrupt)](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/interrupt/AIIRQ.py)
+   - [ButtonIRQ (Button Interrupt)](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/interrupt/ButtonIRQ.py)
+   - [DIIRQ (Digital Interrupt)](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/interrupt/DIIRQ.py)
+   - [TimerIRQ (Timer Interrupt)](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/examples/interrupt/TimerIRQ.py)
 
 <p align="right"><a href="#top">↥ back to top</a>
 

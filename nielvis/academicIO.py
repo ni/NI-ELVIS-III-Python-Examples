@@ -1,18 +1,17 @@
 import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
+import logging
 
 import time
 import pyvisa
 from nifpga import Session
-from enums import *
+from .enums import *
 
 class ELVISIII(object):
     """ Register NI ELVIS III bitfile. """
     ResourceName = "RIO0"
 
     def __init__(self):
-        path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'bitfile/ELVIS III v1.1 FPGA.lvbitx')
+        path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), '/usr/local/natinst/academic/lib/niElvisIIIHost/ELVIS III v1.1 FPGA.lvbitx')
         self.session = Session(path, ELVISIII.ResourceName)
 
     def __enter__(self):
@@ -1118,14 +1117,17 @@ class IRQ(ELVISIII):
         """
         assert timeout >= 0
         assert 0 <= irq_number <= IRQNumber.IRQ8
-        print("waiting for IRQ...")
+        logging.getLogger().setLevel(logging.INFO)
+        logging.info('waiting for IRQ...')
         irq_status = self.session.wait_on_irqs([irq_number], timeout)
         if irq_number in irq_status.irqs_asserted:
-            print(str(irq_number) + " was asserted. IRQ occured.")
+            message = str(irq_number) + " was asserted. IRQ occured."
+            logging.info(message)
             self.callback_function()
             self.acknowledge(irq_number)
         else:
-            print(str(irq_number), "was not asserted. Timeout.")
+            message = str(irq_number), "was not asserted. Timeout."
+            logging.info(message)
 
     def acknowledge(self, irq_number):
         """
