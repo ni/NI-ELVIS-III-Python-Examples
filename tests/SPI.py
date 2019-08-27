@@ -18,20 +18,20 @@ with academicIO.SPI(frequency, bank, SPIClockPhase.TRAILING, SPIClockPolarity.HI
     # write and read
     SPI.write([0x80])
     value_array = SPI.read(1)
-    print "value read from SPI.read: ", value_array[0]
+    print("value read from SPI.read: ", value_array[0])
     assert value_array[0] == 'e5'
 
     # writeread: an easier way to use write/read functions which will immediately read a value back right after the input value is written
     value_array = SPI.writeread([0x80])
-    print "value read from SPI.writeread: ", value_array[0]
+    print("value read from SPI.writeread: ", value_array[0])
     assert value_array[0] == 'e5'
 
 try:
     academicIO.SPI(frequency, bank, SPIClockPhase.TRAILING, SPIClockPolarity.HIGH, SPIDataDirection.MSB, 17)
 except (AssertionError) as err:
-    print "Caught the error - The frame length should be 4-16."
+    print("Caught the error - The frame length should be 4-16.")
 
 try:
     academicIO.SPI(frequency, bank, SPIClockPhase.TRAILING, SPIClockPolarity.HIGH, SPIDataDirection.MSB, 3)
 except (AssertionError) as err:
-    print "Caught the error - The frame length should be 4-16."
+    print("Caught the error - The frame length should be 4-16.")

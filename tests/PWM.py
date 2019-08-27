@@ -19,8 +19,8 @@ with academicIO.PWM(bank, channel) as PWM:
     # print actual_frequency
     # assert actual_frequency == pytest.approx(1200, 1)
 
-    print "Outputting PWM signal.."
-    print "You can use a logic analyzer to check the output signal."
-    print "Press Ctrl+Z to stop."
+    print("Outputting PWM signal..")
+    print("You can use a logic analyzer to check the output signal.")
+    print("Press Ctrl+Z to stop.")
     while(True):
         time.sleep(0.01)
