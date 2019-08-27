@@ -454,7 +454,7 @@ class AnalogOutput(ELVISIII):
         Writes values to one or more analog output channels. Use the
         write(value) function to write a single point of data to the channel. Use
         the write(values, sample_rate) to write multiple points of data to the
-        channel. The function does not return until the write to physical I/O
+        channel. The function hangs until the write to physical I/O
         operation completes.
 
         Args:
