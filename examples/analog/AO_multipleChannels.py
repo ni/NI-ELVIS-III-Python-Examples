@@ -27,13 +27,8 @@ Hardware setup:
 Result:
     The program writes values into both AO0 and AO1 on bank A.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
-import academicIO
-from enums import Bank, AOChannel
+from nielvis import AnalogOutput, Bank, AOChannel
 
 # specify the bank and channels for the AO session
 bank = Bank.A
@@ -46,10 +41,10 @@ channel1 = AOChannel.AO1
 # The hardware generates one sample for a channel.
 ##############################################################################
 # configure the AO channels
-with academicIO.AnalogOutput({'bank': bank,     # define first channel: AO0
-                              'channel': channel0},
-                             {'bank': bank,     # define second channel: AO1
-                              'channel': channel1}) as AO_multiple_channels:
+with AnalogOutput({'bank': bank,     # define first channel: AO0
+                   'channel': channel0},
+                  {'bank': bank,     # define second channel: AO1
+                   'channel': channel1}) as AO_multiple_channels:
     # write to the AO channels 20 times
     for i in range(0, 20):
         # define the value as a floating-point number

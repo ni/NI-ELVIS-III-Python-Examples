@@ -43,13 +43,8 @@ Result:
     reads back the value from the same register of the I2C slave device for
     validation. The returned value should be 8 in decimal.
 """
-import os
-import sys
-sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'source/nielvisiii'))
-
 import time
-import academicIO
-from enums import Bank, I2CSpeedMode
+from nielvis import I2C, Bank, I2CSpeedMode
 
 # specify the bank
 bank = Bank.A
@@ -58,7 +53,7 @@ bank = Bank.A
 speed = I2CSpeedMode.STANDARD
 
 # configure an I2C session
-with academicIO.I2C(bank, speed) as I2C:
+with I2C(bank, speed) as i2c:
     # specify the 7-bit address, in hexadecimal
     # we use the ADXL345 chip for this example and its slave device address is
     # 0x53. You might need to change the slave device address depending on the
@@ -73,11 +68,11 @@ with academicIO.I2C(bank, speed) as I2C:
     # mode.
     data_to_write = [0x2D, 0x08]
     # write data to the I2C slave device
-    I2C.write(slave_device_address, data_to_write)
+    i2c.write(slave_device_address, data_to_write)
 
     # specify the number of bytes to read from the I2C slave device
     number_bytes_to_read = 1
     # read data from the I2C slave device
-    return_value = I2C.read(slave_device_address, number_bytes_to_read)
+    return_value = i2c.read(slave_device_address, number_bytes_to_read)
     # print the data
     print(return_value)
