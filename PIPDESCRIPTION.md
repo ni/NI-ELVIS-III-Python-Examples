@@ -10,4 +10,4 @@
 </table>
 
 #### What's new:
- - Analog Output N samples
+ - Analog Output N Samples
