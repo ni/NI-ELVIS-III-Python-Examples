@@ -11,9 +11,9 @@ The AO configuration consists of two parameters: bank and channel. There are
 two identical banks of AO channels (A and B). Each bank contains two analog
 output channels (0 and 1).
 
-A time gap exists between the end of one signal generates and the start of
-the next signal generates when you specify n sample (writing multiple
-points) mode for Analog Output API. Refers to the following link for more
+A time gap exists between the end of one signal generation and the start of
+the next signal generation when you specify n samples (writing multiple
+points) mode for Analog Output API. Refer to the following link for more
 information about the time gap.
 https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/NI_ELVIS_III_Understanding_Gaps.md
 
@@ -42,7 +42,7 @@ channel1 = AOChannel.AO1
 
 ##############################################################################
 # Section 1: Single Point (1 Sample)
-# Use the write function to write a single point of data back to the channel.
+# Use the write function to write a single point of data to the channel.
 # The hardware generates one sample for a channel.
 ##############################################################################
 # configure the AO channels
@@ -61,7 +61,7 @@ with academicIO.AnalogOutput({'bank': bank,     # define first channel: AO0
         time.sleep(0.001)
 
 ##############################################################################
-# Section 2: Multiple Points (N sample)
+# Section 2: Multiple Points (N samples)
 # Use the write function to write multiple points of data to the channel. The
 # hardware generates a finite number of samples for a channel.
 ##############################################################################
@@ -72,7 +72,7 @@ with academicIO.AnalogOutput({'bank': bank,     # define first channel: AO0
                               'channel': channel1}) as AO_multiple_channels:
     # write to the AO channels 20 times
     for i in range(0, 20):
-        # define a list of floating-point number
+        # define a list of floating-point numbers
         input_value = [1.0, 2.5]
         # specifies the sampling frequency, in hertz, of the output signal.
         sample_rate = 1000

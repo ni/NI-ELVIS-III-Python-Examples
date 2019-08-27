@@ -319,7 +319,7 @@ class AnalogInput(ELVISIII):
             count (number):
                 Specifies the actual count for AI.
             max_samples (number):
-                Specifies the maximum number of samples for the AI N sample.
+                Specifies the maximum number of samples for the AI N samples.
 
         Returns:
             return_value (array):
@@ -437,20 +437,20 @@ class AnalogOutput(ELVISIII):
     def write(self, *args):
         """
         Writes values to one or more analog output channels. Use the
-        write(value) function to write a single point data to the channel. Use
-        the write(values, sample_rate) to write multiple points data to the
+        write(value) function to write a single point of data to the channel. Use
+        the write(values, sample_rate) to write multiple points of data to the
         channel. The function does not return until the write to physical I/O
         operation completes.
 
         Args:
-            If you want to read a single point of data at one time, argument should contain:
+            If you want to write a single point of data at one time, argument should contain:
                 value (number):
                     Specifies the value, in volts, to write to the analog output
                     channels. The value must be in the range of +/-10. If you
                     specify a value that is invalid, this function coerces the
                     specified value to the nearest valid value when you execute
                     the program.
-            If you want to read multiple points of data at one time, arguments should contain:
+            If you want to write multiple points of data at one time, arguments should contain:
                 values (list):
                     Specifies the values, in volts, to write to the analog output
                     channels. Values is a 2D array. The number of elements in each
@@ -496,7 +496,7 @@ class AnalogOutput(ELVISIII):
     
     def __write_multiple_points(self, values, sample_rate):
         """
-        Writes values to one or more analog output channels. (n sample)
+        Writes values to one or more analog output channels. (n samples)
 
         Args:
             values (list):
@@ -506,7 +506,7 @@ class AnalogOutput(ELVISIII):
                 output channel. Ensure this number is greater than 0 and less
                 than or equal to 10,000.
             sample_rate (number):
-                Specifies the sampling frequency in hertz of the output signal.
+                Specifies the sampling frequency, in hertz, of the output signal.
         """
         minimum_sample_rate = 1000
         maximum_sample_rate = 1600000
@@ -552,14 +552,14 @@ class AnalogOutput(ELVISIII):
 
         Args:
             bank (Bank):
-                Specifies the name of the bank to open a session.
+                Specifies the name of the bank, on which to open a session.
             count (number):
-                Specifies the actual count for AI.
+                Specifies the actual count for AO.
             data (list):
                 Specifies the values, in volts, to write to the analog output
                 channels.
             channel_bitmask (number):
-                Specifies the channel. AI0 is 2 and AI1 is 1 for N sample.
+                Specifies the channel. AO0 is 2 and AO1 is 1 for N samples.
         """
         def __write(bank, count, data, channel_bitmask):
             self.dma_ena[bank].write(channel_bitmask)
@@ -575,8 +575,10 @@ class AnalogOutput(ELVISIII):
 
         def __wait_until_write_done(bank):
             """
-            Configure IRQ and execute and wait until it is asserted. The irq number
-            for Bank A is 31 and for Bank B is 30.
+            Configure IRQ and execute and wait until it is asserted. The
+            function will wait unitl the irq asserted which means the write to
+            physical I/O operation completes. The irq number is 31 Bank A and
+            30 for Bank B.
             """
             irq_number = { 'A': 31, 'B': 30 }
             irq_status = self.session.wait_on_irqs(irq_number[bank], -1)
