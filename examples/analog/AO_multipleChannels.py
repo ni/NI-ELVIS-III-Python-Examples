@@ -71,7 +71,7 @@ with academicIO.AnalogOutput({'bank': bank,     # define first channel: AO0
         input_value = [1.0, 2.5]
         # specifies the sampling frequency, in hertz, of the output signal.
         sample_rate = 1000
-        # write 1.0 and 2.5 to AO0 and AO1 on bank A
+        # write 1.0 and 2.5 to both AO0 and AO1 on bank A
         AO_multiple_channels.write(input_value, sample_rate)
 
         # add a short delay before writing the next data point
