@@ -591,7 +591,7 @@ class AnalogOutput(ELVISIII):
             """
             Configure IRQ and execute and wait until it is asserted. The
             function will wait unitl the irq asserted which means the write to
-            physical I/O operation completes. The irq number is 31 Bank A and
+            physical I/O operation completes. The irq number is 31 for Bank A and
             30 for Bank B.
             """
             irq_number = { 'A': 31, 'B': 30 }
