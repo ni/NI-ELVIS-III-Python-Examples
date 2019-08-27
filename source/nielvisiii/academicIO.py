@@ -170,18 +170,22 @@ class AnalogInput(ELVISIII):
 
     def read(self, *args):
         """
-        Reads values from one or more analog input channels. Use the read() function
-        to read a single point of data back from the channel. Use the
-        read(number_of_samples, sample_rate) function to read multiple points of data from the
-        channel.
+        Reads values from one or more analog input channels. Use the read()
+        function to read a single point of data back from the channel. Use the
+        read(number_of_samples, sample_rate) function to read multiple points
+        of data from the channel.
 
         Args:
-            If you want to read a single point of data at one time, do not pass any arguments.
-            If you want to read multiple points of data at one time, arguments should contain:
+            If you want to read a single point of data at one time, do not
+            pass any arguments.
+            If you want to read multiple points of data at one time, arguments
+            should contain:
                 number_of_samples (number): 
-                    Specifies the number of samples to read. Valid values are between 0 and 10,000. 
+                    Specifies the number of samples to read. Valid values are
+                    between 0 and 10,000. 
                 sample_rate (number):
-                    Specifies the sampling frequency, in hertz, of the input signal.
+                    Specifies the sampling frequency, in hertz, of the input
+                    signal.
 
         Returns:
             return_value (array):
@@ -198,12 +202,13 @@ class AnalogInput(ELVISIII):
 
     def __read_single_point(self):
         """
-        Reads values from AI channels in AI channel list and popluates the output array (values) with the result. (1 sample)
+        Reads values from AI channels in AI channel list and popluates the
+        output array (values) with the result. (1 sample)
 
         Returns:
             return_value (array):
-                Returns the value, in volts, that this function reads from the analog
-                input channel that you select.
+                Returns the value, in volts, that this function reads from the
+                analog input channel that you select.
         """
         current_cnfg = { 'A': None, 'B': None }
         is_opened  = { 'A': None, 'B': None }
@@ -254,19 +259,25 @@ class AnalogInput(ELVISIII):
 
     def __read_multiple_points(self, number_of_samples, sample_rate):
         """
-        Reads values from AI channels in AI channel list and popluates the output array (values) with the result. (n samples)
+        Reads values from AI channels in AI channel list and popluates the
+        output array (values) with the result. (n samples)
 
         Args:
             number_of_samples (number): 
-                Specifies the number of samples to read. Valid values are between 0 and 10,000. 
+                Specifies the number of samples to read. Valid values are
+                between 0 and 10,000. 
             sample_rate (number):
-                Specifies the sampling frequency, in hertz, of the input signal. 
-                If you select only one channel, the valid range for sample rate is between 1 Hz and 1 MHz. 
-                If you select multiple channels, the valid range for sample rate is between 1 Hz and 500 KHz. 
+                Specifies the sampling frequency, in hertz, of the input
+                signal. 
+                If you select only one channel, the valid range for sample
+                rate is between 1 Hz and 1 MHz. 
+                If you select multiple channels, the valid range for sample
+                rate is between 1 Hz and 500 KHz. 
         Returns:
             return_value (array):
-                Returns the values, in volts, that this function reads from the analog
-                input channel that you select. The structure of the returned values is [ [bank_A_values], [bank_B_values] ].
+                Returns the values, in volts, that this function reads from
+                the analog input channel that you select. The structure of the
+                returned values is [ [bank_A_values], [bank_B_values] ].
         """
         max_samples = 10000
         number_of_channels = len(self.channel_list)
@@ -301,7 +312,8 @@ class AnalogInput(ELVISIII):
 
     def __read_multiple_points_from_specific_bank(self, bank, configuration, number_of_channels, number_of_samples, count, max_samples):
         """
-        Reads values from analog channels specified in the configuration using the DMA. (n samples)
+        Reads values from analog channels specified in the configuration using
+        the DMA. (n samples)
 
         Args:
             bank (Bank):
@@ -311,7 +323,8 @@ class AnalogInput(ELVISIII):
             number_of_channels (number):
                 Specifies the number of channels to read.
             number_of_samples (number): 
-                Specifies the number of samples to read. Valid values are between 0 and 10,000. 
+                Specifies the number of samples to read. Valid values are
+                between 0 and 10,000. 
             count (number):
                 Specifies the actual count for AI.
             max_samples (number):
@@ -319,8 +332,10 @@ class AnalogInput(ELVISIII):
 
         Returns:
             return_value (array):
-                Returns the values, in volts, that this function reads from the analog
-                input channel that you select. The structure of the returned values is [ [first_channel_values], [second_channel_values], ...].
+                Returns the values, in volts, that this function reads from the
+                analog input channel that you select. The structure of the
+                returned values is [ [first_channel_values],
+                [second_channel_values], ...].
         """
         if AnalogInput.dma[bank] is None:
             AnalogInput.dma[bank] = self.session.fifos['AI.%s.DMA' % bank]
