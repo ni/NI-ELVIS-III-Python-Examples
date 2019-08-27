@@ -457,14 +457,16 @@ class AnalogOutput(ELVISIII):
         operation completes.
 
         Args:
-            If you want to write a single point of data at one time, argument should contain:
+            If you want to write a single point of data at one time, argument
+            should contain:
                 value (number):
                     Specifies the value, in volts, to write to the analog output
                     channels. The value must be in the range of +/-10. If you
                     specify a value that is invalid, this function coerces the
                     specified value to the nearest valid value when you execute
                     the program.
-            If you want to write multiple points of data at one time, arguments should contain:
+            If you want to write multiple points of data at one time, arguments
+            should contain:
                 values (list):
                     Specifies the values, in volts, to write to the analog output
                     channels. Values is a 2D array. The number of elements in each
@@ -520,7 +522,8 @@ class AnalogOutput(ELVISIII):
                 output channel. Ensure this number is greater than 0 and less
                 than or equal to 10,000.
             sample_rate (number):
-                Specifies the sampling frequency, in hertz, of the output signal.
+                Specifies the sampling frequency, in hertz, of the output
+                signal.
         """
         minimum_sample_rate = 1000
         maximum_sample_rate = 1600000
@@ -589,10 +592,9 @@ class AnalogOutput(ELVISIII):
 
         def __wait_until_write_done(bank):
             """
-            Configure IRQ, execute it, and wait until it is asserted,
-            which means the write to
-            physical I/O operation completes. The irq number is 31 for Bank A and
-            30 for Bank B.
+            Configure IRQ, execute it, and wait until it is asserted, which
+            means the write to physical I/O operation completes. The irq
+            number is 31 for Bank A and 30 for Bank B.
             """
             irq_number = { 'A': 31, 'B': 30 }
             irq_status = self.session.wait_on_irqs(irq_number[bank], -1)
