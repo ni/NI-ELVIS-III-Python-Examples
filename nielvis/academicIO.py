@@ -238,7 +238,7 @@ class AnalogInput(ELVISIII):
             while not(cnfg == self.cnfg[bank].read() and self.ready[bank].read()):
                 pass
 
-            # after the configuration is modified, wait 500 us before applying the AI registers . 12*1000/40 M = 300 us < 500 us
+            # after the configuration is modified, wait 500 us before applying the AI registers. 12*1000/40 M = 300 us < 500 us
             time.sleep(0.5)
 
         for bank in Bank:
