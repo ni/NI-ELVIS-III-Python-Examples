@@ -61,10 +61,10 @@ with AnalogOutput({'bank': bank,     # define first channel: AO0
 # hardware generates a finite number of samples for a channel.
 ##############################################################################
 # configure the AO channels
-with academicIO.AnalogOutput({'bank': bank,     # define first channel: AO0
-                              'channel': channel0},
-                             {'bank': bank,     # define second channel: AO1
-                              'channel': channel1}) as AO_multiple_channels:
+with AnalogOutput({'bank': bank,     # define first channel: AO0
+                   'channel': channel0},
+                  {'bank': bank,     # define second channel: AO1
+                   'channel': channel1}) as AO_multiple_channels:
     # write to the AO channels 20 times
     for i in range(0, 20):
         # define a list of floating-point numbers

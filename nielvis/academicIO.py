@@ -12,7 +12,7 @@ class ELVISIII(object):
     ResourceName = "RIO0"
 
     def __init__(self):
-        path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), '/usr/local/natinst/academic/lib/niElvisIIIHost/ELVIS III v1.1 FPGA.lvbitx')
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'bitfile/ELVIS III v1.1 FPGA.lvbitx')
         self.session = Session(path, ELVISIII.ResourceName)
 
     def __enter__(self):
@@ -529,6 +529,7 @@ class AnalogOutput(ELVISIII):
         maximum_sample_rate = 1600000
         minimum_samples = 1
         maximum_samples = 10000
+        assert type(values) == list
         assert all(type(value) == int or type(value) == float for value in values)
         assert type(sample_rate) == int or type(sample_rate) == float
         assert minimum_sample_rate <= sample_rate <= maximum_sample_rate
@@ -587,8 +588,18 @@ class AnalogOutput(ELVISIII):
             data_length = len(data)
             max_write_samples = 10000
 
-            AnalogOutput.dma[bank].write(data[:max_write_samples], timeout_ms=0)
-            empty_elements_remaining = AnalogOutput.dma[bank].write([], timeout_ms=0)
+            if data_length <= max_write_samples:
+                AnalogOutput.dma[bank].write(data, timeout_ms=0)
+            else:
+                AnalogOutput.dma[bank].write(data[:max_write_samples], timeout_ms=0)
+                data = data[max_write_samples:]
+                max_write_samples = 5000
+                while len(data) != 0:
+                    empty_elements_remaining = AnalogOutput.dma[bank].write([], timeout_ms=0)
+                    if empty_elements_remaining > max_write_samples:
+                        AnalogOutput.dma[bank].write(data[:max_write_samples], timeout_ms=0)  
+                    else:
+                        break
 
         def __wait_until_write_done(bank):
             """
@@ -609,7 +620,9 @@ class AnalogOutput(ELVISIII):
     def close(self):
         for bank in Bank:
             bank = bank.value
-            AnalogOutput.dma[bank] = None
+            if AnalogOutput.dma[bank] != None:
+                AnalogOutput.dma[bank].stop()
+                AnalogOutput.dma[bank] = None
 
         super(AnalogOutput, self).close()
 

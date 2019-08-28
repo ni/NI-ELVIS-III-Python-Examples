@@ -58,8 +58,8 @@ with AnalogOutput({'bank': bank,
 # hardware generates a finite number of samples for a channel.
 ##############################################################################
 # configure the AO channel
-with academicIO.AnalogOutput({'bank': bank,
-                              'channel': channel}) as AO_single_channel:
+with AnalogOutput({'bank': bank,
+                   'channel': channel}) as AO_single_channel:
 
     # write to the AO channel 20 times
     for i in range(0, 20):

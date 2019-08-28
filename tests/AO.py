@@ -7,18 +7,16 @@ import unittest
 import time
 import pytest
 import threading
-import sys
-sys.path.append('source/nielvisiii')
-import academicIO
-from enums import *
+
+from nielvis import AnalogOutput, AnalogInput, Bank, AOChannel, AIChannel
 
 bank = Bank.A
 limits = { 'sampleRate': { 'min': 1, 'max': 1600000}}
 
 class Test_AnalogOutput_WriteSingleChannel(unittest.TestCase):
     def setUp(self):
-        self.AO_single_channel = academicIO.AnalogOutput({'bank': bank, 'channel': AOChannel.AO0})
-        self.AI_single_channel = academicIO.AnalogInput({'bank': bank, 'channel': AIChannel.AI0})
+        self.AO_single_channel = AnalogOutput({'bank': bank, 'channel': AOChannel.AO0})
+        self.AI_single_channel = AnalogInput({'bank': bank, 'channel': AIChannel.AI0})
 
     def tearDown(self):
         self.AO_single_channel.close()
@@ -48,9 +46,9 @@ class Test_AnalogOutput_WriteSingleChannel(unittest.TestCase):
             self.assertEqual(value, pytest.approx(input_value, 0.1))
 
     def test_WriteSinglePoint_ReturnDifferentValueFromEachChannel(self):
-        AO_multiple_channels = academicIO.AnalogOutput({'bank': bank, 'channel': AOChannel.AO0}, 
+        AO_multiple_channels = AnalogOutput({'bank': bank, 'channel': AOChannel.AO0}, 
                                                        {'bank': bank, 'channel': AOChannel.AO1})
-        AI_multiple_channels = academicIO.AnalogInput({'bank': bank, 'channel': AIChannel.AI0},
+        AI_multiple_channels = AnalogInput({'bank': bank, 'channel': AIChannel.AI0},
                                                       {'bank': bank, 'channel': AIChannel.AI3})
         input_value_for_single_channels = 2.5
         input_value_for_multiple_channels = 3.3
@@ -78,8 +76,8 @@ class Test_AnalogOutput_WriteSingleChannel(unittest.TestCase):
         self.__close_thread(irq_thread)
 
     def test_WriteTenPointsThenWriteSinglePointInBankB_ReturnExpectedReadBack(self):
-        AO0 = academicIO.AnalogOutput({'bank': Bank.B, 'channel': AOChannel.AO0})
-        AI0 = academicIO.AnalogInput({'bank': Bank.B, 'channel': AIChannel.AI0})
+        AO0 = AnalogOutput({'bank': Bank.B, 'channel': AOChannel.AO0})
+        AI0 = AnalogInput({'bank': Bank.B, 'channel': AIChannel.AI0})
 
         def __multipleWriteAndRead():
             sample_rate = 1000
@@ -108,9 +106,9 @@ class Test_AnalogOutput_WriteSingleChannel(unittest.TestCase):
 
 class Test_AnalogOutput_WriteTwoChannels(unittest.TestCase):
     def setUp(self):
-        self.AO_multiple_channels = academicIO.AnalogOutput({'bank': bank, 'channel': AOChannel.AO0}, 
+        self.AO_multiple_channels = AnalogOutput({'bank': bank, 'channel': AOChannel.AO0}, 
                                                             {'bank': bank, 'channel': AOChannel.AO1})
-        self.AI_multiple_channels = academicIO.AnalogInput({'bank': bank, 'channel': AIChannel.AI0},
+        self.AI_multiple_channels = AnalogInput({'bank': bank, 'channel': AIChannel.AI0},
                                                            {'bank': bank, 'channel': AIChannel.AI3})
     
     def tearDown(self):
@@ -159,25 +157,25 @@ class Test_AnalogOutput_WriteTwoChannels(unittest.TestCase):
 class Test_AnalogOutput_OpenAssertion(unittest.TestCase):
     def test_OpenWithInvalidBank_ShowAssertion(self):
         with self.assertRaises(AssertionError):
-            academicIO.AnalogOutput({'bank': 'C', 'channel': AOChannel.AO0})
+            AnalogOutput({'bank': 'C', 'channel': AOChannel.AO0})
 
     def test_OpenWithInvalidChannel_ShowAssertion(self):
         with self.assertRaises(AssertionError):
-            academicIO.AnalogOutput({'bank': bank, 'channel': 2})
+            AnalogOutput({'bank': bank, 'channel': 2})
 
     def test_OpenWithoutBank_ShowAssertion(self):
         with self.assertRaises(AssertionError):
-            academicIO.AnalogOutput({'channel': AOChannel.AO0})
+            AnalogOutput({'channel': AOChannel.AO0})
 
     def test_OpenWithoutChannel_ShowAssertion(self):
         with self.assertRaises(AssertionError):
-            academicIO.AnalogOutput({'bank': bank})
+            AnalogOutput({'bank': bank})
 
 
 class Test_AnalogOutput_WriteAssertion(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.AO = academicIO.AnalogOutput({'bank': bank, 'channel': AOChannel.AO0})
+        self.AO = AnalogOutput({'bank': bank, 'channel': AOChannel.AO0})
 
     @classmethod
     def tearDownClass(self):
