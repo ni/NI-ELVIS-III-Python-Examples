@@ -580,6 +580,11 @@ class AnalogOutput(ELVISIII):
                 Specifies the channel. AO0 is 2 and AO1 is 1 for N samples.
         """
         def __write(bank, count, data, channel_bitmask):
+
+            def __write_and_return_remaining_data(data_to_write, max_write_samples):
+                AnalogOutput.dma[bank].write(data_to_write[:max_write_samples], timeout_ms=0)
+                return data_to_write[max_write_samples:]
+
             self.dma_ena[bank].write(channel_bitmask)
             self.dma_cntr[bank].write(count)
             while not(self.dma_cntr[bank].read() == count):
@@ -591,15 +596,17 @@ class AnalogOutput(ELVISIII):
             if data_length <= max_write_samples:
                 AnalogOutput.dma[bank].write(data, timeout_ms=0)
             else:
-                AnalogOutput.dma[bank].write(data[:max_write_samples], timeout_ms=0)
-                data = data[max_write_samples:]
+                data = __write_and_return_remaining_data(data, max_write_samples)
                 max_write_samples = 5000
+
                 while len(data) != 0:
                     empty_elements_remaining = AnalogOutput.dma[bank].write([], timeout_ms=0)
+                    
                     if empty_elements_remaining > max_write_samples:
-                        AnalogOutput.dma[bank].write(data[:max_write_samples], timeout_ms=0)  
+                        data = __write_and_return_remaining_data(data, max_write_samples)
                     else:
-                        break
+                        AnalogOutput.dma[bank].write(data, timeout_ms=0)
+                        data = []
 
         def __wait_until_write_done(bank):
             """

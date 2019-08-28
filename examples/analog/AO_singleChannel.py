@@ -39,18 +39,18 @@ channel = AOChannel.AO0
 # The hardware generates one sample for a channel.
 ##############################################################################
 # configure the AO channel
-with AnalogOutput({'bank': bank,
-                   'channel': channel}) as AO_single_channel:
+# with AnalogOutput({'bank': bank,
+#                    'channel': channel}) as AO_single_channel:
 
-    # write to the AO channel 20 times
-    for i in range(0, 20):
-        # define the value as a floating-point number
-        input_value = 2.0
-        # write 2.0 to AO0 on bank A
-        AO_single_channel.write(input_value)
+#     # write to the AO channel 20 times
+#     for i in range(0, 20):
+#         # define the value as a floating-point number
+#         input_value = 2.0
+#         # write 2.0 to AO0 on bank A
+#         AO_single_channel.write(input_value)
 
-        # add a short delay before writing the next data point
-        time.sleep(0.001)
+#         # add a short delay before writing the next data point
+#         time.sleep(0.001)
 
 ##############################################################################
 # Section 2: Multiple Points (N samples)
@@ -62,9 +62,9 @@ with AnalogOutput({'bank': bank,
                    'channel': channel}) as AO_single_channel:
 
     # write to the AO channel 20 times
-    for i in range(0, 20):
+    for i in range(0, 1):
         # define a list of floating-point numbers
-        input_value = [1.0, 2.5]
+        input_value = [0 for i in range(33333)]
         # specifies the sampling frequency, in hertz, of the output signal.
         sample_rate = 1000
         # write 1.0 and 2.5 to AO0 on bank A
