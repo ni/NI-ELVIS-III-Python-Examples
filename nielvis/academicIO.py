@@ -11,7 +11,7 @@ class ELVISIII(object):
     ResourceName = "RIO0"
 
     def __init__(self):
-        path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), '/usr/local/natinst/academic/lib/niElvisIIIHost/ELVIS III v1.1 FPGA.lvbitx')
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'bitfile/ELVIS III v1.1 FPGA.lvbitx')
         self.session = Session(path, ELVISIII.ResourceName)
 
     def __enter__(self):
