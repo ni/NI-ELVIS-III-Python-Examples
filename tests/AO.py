@@ -47,9 +47,9 @@ class Test_AnalogOutput_WriteSingleChannel(unittest.TestCase):
 
     def test_WriteSinglePoint_ReturnDifferentValueFromEachChannel(self):
         AO_multiple_channels = AnalogOutput({'bank': bank, 'channel': AOChannel.AO0}, 
-                                                       {'bank': bank, 'channel': AOChannel.AO1})
+                                            {'bank': bank, 'channel': AOChannel.AO1})
         AI_multiple_channels = AnalogInput({'bank': bank, 'channel': AIChannel.AI0},
-                                                      {'bank': bank, 'channel': AIChannel.AI3})
+                                           {'bank': bank, 'channel': AIChannel.AI3})
         input_value_for_single_channels = 2.5
         input_value_for_multiple_channels = 3.3
         AO_multiple_channels.write(input_value_for_multiple_channels)
@@ -103,13 +103,33 @@ class Test_AnalogOutput_WriteSingleChannel(unittest.TestCase):
         AO0.close()
         AI0.close()
 
+    def test_OpenReadMultiplePointsCloseRepeatedly_DoesnotShowAnyError(self):
+        sample_rate = 1000
+        input_value = [1.1, 2.2]
+        AO0_in_bank_A = AnalogOutput({'bank': Bank.A, 'channel': AOChannel.AO0})
+        AO0_in_bank_B = AnalogOutput({'bank': Bank.B, 'channel': AOChannel.AO0})
+
+        AO0_in_bank_A.write(input_value, sample_rate)
+        AO0_in_bank_B.write(input_value, sample_rate)
+
+        AO0_in_bank_B.close()
+
+        AO0_in_bank_A.write(input_value, sample_rate)
+        AO0_in_bank_A.close()
+
+    def test_WriteLargeNumberOfValuesWithOneThousandSampleRate_DoesnotShowAnyError(self):
+        sample_rate = 1000
+        input_value = [3.3 for i in range(55555)]
+        
+        self.AO_single_channel.write(input_value, sample_rate)
+        
 
 class Test_AnalogOutput_WriteTwoChannels(unittest.TestCase):
     def setUp(self):
         self.AO_multiple_channels = AnalogOutput({'bank': bank, 'channel': AOChannel.AO0}, 
-                                                            {'bank': bank, 'channel': AOChannel.AO1})
+                                                 {'bank': bank, 'channel': AOChannel.AO1})
         self.AI_multiple_channels = AnalogInput({'bank': bank, 'channel': AIChannel.AI0},
-                                                           {'bank': bank, 'channel': AIChannel.AI3})
+                                                {'bank': bank, 'channel': AIChannel.AI3})
     
     def tearDown(self):
         self.AO_multiple_channels.close()
@@ -204,6 +224,8 @@ class Test_AnalogOutput_WriteAssertion(unittest.TestCase):
         testcases = [
             [3.5, 'a'],
             [3.5, []],
+            '',
+            5,
         ]
 
         for testcase in testcases:

@@ -628,7 +628,6 @@ class AnalogOutput(ELVISIII):
         for bank in Bank:
             bank = bank.value
             if AnalogOutput.dma[bank] != None:
-                AnalogOutput.dma[bank].stop()
                 AnalogOutput.dma[bank] = None
 
         super(AnalogOutput, self).close()
