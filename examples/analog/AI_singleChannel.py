@@ -20,8 +20,8 @@ references the selected channel to another channel as indicated in this table:
    AI3: AI3 to AI7
 
 A time gap exists between the end of one signal acquisition and the start of
-the next signal acquisition when you specify n sample (reading multiple
-points) mode for Analog Input API. Refers to the following link for more
+the next signal acquisition when you specify n samples (reading multiple
+points) mode for Analog Input API. Refer to the following link for more
 information about the time gap.
 https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/NI_ELVIS_III_Understanding_Gaps.md
 
@@ -66,7 +66,7 @@ with AnalogInput({'bank': ai_bank,
         time.sleep(0.001)
 
 ##############################################################################
-# Section 2: Multiple Points (N sample)
+# Section 2: Multiple Points (N samples)
 # Use the read function to read multiple points of data from the channel. The
 # hardware acquires a finite number of samples for a channel.
 ##############################################################################

@@ -8,3 +8,6 @@
         <td>National Instruments</td>
     </tr>
 </table>
+
+#### What's new:
+ - Analog Output N Samples

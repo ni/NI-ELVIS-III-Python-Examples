@@ -3,6 +3,7 @@ import logging
 
 import time
 import pyvisa
+import threading
 from nifpga import Session
 from .enums import *
 
@@ -237,6 +238,9 @@ class AnalogInput(ELVISIII):
             while not(cnfg == self.cnfg[bank].read() and self.ready[bank].read()):
                 pass
 
+            # after the configuration is modified, wait 500 us before applying the AI registers. 12*1000/40 M = 300 us < 500 us
+            time.sleep(0.5)
+
         for bank in Bank:
             __initialize_bank_configuration(bank.value)
 
@@ -327,7 +331,7 @@ class AnalogInput(ELVISIII):
             count (number):
                 Specifies the actual count for AI.
             max_samples (number):
-                Specifies the maximum number of samples for the AI N sample.
+                Specifies the maximum number of samples for the AI N samples.
 
         Returns:
             return_value (array):
@@ -398,6 +402,8 @@ class AnalogInput(ELVISIII):
 
 
 class AnalogOutput(ELVISIII):
+    dma = { 'A': None, 'B': None }
+    
     """ NI ELVIS III Analog Output (AO) API. """
     def __init__(self, *configuration):
         """
@@ -414,6 +420,10 @@ class AnalogOutput(ELVISIII):
                     and AO1.
         """
         super(AnalogOutput, self).__init__()
+        self.dma_idl = { 'A': None, 'B': None }
+        self.dma_cntr = { 'A': None, 'B': None }
+        self.dma_ena = { 'A': None, 'B': None }
+
         self.channel_list = []
         for configuration_details in configuration:
             assert 'bank' in configuration_details
@@ -424,15 +434,57 @@ class AnalogOutput(ELVISIII):
             configuration_details['bank'] = configuration_details['bank'].value
             configuration_details['channel'] = configuration_details['channel'].value
             configuration_details['value_address'] = self.session.registers['AO.' + configuration_details['bank'] + '_' + str(configuration_details['channel']) + '.VAL']
-            self.go = self.session.registers['AO.SYS.GO']
-            self.stat = self.session.registers['AO.SYS.STAT']
-            self.lsb_weights = 4882813.0 / 1E+9
-            self.offset = 0.0 / 1E+9
-            self.signed = True
             self.enamask = configuration_details['channel']^2
             self.channel_list.append(configuration_details)
 
-    def write(self, value):
+        for bank in Bank:
+            self.dma_idl[bank.value] = self.session.registers['AO.%s.DMA_IDL' % bank.value]
+            self.dma_cntr[bank.value] = self.session.registers['AO.%s.DMA_CNTR' % bank.value]
+            self.dma_ena[bank.value] = self.session.registers['AO.%s.DMA_ENA' % bank.value]
+            
+        self.go = self.session.registers['AO.SYS.GO']
+        self.stat = self.session.registers['AO.SYS.STAT']
+        self.lsb_weights = 4882813.0 / 1E+9
+        self.offset = 0.0 / 1E+9
+        self.signed = True
+
+    def write(self, *args):
+        """
+        Writes values to one or more analog output channels. Use the
+        write(value) function to write a single point of data to the channel. Use
+        the write(values, sample_rate) to write multiple points of data to the
+        channel. The function hangs until the write to physical I/O
+        operation completes.
+
+        Args:
+            If you want to write a single point of data at one time, argument
+            should contain:
+                value (number):
+                    Specifies the value, in volts, to write to the analog output
+                    channels. The value must be in the range of +/-10. If you
+                    specify a value that is invalid, this function coerces the
+                    specified value to the nearest valid value when you execute
+                    the program.
+            If you want to write multiple points of data at one time, arguments
+            should contain:
+                values (list):
+                    Specifies the values, in volts, to write to the analog output
+                    channels. Values is a 2D array. The number of elements in each
+                    row represents the number of samples to write to each analog
+                    output channel. Ensure this number is greater than 0 and less
+                    than or equal to 10,000.
+                sample_rate (number):
+                    Specifies the sampling frequency, in hertz, of the output signal.
+        """
+        args_len = len(args)
+        if args_len == 1:
+            self.__write_single_point(args[0])
+        elif args_len == 2:
+            self.__write_multiple_points(args[0], args[1])
+        else:
+            raise TypeError('write() takes either 1 (single point) or 2 (multiple points) arguments, but given %d' % args_len)
+
+    def __write_single_point(self, value):
         """
         Writes values to one or more analog output channels. (1 sample)
 
@@ -444,19 +496,141 @@ class AnalogOutput(ELVISIII):
                 specified value to the nearest valid value when you execute
                 the program.
         """
-        if type(value) != int and type(value) != float:
-            raise TypeError('write() takes a int or a float argument, but given %s' % type(value))
- 
+        assert type(value) == int or type(value) == float
         for channel in self.channel_list:
-            stat_value = self.stat.read()
+            bank = channel['bank']
+            self.dma_ena[bank].write(0)
+            while not(self.dma_ena[bank].read() == 0):
+                pass
+
+            stat_value = not self.stat.read()
             self.value = channel['value_address']
             self.value.write(value)
             self.go.write(True)
-            stat_current = stat_value
-            while stat_current == stat_value:
-                stat_current = self.stat.read()
-            self.go.write(False)
+            while not(self.stat.read() == stat_value):
+                pass
+    
+    def __write_multiple_points(self, values, sample_rate):
+        """
+        Writes values to one or more analog output channels. (n samples)
 
+        Args:
+            values (list):
+                Specifies the values, in volts, to write to the analog output
+                channels. Values is a 2D array. The number of elements in each
+                row represents the number of samples to write to each analog
+                output channel. Ensure this number is greater than 0 and less
+                than or equal to 10,000.
+            sample_rate (number):
+                Specifies the sampling frequency, in hertz, of the output
+                signal.
+        """
+        minimum_sample_rate = 1000
+        maximum_sample_rate = 1600000
+        minimum_samples = 1
+        maximum_samples = 10000
+        assert type(values) == list
+        assert all(type(value) == int or type(value) == float for value in values)
+        assert type(sample_rate) == int or type(sample_rate) == float
+        assert minimum_sample_rate <= sample_rate <= maximum_sample_rate
+
+        def __calculate_bitmask():
+            bitmask_array = [[False, False] for i in range(2)]
+            for channel in self.channel_list:
+                first_index = 0 if channel['bank'] == Bank.A.value else 1
+                second_index = 0 if channel['channel'] == AOChannel.AO0.value else 1
+                bitmask_array[first_index][second_index] = True
+
+            bitmask_in_int = []
+            for bitmask_for_bank in bitmask_array:
+                bitmask_for_channel = int('10', 2) if bitmask_for_bank[1] == True else int('00', 2)
+                bitmask_for_channel = (bitmask_for_channel | int('01', 2)) if bitmask_for_bank[0] == True else bitmask_for_channel
+                bitmask_in_int.append(bitmask_for_channel)
+
+            return bitmask_in_int
+
+        for channel in self.channel_list:
+            bank = channel['bank']
+            if AnalogOutput.dma[bank] is None:
+                AnalogOutput.dma[bank] = self.session.fifos['AO.%s.DMA' % bank]
+                AnalogOutput.dma[bank].configure(maximum_samples * 20)
+
+        bitmask = __calculate_bitmask()
+
+        count, actual_sample_rate = _calculate_sample_rate_to_ticks(sample_rate, minimum_sample_rate, maximum_sample_rate)
+        
+        if AnalogOutput.dma[Bank.A.value]:
+            self.__write_multiple_points_to_specific_bank(Bank.A.value, count, values, bitmask[0])
+        if AnalogOutput.dma[Bank.B.value]:
+            self.__write_multiple_points_to_specific_bank(Bank.B.value, count, values, bitmask[1])
+
+    def __write_multiple_points_to_specific_bank(self, bank, count, data, channel_bitmask):
+        """
+        Writes output values to the specified AO channel on the FPGA.
+
+        Args:
+            bank (Bank):
+                Specifies the name of the bank, on which to open a session.
+            count (number):
+                Specifies the actual count for AO.
+            data (list):
+                Specifies the values, in volts, to write to the analog output
+                channels.
+            channel_bitmask (number):
+                Specifies the channel. AO0 is 2 and AO1 is 1 for N samples.
+        """
+        def __write(bank, count, data, channel_bitmask):
+
+            def __write_and_return_remaining_data(data_to_write, max_write_samples):
+                AnalogOutput.dma[bank].write(data_to_write[:max_write_samples], timeout_ms=0)
+                return data_to_write[max_write_samples:]
+
+            self.dma_ena[bank].write(channel_bitmask)
+            self.dma_cntr[bank].write(count)
+            while not(self.dma_cntr[bank].read() == count):
+                pass
+            
+            data_length = len(data)
+            max_write_samples = 10000
+
+            if data_length <= max_write_samples:
+                AnalogOutput.dma[bank].write(data, timeout_ms=0)
+            else:
+                data = __write_and_return_remaining_data(data, max_write_samples)
+                max_write_samples = 5000
+
+                while len(data) != 0:
+                    empty_elements_remaining = AnalogOutput.dma[bank].write([], timeout_ms=0)
+                    
+                    if empty_elements_remaining > max_write_samples:
+                        data = __write_and_return_remaining_data(data, max_write_samples)
+                    else:
+                        AnalogOutput.dma[bank].write(data, timeout_ms=0)
+                        data = []
+
+        def __wait_until_write_done(bank):
+            """
+            Configure IRQ, execute it, and wait until it is asserted, which
+            means the write to physical I/O operation completes. The irq
+            number is 31 for Bank A and 30 for Bank B.
+            """
+            irq_number = { 'A': 31, 'B': 30 }
+            irq_status = self.session.wait_on_irqs(irq_number[bank], -1)
+            self.session.acknowledge_irqs(irq_status.irqs_asserted)
+
+        irq_thread = threading.Thread(target=__write,
+                                      args=(bank, count, data, channel_bitmask))
+        irq_thread.start()
+        __wait_until_write_done(bank)
+        irq_thread.join()
+
+    def close(self):
+        for bank in Bank:
+            bank = bank.value
+            if AnalogOutput.dma[bank] != None:
+                AnalogOutput.dma[bank] = None
+
+        super(AnalogOutput, self).close()
 
 class DigitalInputOutput(ELVISIII):
     """ NI ELVIS III Digital Input and Output (DIO) API. """
@@ -1544,22 +1718,23 @@ class Button(ELVISIII):
         """
         return self.user_button.read() > 0
 
-def _calculate_sample_rate_to_ticks(sample_rate):
+def _calculate_sample_rate_to_ticks(sample_rate, minimum = 1000, maximum = 30000):
     """
     Calculate and return the actual sample rate (S/s) and count (tick/s).
 
     Args:
         sample_rate (number):
             The expected sample rate you input.
-
+        minimum (number):
+            The minimum sample rate.
+        maximum (number):
+            The maximum sample rate.
     Returns:
         count (number):
             Specifies the actual count for AI.
         actual_sample_rate (number):
             Specifies the actual sample rate for AI.
     """
-    minimum = 1000
-    maximum = 30000
     if sample_rate < minimum: sample_rate = minimum
     if sample_rate > maximum: sample_rate = maximum
     fpga_clock_rate = 40000000
