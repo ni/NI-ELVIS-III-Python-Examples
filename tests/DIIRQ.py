@@ -9,15 +9,6 @@ from nielvis import DIIRQ, DIIRQChannel, IRQNumber
 def irq_handler():
     print("DI interrupt is triggered. Now it is callback time.")
 
-irq_channel = DIIRQChannel.DIO1
-
-irq_number = IRQNumber.IRQ2
-timeout= 6000
-interrupt_type_rising = True
-interrupt_type_falling = False
-edge_count = 1
-
-
 class Test_DIIRQ(unittest.TestCase):
     def test_OpenWithDifferentArgs_ShowExpectedResult(self):
         testcases = [
