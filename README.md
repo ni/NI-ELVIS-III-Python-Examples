@@ -75,9 +75,8 @@ In this section we will install the software needed to execute the NI ELVIS III 
      opkg update
      opkg install python3
      opkg install python3 python3-misc
-     curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py | python3
-     python3 get-pip.py
-     python3 -m pip install nielvis
+     curl https://bootstrap.pypa.io/get-pip.py | python3
+     pip install nielvis
      ```
 
 ## Installing NI ELVIS III Python Examples 
