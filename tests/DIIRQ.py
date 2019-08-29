@@ -36,7 +36,7 @@ class Test_DIIRQ(unittest.TestCase):
                                 testcase['edge_count']) as DI_IRQ:
                 DI_IRQ.wait()
 
-class Test_ButtonIRQ_OpenAssertion(unittest.TestCase):
+class Test_DIIRQ_OpenAssertion(unittest.TestCase):
     def __open_with_assertion(self, testcase):
         with self.assertRaises(AssertionError):
                 DI_IRQ = DIIRQ(testcase['irq_channel'],
