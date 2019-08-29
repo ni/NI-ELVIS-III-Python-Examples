@@ -1511,9 +1511,13 @@ class AIIRQ(IRQ):
         super(AIIRQ, self).__init__()
         assert channel == AIIRQChannel.AI0 or channel == AIIRQChannel.AI1
         assert callable(callback_function), "callback_function need to be a function"
+        assert type(irq_number) == IRQNumber
         assert IRQNumber.IRQ1 <= irq_number <= IRQNumber.IRQ8
+        assert type(timeout) == int
         assert timeout >= 0
+        assert type(threshold) == float or type(threshold) == int
         assert 0 <= threshold <= 5
+        assert type(hysteresis) == float or type(threshold) == int
         assert 0 <= hysteresis <= 1
         assert irq_type == AIIRQType.RISING or irq_type == AIIRQType.FALLING
         self.ai = AnalogInput({'bank': Bank.A, 'channel': channel})

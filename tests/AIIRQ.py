@@ -3,11 +3,8 @@ Output:
     The interrupt event occurs when a analog signal is inputed.
     The irq_handler funciton is called when the interrupt occured.
 """
-import time
-import sys
-sys.path.append('source/nielvisiii')
-import academicIO
-from enums import *
+import unittest
+from nielvis import AIIRQ, AIIRQChannel, IRQNumber, AIIRQType
 
 def irq_handler():
     print("AI interrupt is triggered. Now it is callback time.")
@@ -18,77 +15,97 @@ timeout = 6000
 threshold = 1.0
 hysteresis = 0.5
 irq_type = AIIRQType.RISING
-with academicIO.AIIRQ(irq_channel,
-                      irq_handler,
-                      irq_number,
-                      timeout,
-                      threshold,
-                      hysteresis,
-                      irq_type) as AI_IRQ:
-    AI_IRQ.wait()
 
-irq_type = AIIRQType.FALLING
-with academicIO.AIIRQ(irq_channel,
-                      irq_handler,
-                      irq_number,
-                      timeout,
-                      threshold,
-                      hysteresis,
-                      irq_type) as AI_IRQ:
-    AI_IRQ.wait()
+class Test_AIIRQ(unittest.TestCase):
+    def test_OpenWithRisingEdge_DoesnotShowError(self):
+        irq_type = AIIRQType.RISING
 
-try:
-    academicIO.AIIRQ(irq_channel,
-                      irq_handler,
-                      0,
-                      timeout,
-                      threshold,
-                      hysteresis,
-                      irq_type)
-except AssertionError:
-    print("Caught the error - 0 can't be irq_number of AIIRQ.")
+        with AIIRQ(irq_channel,
+                irq_handler,
+                irq_number,
+                timeout,
+                threshold,
+                hysteresis,
+                irq_type) as AI_IRQ:
+            AI_IRQ.wait()
 
-try:
-    academicIO.AIIRQ(irq_channel,
-                      irq_handler,
-                      irq_number,
-                      -1,
-                      threshold,
-                      hysteresis,
-                      irq_type)
-except AssertionError:
-    print("Caught the error - the timeout value should be greater than 0.")
+    def test_OpenWithFallingEdge_DoesnotShowError(self):
+        irq_type = AIIRQType.FALLING
 
-try:
-    academicIO.AIIRQ(irq_channel,
-                      irq_handler,
-                      irq_number,
-                      timeout,
-                      6,
-                      hysteresis,
-                      irq_type)
-except AssertionError:
-    print("Caught the error - the threshold value should be [0-5].")
+        with AIIRQ(irq_channel,
+                irq_handler,
+                irq_number,
+                timeout,
+                threshold,
+                hysteresis,
+                irq_type) as AI_IRQ:
+            AI_IRQ.wait()
 
-try:
-    academicIO.AIIRQ(irq_channel,
-                      irq_handler,
-                      irq_number,
-                      timeout,
-                      threshold,
-                      1.2,
-                      irq_type)
-except AssertionError:
-    print("Caught the error - the hysteresis value should be [0-1].")
+class Test_AIIRQ_OpenAssertion(unittest.TestCase):
+    def test_OpenWithInvalidIrqNumber_ShowAssertion(self):
+        invalid_irq_numbers = [0, '', []]
 
-irq_channel = 2
-try:
-    academicIO.AIIRQ(irq_channel,
+        for invalid_irq_number in invalid_irq_numbers:
+            with self.assertRaises(AssertionError):
+                AIIRQ(irq_channel,
                     irq_handler,
-                    irq_number,
+                    invalid_irq_number,
                     timeout,
                     threshold,
-                    1.2,
+                    hysteresis,
                     irq_type)
-except AssertionError:
-    print("Caught the error - The channels available in the AIIRQ should be 0-1.")
+
+    def test_OpenWithInvalidTimeout_ShowAssertion(self):
+        invalid_timeouts = [-1, '', []]
+
+        for invalid_timeout in invalid_timeouts:
+            with self.assertRaises(AssertionError):
+                AIIRQ(irq_channel,
+                      irq_handler,
+                      irq_number,
+                      invalid_timeout,
+                      threshold,
+                      hysteresis,
+                      irq_type)
+
+    def test_OpenWithInvalidThreshold_ShowAssertion(self):
+        limits = {'min': 0, 'max': 5}
+        invalid_thresholds = [limits['min'] - 1, limits['max'] + 1, '', []]
+
+        for invalid_threshold in invalid_thresholds:
+            with self.assertRaises(AssertionError):
+                AIIRQ(irq_channel,
+                      irq_handler,
+                      irq_number,
+                      timeout,
+                      invalid_threshold,
+                      hysteresis,
+                      irq_type)
+
+    def test_OpenWithInvalidHysteresis_ShowAssertion(self):
+        limits = {'min': 0, 'max': 1}
+        invalid_hysteresises = [limits['min'] - 1, limits['max'] + 1, '', []]
+
+        for invalid_hysteresis in invalid_hysteresises:
+            with self.assertRaises(AssertionError):
+                AIIRQ(irq_channel,
+                      irq_handler,
+                      irq_number,
+                      timeout,
+                      threshold,
+                      invalid_hysteresises,
+                      irq_type)
+
+    def test_OpenWithInvalidIrqType_ShowAssertion(self):
+        limits = {'min': 0, 'max': 1}
+        invalid_irq_types = [limits['min'] - 1, limits['max'] + 1, '', []]
+
+        for invalid_irq_type in invalid_irq_types:
+            with self.assertRaises(AssertionError):
+                AIIRQ(irq_channel,
+                      irq_handler,
+                      irq_number,
+                      timeout,
+                      threshold,
+                      hysteresis,
+                      invalid_irq_type)
