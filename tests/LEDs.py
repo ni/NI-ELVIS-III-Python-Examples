@@ -10,15 +10,15 @@ from nielvis import LEDs, Led
 class Test_Led(unittest.TestCase):
   def test_Write_DoesnotShowError(self):
     with LEDs() as LED:       
-        LED.write()						    # The default values are - led: led0, value_to_set = True.
+        LED.write()                         # The default values are - led: led0, value_to_set = True.
         time.sleep(1)
-        LED.write(led=Led.LED1)			    # The default 'value_to_set' is True
+        LED.write(led=Led.LED1)             # The default 'value_to_set' is True
         time.sleep(1)
         LED.write(Led.LED2, True)
         time.sleep(1)
         LED.write(Led.LED3, True)
         time.sleep(1)
-        LED.write(value_to_set=False)	    # the default 'led' is 'led0'
+        LED.write(value_to_set=False)       # the default 'led' is 'led0'
         time.sleep(1)
         LED.write(Led.LED1, False)
         time.sleep(1)
