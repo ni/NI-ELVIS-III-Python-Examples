@@ -25,7 +25,36 @@ class ELVISIII(object):
         self.close()
 
 
-class AnalogInput(ELVISIII):
+class Analog(ELVISIII):
+    def __init__(self):
+        super(Analog, self).__init__()
+
+    def calculate_sample_rate_to_ticks(self, sample_rate, minimum = 1000, maximum = 30000):
+        """
+        Calculate and return the actual sample rate (S/s) and count (tick/s).
+
+        Args:
+            sample_rate (number):
+                The expected sample rate you input.
+            minimum (number):
+                The minimum sample rate.
+            maximum (number):
+                The maximum sample rate.
+        Returns:
+            count (number):
+                Specifies the actual count for AI.
+            actual_sample_rate (number):
+                Specifies the actual sample rate for AI.
+        """
+        if sample_rate < minimum: sample_rate = minimum
+        if sample_rate > maximum: sample_rate = maximum
+        fpga_clock_rate = 40000000
+        count = round(fpga_clock_rate / sample_rate)
+        actual_sample_rate = fpga_clock_rate / count
+        return count, actual_sample_rate
+
+
+class AnalogInput(Analog):
     number_of_n_sample = { 'A': 0, 'B': 0 }
     dma = { 'A': None, 'B': None }
 
@@ -303,7 +332,7 @@ class AnalogInput(ELVISIII):
                 bank_B_configuration[bank_B_number_of_channels] = channel['cnfgval']
                 bank_B_number_of_channels = bank_B_number_of_channels + 1
 
-        count, actual_sample_rate = _calculate_sample_rate_to_ticks(sample_rate * number_of_channels)
+        count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate * number_of_channels)
 
         return_value = []
         if any(bank_A_configuration):
@@ -401,7 +430,7 @@ class AnalogInput(ELVISIII):
         super(AnalogInput, self).close()
 
 
-class AnalogOutput(ELVISIII):
+class AnalogOutput(Analog):
     dma = { 'A': None, 'B': None }
     
     """ NI ELVIS III Analog Output (AO) API. """
@@ -557,7 +586,7 @@ class AnalogOutput(ELVISIII):
 
         bitmask = __calculate_bitmask()
 
-        count, actual_sample_rate = _calculate_sample_rate_to_ticks(sample_rate, minimum_sample_rate, maximum_sample_rate)
+        count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate, minimum_sample_rate, maximum_sample_rate)
         
         if AnalogOutput.dma[Bank.A.value]:
             self.__write_multiple_points_to_specific_bank(Bank.A.value, count, values, bitmask[0])
@@ -1722,29 +1751,6 @@ class Button(ELVISIII):
         """
         return self.user_button.read() > 0
 
-def _calculate_sample_rate_to_ticks(sample_rate, minimum = 1000, maximum = 30000):
-    """
-    Calculate and return the actual sample rate (S/s) and count (tick/s).
-
-    Args:
-        sample_rate (number):
-            The expected sample rate you input.
-        minimum (number):
-            The minimum sample rate.
-        maximum (number):
-            The maximum sample rate.
-    Returns:
-        count (number):
-            Specifies the actual count for AI.
-        actual_sample_rate (number):
-            Specifies the actual sample rate for AI.
-    """
-    if sample_rate < minimum: sample_rate = minimum
-    if sample_rate > maximum: sample_rate = maximum
-    fpga_clock_rate = 40000000
-    count = round(fpga_clock_rate / sample_rate)
-    actual_sample_rate = fpga_clock_rate / count
-    return count, actual_sample_rate
 
 def calculate_clock_settings(requested_frequency,
                              clock_divisors,

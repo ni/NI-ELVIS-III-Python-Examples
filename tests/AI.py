@@ -6,10 +6,8 @@ Hardware setup:
 import unittest
 import time
 import pytest
-import sys
-sys.path.append('source/nielvisiii')
-import academicIO
-from enums import *
+
+from nielvis import AnalogInput, Bank, AIChannel, AIRange, AIMode
 
 bankA = Bank.A
 bankB = Bank.B
@@ -17,7 +15,7 @@ limits = { 'numberOfSamples': { 'min': 0, 'max': 10000 }, 'sampleRate': { 'min':
 
 class Test_AnalogInput_ReadSingleChannel(unittest.TestCase):
     def setUp(self):
-        self.AI_single_channel = academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_5V, 'mode': AIMode.SINGLE_ENDED})
+        self.AI_single_channel = AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_5V, 'mode': AIMode.SINGLE_ENDED})
 
     def tearDown(self):
         self.AI_single_channel.close()
@@ -73,8 +71,8 @@ class Test_AnalogInput_ReadSingleChannel(unittest.TestCase):
 
 class Test_AnalogInput_ReadTwoChannels(unittest.TestCase):
     def setUp(self):
-        self.AI_multiple_channels = academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_10V},
-                                                           {'bank': bankA, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL})
+        self.AI_multiple_channels = AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_10V},
+                                                {'bank': bankA, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL})
 
     def tearDown(self):
         self.AI_multiple_channels.close()
@@ -141,10 +139,10 @@ class Test_AnalogInput_ReadTwoChannels(unittest.TestCase):
 
 class Test_AnalogInput_openTwoNsampleAtTheSameTime(unittest.TestCase):
     def open_first_ai(self):
-        self.first_ai = academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_10V},
-                                                {'bank': bankA, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL})
+        self.first_ai = AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_10V},
+                                    {'bank': bankA, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL})
     def open_second_ai(self):
-        self.second_ai = academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI6, 'range': AIRange.PLUS_OR_MINUS_10V})
+        self.second_ai = AnalogInput({'bank': bankA, 'channel': AIChannel.AI6, 'range': AIRange.PLUS_OR_MINUS_10V})
 
     def close_first_ai(self):
         self.first_ai.close()
@@ -185,38 +183,38 @@ class Test_AnalogInput_openTwoNsampleAtTheSameTime(unittest.TestCase):
 class Test_AnalogInput_OpenAssertion(unittest.TestCase):
     def test_OpenWithoutBank_ShowAssertion(self):
         with self.assertRaises(AssertionError):
-            academicIO.AnalogInput({'channel': AIChannel.AI0, 'mode': AIMode.SINGLE_ENDED})
+            AnalogInput({'channel': AIChannel.AI0, 'mode': AIMode.SINGLE_ENDED})
 
     def test_OpenWithoutChannel_ShowAssertion(self):
         with self.assertRaises(AssertionError):
-            academicIO.AnalogInput({'bank': bankA, 'mode': AIMode.SINGLE_ENDED})
+            AnalogInput({'bank': bankA, 'mode': AIMode.SINGLE_ENDED})
 
     def test_OpenWithoutMode_DoesnotShowAssertion(self):
-            academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI0, 'range': AIRange.PLUS_OR_MINUS_10V})
+            AnalogInput({'bank': bankA, 'channel': AIChannel.AI0, 'range': AIRange.PLUS_OR_MINUS_10V})
 
     def test_OpenWithoutRange_DoesnotShowAssertion(self):
-            academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI0, 'mode': AIMode.SINGLE_ENDED})
+            AnalogInput({'bank': bankA, 'channel': AIChannel.AI0, 'mode': AIMode.SINGLE_ENDED})
 
     def test_OpenWithInvalidBank_ShowAssertion(self):
         with self.assertRaises(AssertionError):
-            academicIO.AnalogInput({'bank': 'C', 'channel': AIChannel.AI0, 'mode': AIMode.SINGLE_ENDED})
+            AnalogInput({'bank': 'C', 'channel': AIChannel.AI0, 'mode': AIMode.SINGLE_ENDED})
 
     def test_OpenWithInvalidChannelInSingleEndedMode_ShowAssertion(self):
         with self.assertRaises(AssertionError):
-            academicIO.AnalogInput({'bank': bankA, 'channel': 8, 'mode': AIMode.SINGLE_ENDED})
+            AnalogInput({'bank': bankA, 'channel': 8, 'mode': AIMode.SINGLE_ENDED})
 
     def test_OpenWithInvalidChannelInDifferentialMode_ShowAssertion(self):
         with self.assertRaises(AssertionError):
-            academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI4, 'mode': AIMode.DIFFERENTIAL})
+            AnalogInput({'bank': bankA, 'channel': AIChannel.AI4, 'mode': AIMode.DIFFERENTIAL})
 
     def test_OpenWithInvalidRange_ShowAssertion(self):
         with self.assertRaises(AssertionError):
-            academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': '+/-20V'})
+            AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': '+/-20V'})
 
 class Test_AnalogInput_ReadAssertion(unittest.TestCase):
     def setUp(self):
-        self.AI_single_channel = academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_5V, 'mode': AIMode.SINGLE_ENDED})
-        self.AI_multiple_channels = academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_10V},
+        self.AI_single_channel = AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_5V, 'mode': AIMode.SINGLE_ENDED})
+        self.AI_multiple_channels = AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_10V},
                                                            {'bank': bankA, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL})
 
     @classmethod
@@ -257,38 +255,46 @@ class Test_AnalogInput_ReadAssertion(unittest.TestCase):
             self.AI_single_channel.read(self.approx_number_of_samples, limits['sampleRate']['min'] - 1)
 
 class Test_AnalogInput_CalculateSampleRateToTicks(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.AI = AnalogInput({'bank': bankA, 'channel': AIChannel.AI2})
+
+    @classmethod
+    def tearDownClass(self):
+        self.AI.close()
+
     def test_GivenMin_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = academicIO._calculate_sample_rate_to_ticks(limits['sampleRate']['min'])
+        count, actual_sample_rate = self.AI.calculate_sample_rate_to_ticks(limits['sampleRate']['min'])
 
         self.assertEqual(count, 40000)
         self.assertEqual(actual_sample_rate, 1000)
 
     def test_GivenAThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = academicIO._calculate_sample_rate_to_ticks(1000)
+        count, actual_sample_rate = self.AI.calculate_sample_rate_to_ticks(1000)
 
         self.assertEqual(count, 40000)
         self.assertEqual(actual_sample_rate, 1000)
 
     def test_GivenFiveThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = academicIO._calculate_sample_rate_to_ticks(5000)
+        count, actual_sample_rate = self.AI.calculate_sample_rate_to_ticks(5000)
 
         self.assertEqual(count, 8000)
         self.assertEqual(actual_sample_rate, 5000)
 
     def test_GivenTenThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = academicIO._calculate_sample_rate_to_ticks(10000)
+        count, actual_sample_rate = self.AI.calculate_sample_rate_to_ticks(10000)
 
         self.assertEqual(count, 4000)
         self.assertEqual(actual_sample_rate, 10000)
 
     def test_GivenFiftyThousand_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = academicIO._calculate_sample_rate_to_ticks(50000)
+        count, actual_sample_rate = self.AI.calculate_sample_rate_to_ticks(50000)
 
         self.assertEqual(count, 1333)
         self.assertEqual(actual_sample_rate, pytest.approx(30007.5, 0.01))
 
     def test_GivenMax_ReturnExpectedCountAndSampleRate(self):
-        count, actual_sample_rate = academicIO._calculate_sample_rate_to_ticks(limits['sampleRate']['max'])
+        count, actual_sample_rate = self.AI.calculate_sample_rate_to_ticks(limits['sampleRate']['max'])
 
         self.assertEqual(count, 1333)
         self.assertEqual(actual_sample_rate, pytest.approx(30007.5, 0.01))
@@ -300,18 +306,18 @@ class Test_AnalogInput_CalculateCnfgValue(unittest.TestCase):
             'cnfgval': [8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3]}
 
         def openAndCheck(bank):
-            AI = academicIO.AnalogInput({'bank': bank, 'channel': AIChannel.AI0},
-                                        {'bank': bank, 'channel': AIChannel.AI1},
-                                        {'bank': bank, 'channel': AIChannel.AI2},
-                                        {'bank': bank, 'channel': AIChannel.AI3},
-                                        {'bank': bank, 'channel': AIChannel.AI4},
-                                        {'bank': bank, 'channel': AIChannel.AI5},
-                                        {'bank': bank, 'channel': AIChannel.AI6},
-                                        {'bank': bank, 'channel': AIChannel.AI7},
-                                        {'bank': bank, 'channel': AIChannel.AI0, 'mode': AIMode.DIFFERENTIAL},
-                                        {'bank': bank, 'channel': AIChannel.AI1, 'mode': AIMode.DIFFERENTIAL},
-                                        {'bank': bank, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL},
-                                        {'bank': bank, 'channel': AIChannel.AI3, 'mode': AIMode.DIFFERENTIAL})
+            AI = AnalogInput({'bank': bank, 'channel': AIChannel.AI0},
+                             {'bank': bank, 'channel': AIChannel.AI1},
+                             {'bank': bank, 'channel': AIChannel.AI2},
+                             {'bank': bank, 'channel': AIChannel.AI3},
+                             {'bank': bank, 'channel': AIChannel.AI4},
+                             {'bank': bank, 'channel': AIChannel.AI5},
+                             {'bank': bank, 'channel': AIChannel.AI6},
+                             {'bank': bank, 'channel': AIChannel.AI7},
+                             {'bank': bank, 'channel': AIChannel.AI0, 'mode': AIMode.DIFFERENTIAL},
+                             {'bank': bank, 'channel': AIChannel.AI1, 'mode': AIMode.DIFFERENTIAL},
+                             {'bank': bank, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL},
+                             {'bank': bank, 'channel': AIChannel.AI3, 'mode': AIMode.DIFFERENTIAL})
             AI.read()
 
             for index, channel_settings in enumerate(AI.channel_list):
@@ -331,11 +337,11 @@ class Test_AnalogInput_CalculateCnfgValue(unittest.TestCase):
             {'bank': 'B', 'channel': AIChannel.AI2 + 8, 'cnfgval': 2},
             {'bank': 'B', 'channel': AIChannel.AI4, 'cnfgval': 12}]
 
-        AI = academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI0},
-                                    {'bank': bankB, 'channel': AIChannel.AI3},
-                                    {'bank': bankB, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL},
-                                    {'bank': bankA, 'channel': AIChannel.AI5},
-                                    {'bank': bankB, 'channel': AIChannel.AI4})
+        AI = AnalogInput({'bank': bankA, 'channel': AIChannel.AI0},
+                         {'bank': bankB, 'channel': AIChannel.AI3},
+                         {'bank': bankB, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL},
+                         {'bank': bankA, 'channel': AIChannel.AI5},
+                         {'bank': bankB, 'channel': AIChannel.AI4})
         AI.read()
 
         for index, channel_settings in enumerate(AI.channel_list):
@@ -356,14 +362,14 @@ class Test_AnalogInput_CalculateCnfgValue(unittest.TestCase):
             {'bank': 'B', 'channel': AIChannel.AI0, 'cnfgval': 8},
             {'bank': 'B', 'channel': AIChannel.AI4, 'cnfgval': 12}]
 
-        AI = academicIO.AnalogInput({'bank': bankA, 'channel': AIChannel.AI3, 'mode': AIMode.DIFFERENTIAL},
-                                    {'bank': bankB, 'channel': AIChannel.AI3, 'mode': AIMode.DIFFERENTIAL},
-                                    {'bank': bankB, 'channel': AIChannel.AI0},
-                                    {'bank': bankA, 'channel': AIChannel.AI7},
-                                    {'bank': bankA, 'channel': AIChannel.AI3},
-                                    {'bank': bankB, 'channel': AIChannel.AI4},
-                                    {'bank': bankA, 'channel': AIChannel.AI0, 'mode': AIMode.DIFFERENTIAL},
-                                    {'bank': bankA, 'channel': AIChannel.AI1, 'mode': AIMode.DIFFERENTIAL})
+        AI = AnalogInput({'bank': bankA, 'channel': AIChannel.AI3, 'mode': AIMode.DIFFERENTIAL},
+                         {'bank': bankB, 'channel': AIChannel.AI3, 'mode': AIMode.DIFFERENTIAL},
+                         {'bank': bankB, 'channel': AIChannel.AI0},
+                         {'bank': bankA, 'channel': AIChannel.AI7},
+                         {'bank': bankA, 'channel': AIChannel.AI3},
+                         {'bank': bankB, 'channel': AIChannel.AI4},
+                         {'bank': bankA, 'channel': AIChannel.AI0, 'mode': AIMode.DIFFERENTIAL},
+                         {'bank': bankA, 'channel': AIChannel.AI1, 'mode': AIMode.DIFFERENTIAL})
         AI.read()
 
         for index, channel_settings in enumerate(AI.channel_list):
