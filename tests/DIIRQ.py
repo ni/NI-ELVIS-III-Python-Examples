@@ -3,117 +3,82 @@ Output:
     The interrupt event occurs when a digital signal is inputed.
     The callback_function is called when the interrupt occured.
 """
-import time
-import sys
-sys.path.append('source/nielvisiii')
-import academicIO
-from enums import *
+import unittest
+from nielvis import DIIRQ, DIIRQChannel, IRQNumber
 
 def irq_handler():
     print("DI interrupt is triggered. Now it is callback time.")
 
-irq_channel = DIIRQChannel.DIO1
+class Test_DIIRQ(unittest.TestCase):
+    def test_OpenWithDifferentArgs_ShowExpectedResult(self):
+        testcases = [
+            {'irq_channel': DIIRQChannel.DIO1, 'irq_number': IRQNumber.IRQ2, 'timeout': 6000, 'interrupt_type_rising': True, 'interrupt_type_falling': False, 'edge_count': 1},
+            {'irq_channel': DIIRQChannel.DIO1, 'irq_number': IRQNumber.IRQ2, 'timeout': 6000, 'interrupt_type_rising': False, 'interrupt_type_falling': True, 'edge_count': 1},
+            {'irq_channel': DIIRQChannel.DIO1, 'irq_number': IRQNumber.IRQ2, 'timeout': 6000, 'interrupt_type_rising': True, 'interrupt_type_falling': True, 'edge_count': 1},
+        ]
 
-irq_number = IRQNumber.IRQ2
-timeout= 6000
-interrupt_type_rising = True
-interrupt_type_falling = False
-edge_count = 1
-with academicIO.DIIRQ(irq_channel,
-                      irq_handler,
-                      irq_number,
-                      timeout,
-                      interrupt_type_rising,
-                      interrupt_type_falling,
-                      edge_count) as DI_IRQ:
-    DI_IRQ.wait()
+        for testcase in testcases:
+            with DIIRQ(testcase['irq_channel'],
+                                irq_handler,
+                                testcase['irq_number'],
+                                testcase['timeout'],
+                                testcase['interrupt_type_rising'],
+                                testcase['interrupt_type_falling'],
+                                testcase['edge_count']) as DI_IRQ:
+                DI_IRQ.wait()
 
-interrupt_type_rising = False
-interrupt_type_falling = True
-with academicIO.DIIRQ(irq_channel,
-                      irq_handler,
-                      irq_number,
-                      timeout,
-                      interrupt_type_rising,
-                      interrupt_type_falling,
-                      edge_count) as DI_IRQ:
-    DI_IRQ.wait()
+class Test_DIIRQ_OpenAssertion(unittest.TestCase):
+    def __open_with_assertion(self, testcase):
+        with self.assertRaises(AssertionError):
+                DI_IRQ = DIIRQ(testcase['irq_channel'],
+                               irq_handler,
+                               testcase['irq_number'],
+                               testcase['timeout'],
+                               testcase['interrupt_type_rising'],
+                               testcase['interrupt_type_falling'],
+                               testcase['edge_count'])
 
-interrupt_type_rising = True
-interrupt_type_falling = True
-with academicIO.DIIRQ(irq_channel,
-                      irq_handler,
-                      irq_number,
-                      timeout,
-                      interrupt_type_rising,
-                      interrupt_type_falling,
-                      edge_count) as DI_IRQ:
-    DI_IRQ.wait()
+    def test_OpenWithInvalidInterruptType_ShowAssertion(self):
+        testcases = [
+            {'irq_channel': DIIRQChannel.DIO1, 'irq_number': IRQNumber.IRQ2, 'timeout': 6000, 'interrupt_type_rising': False, 'interrupt_type_falling': False, 'edge_count': 1},
+        ]
 
-interrupt_type_rising = False
-interrupt_type_falling = False
-try:
-    academicIO.DIIRQ(irq_channel,
-                     irq_handler,
-                     irq_number,
-                     timeout,
-                     interrupt_type_rising,
-                     interrupt_type_falling,
-                     edge_count)
-except AssertionError:
-    print("Caught the error - rising and falling interrupt type can't be false at the same time.")
+        for testcase in testcases:
+            self.__open_with_assertion(testcase)
 
-try:
-    academicIO.DIIRQ(irq_channel,
-                     irq_handler,
-                     0,
-                     timeout,
-                     interrupt_type_rising,
-                     interrupt_type_falling,
-                     edge_count)
-except AssertionError:
-    print("Caught the error - 0 can't be irq_number of DIIRQ.")
+    def test_OpenWithInvalidIrqNumber_ShowAssertion(self):
+        invalid_irq_number = 0
+        testcases = [
+            {'irq_channel': DIIRQChannel.DIO1, 'irq_number': invalid_irq_number, 'timeout': 6000, 'interrupt_type_rising': True, 'interrupt_type_falling': False, 'edge_count': 1},
+        ]
 
-try:
-    academicIO.DIIRQ(irq_channel,
-                     irq_handler,
-                     irq_number,
-                        -1,
-                     interrupt_type_rising,
-                     interrupt_type_falling,
-                     edge_count)
-except AssertionError:
-    print("Caught the error - the timeout value should be greater than 0.")
+        for testcase in testcases:
+            self.__open_with_assertion(testcase)
 
-try:
-    academicIO.DIIRQ(irq_channel,
-                     irq_handler,
-                     irq_number,
-                        timeout,
-                     interrupt_type_rising,
-                     interrupt_type_falling,
-                     0)
-except AssertionError:
-    print("Caught the error - the number of edges of the signal should be greater than 0.")
+    def test_OpenWithInvalidTimeout_ShowAssertion(self):
+        invalid_timeout = -1
+        testcases = [
+            {'irq_channel': DIIRQChannel.DIO1, 'irq_number': IRQNumber.IRQ2, 'timeout': invalid_timeout, 'interrupt_type_rising': True, 'interrupt_type_falling': False, 'edge_count': 1},
+        ]
 
-try:
-    academicIO.DIIRQ(irq_channel,
-                     irq_handler,
-                     irq_number,
-                        timeout,
-                     interrupt_type_rising,
-                     interrupt_type_falling,
-                     4294967296)
-except AssertionError:
-    print("Caught the error - the number of edges of the signal should be less than 4294967296.")
+        for testcase in testcases:
+            self.__open_with_assertion(testcase)
 
-try:
-    academicIO.DIIRQ(4,
-                     irq_handler,
-                     irq_number,
-                     timeout,
-                     interrupt_type_rising,
-                     interrupt_type_falling,
-                     edge_count)
-except AssertionError:
-    print("Caught the error - The channels available in the DIIRQ should be 0-3.")
+    def test_OpenWithInvalidEdgeCount_ShowAssertion(self):
+        invalid_edge_count = [0, 4294967296]
+        testcases = [
+            {'irq_channel': DIIRQChannel.DIO1, 'irq_number': IRQNumber.IRQ2, 'timeout': 6000, 'interrupt_type_rising': True, 'interrupt_type_falling': False, 'edge_count': invalid_edge_count[0]},
+            {'irq_channel': DIIRQChannel.DIO1, 'irq_number': IRQNumber.IRQ2, 'timeout': 6000, 'interrupt_type_rising': True, 'interrupt_type_falling': False, 'edge_count': invalid_edge_count[1]},
+        ]
+
+        for testcase in testcases:
+            self.__open_with_assertion(testcase)
+
+    def test_OpenWithInvalidIrqChannel_ShowAssertion(self):
+        invalid_irq_channel = 4
+        testcases = [
+            {'irq_channel': invalid_irq_channel, 'irq_number': IRQNumber.IRQ2, 'timeout': 6000, 'interrupt_type_rising': True, 'interrupt_type_falling': False, 'edge_count': 1},
+        ]
+
+        for testcase in testcases:
+            self.__open_with_assertion(testcase)
