@@ -54,7 +54,7 @@ class Test_SPI(unittest.TestCase):
         self.assertEqual(value_array[0], 'e5')
 
 class Test_SPI_Assertion(unittest.TestCase):
-    def test_OpenWithInvalidFrame_Show_assertion(self):
+    def test_OpenWithInvalidFrame_ShowAssertion(self):
         invalid_frame_lengthes = [3, 17]
         for invalid_frame_length in invalid_frame_lengthes:
             with self.assertRaises(AssertionError):
