@@ -23,11 +23,11 @@ class Test_UART(unittest.TestCase):
     def tearDownClass(self):
         self.uart.close()
 
-    def test_Read10BytesAndRead_ReturnExpectedValue(self):
+    def test_WriteAndRead1Byte_ReturnExpectedValue(self):
         self.uart.write(b'\xA5')
         self.uart.write(b'\x51')
         time.sleep(0.1)
-        
+
         bytes_to_read = 1
         return_value = self.uart.read(bytes_to_read)
         self.assertEqual(return_value, b'\xAA')
