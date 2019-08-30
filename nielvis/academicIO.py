@@ -662,6 +662,9 @@ class AnalogOutput(Analog):
         super(AnalogOutput, self).close()
 
 class SysSelect(ELVISIII):
+    def __init__(self):
+        super(SysSelect, self).__init__()
+
     def clear_sys_select(self, register_value, start_channel, number_of_channels_to_write):
         """
         Clear the system select register for DIO, PWM, Encoder, SPI, and I2C.
