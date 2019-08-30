@@ -5,33 +5,57 @@ Hardware setup:
     3. Connect connector A SPI.MISO(DIO6) to SPI.MOSI of ADXL345.
     4. Connect connector A SPI.MOSI(DIO7) to SPI.MISO of ADXL345.
 """
-import time
-import sys
-sys.path.append('source/nielvisiii')
-import academicIO
-from enums import *
+import unittest
+from nielvis import SPI, Bank, SPIClockPhase, SPIClockPolarity, SPIDataDirection, DIOChannel, DigitalInputOutput
 
 bank = Bank.A
-frequency = 1000000     # 1MHz
-frame_length = 8        # 1 byte
-with academicIO.SPI(frequency, bank, SPIClockPhase.TRAILING, SPIClockPolarity.HIGH, SPIDataDirection.MSB, frame_length) as SPI:  
-    # write and read
-    SPI.write([0x80])
-    value_array = SPI.read(1)
-    print("value read from SPI.read: ", value_array[0])
-    assert value_array[0] == 'e5'
+frequency = 1000000
+frame_length = 8
+clock_phase = SPIClockPhase.TRAILING
+clock_polarity = SPIClockPolarity.HIGH
+data_direction = SPIDataDirection.MSB
 
-    # writeread: an easier way to use write/read functions which will immediately read a value back right after the input value is written
-    value_array = SPI.writeread([0x80])
-    print("value read from SPI.writeread: ", value_array[0])
-    assert value_array[0] == 'e5'
+cs_channel = DIOChannel.DIO0
 
-try:
-    academicIO.SPI(frequency, bank, SPIClockPhase.TRAILING, SPIClockPolarity.HIGH, SPIDataDirection.MSB, 17)
-except (AssertionError) as err:
-    print("Caught the error - The frame length should be 4-16.")
+class Test_SPI(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.cs = DigitalInputOutput(bank, [cs_channel])
+        self.spi = SPI(frequency, bank, clock_phase, clock_polarity, data_direction, frame_length)
 
-try:
-    academicIO.SPI(frequency, bank, SPIClockPhase.TRAILING, SPIClockPolarity.HIGH, SPIDataDirection.MSB, 3)
-except (AssertionError) as err:
-    print("Caught the error - The frame length should be 4-16.")
+    @classmethod
+    def tearDownClass(self):
+        self.spi.close()
+        self.cs.close()
+
+    def __writeAndRead(self):
+        self.cs.write(False, [cs_channel])
+
+        self.spi.write([0x80])
+        value_array = self.spi.read(1)
+
+        self.cs.write(True, [cs_channel])
+        return value_array
+
+    def __writeread(self):
+        self.cs.write(False, [cs_channel])
+
+        value_array = self.spi.writeread([0x80])
+        
+        self.cs.write(True, [cs_channel])
+        return value_array
+
+    def test_WriteAndRead_ReturnExpectedReadback(self):
+        value_array = self.__writeAndRead()
+        self.assertEqual(value_array[0], 'e5')
+
+    def test_WriteRead_ReturnExpectedReadback(self):
+        value_array = self.__writeread()
+        self.assertEqual(value_array[0], 'e5')
+
+class Test_SPI_Assertion(unittest.TestCase):
+    def test_OpenWithInvalidFrame_ShowAssertion(self):
+        invalid_frame_lengthes = [3, 17]
+        for invalid_frame_length in invalid_frame_lengthes:
+            with self.assertRaises(AssertionError):
+                SPI(frequency, bank, clock_phase, clock_polarity, data_direction, invalid_frame_length)
