@@ -3,21 +3,14 @@ Hardware setup:
   To see the result, connect connector A DIO13 (where the output signal is) to a logic analyzer.
 """
 import time
-import pytest
-import sys
-sys.path.append('source/nielvisiii')
-import academicIO
-from enums import *
+from nielvis import PWM, Bank, DIOChannel
 
 bank = Bank.A
 channel = DIOChannel.DIO13
-with academicIO.PWM(bank, channel) as PWM:
+with PWM(bank, channel) as pwm:
     frequency = 1200
     duty_cycle = 0.1
-    PWM.generate(frequency, duty_cycle)
-    # actual_frequency = PWM.configure(frequency, duty_cycle)
-    # print actual_frequency
-    # assert actual_frequency == pytest.approx(1200, 1)
+    pwm.generate(frequency, duty_cycle)
 
     print("Outputting PWM signal..")
     print("You can use a logic analyzer to check the output signal.")
