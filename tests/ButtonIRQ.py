@@ -17,13 +17,13 @@ class Test_ButtonIRQ(unittest.TestCase):
             {'irq_number': IRQNumber.IRQ1, 'timeout': 6000, 'interrupt_type_rising': True, 'interrupt_type_falling': True, 'edge_count': 2},
         ]
 
-        for testcafe in testcases:
+        for testcase in testcases:
             with ButtonIRQ(irq_handler,
-                           testcafe['irq_number'],
-                           testcafe['timeout'],
-                           testcafe['interrupt_type_rising'],
-                           testcafe['interrupt_type_falling'],
-                           testcafe['edge_count'],) as button_irq:
+                           testcase['irq_number'],
+                           testcase['timeout'],
+                           testcase['interrupt_type_rising'],
+                           testcase['interrupt_type_falling'],
+                           testcase['edge_count'],) as button_irq:
                 button_irq.wait()
 
 class Test_ButtonIRQ_OpenAssertion(unittest.TestCase):
@@ -32,14 +32,14 @@ class Test_ButtonIRQ_OpenAssertion(unittest.TestCase):
             {'irq_number': IRQNumber.IRQ1, 'timeout': 6000, 'interrupt_type_rising': False, 'interrupt_type_falling': False, 'edge_count': 2}
         ]
 
-        for testcafe in testcases:
+        for testcase in testcases:
             with self.assertRaises(AssertionError):
                 button_irq = ButtonIRQ(irq_handler,
-                                       testcafe['irq_number'],
-                                       testcafe['timeout'],
-                                       testcafe['interrupt_type_rising'],
-                                       testcafe['interrupt_type_falling'],
-                                       testcafe['edge_count'])
+                                       testcase['irq_number'],
+                                       testcase['timeout'],
+                                       testcase['interrupt_type_rising'],
+                                       testcase['interrupt_type_falling'],
+                                       testcase['edge_count'])
 
     def test_OpenWithInvalidIrqNumber_ShowAssertion(self):
         invalid_irq_number = 0
@@ -47,14 +47,14 @@ class Test_ButtonIRQ_OpenAssertion(unittest.TestCase):
             {'irq_number': invalid_irq_number, 'timeout': 6000, 'interrupt_type_rising': False, 'interrupt_type_falling': False, 'edge_count': 2}
         ]
 
-        for testcafe in testcases:
+        for testcase in testcases:
             with self.assertRaises(AssertionError):
                 button_irq = ButtonIRQ(irq_handler,
-                                       testcafe['irq_number'],
-                                       testcafe['timeout'],
-                                       testcafe['interrupt_type_rising'],
-                                       testcafe['interrupt_type_falling'],
-                                       testcafe['edge_count'])
+                                       testcase['irq_number'],
+                                       testcase['timeout'],
+                                       testcase['interrupt_type_rising'],
+                                       testcase['interrupt_type_falling'],
+                                       testcase['edge_count'])
 
     def test_OpenWithInvalidTimeout_ShowAssertion(self):
         invalid_timeout = -1
@@ -62,14 +62,14 @@ class Test_ButtonIRQ_OpenAssertion(unittest.TestCase):
             {'irq_number': IRQNumber.IRQ1, 'timeout': invalid_timeout, 'interrupt_type_rising': False, 'interrupt_type_falling': False, 'edge_count': 2}
         ]
 
-        for testcafe in testcases:
+        for testcase in testcases:
             with self.assertRaises(AssertionError):
                 button_irq = ButtonIRQ(irq_handler,
-                                       testcafe['irq_number'],
-                                       testcafe['timeout'],
-                                       testcafe['interrupt_type_rising'],
-                                       testcafe['interrupt_type_falling'],
-                                       testcafe['edge_count'])
+                                       testcase['irq_number'],
+                                       testcase['timeout'],
+                                       testcase['interrupt_type_rising'],
+                                       testcase['interrupt_type_falling'],
+                                       testcase['edge_count'])
 
     def test_OpenWithInvalidEdgeCount_ShowAssertion(self):
         invalid_edge_counts = [0, 4294967296]
@@ -78,11 +78,11 @@ class Test_ButtonIRQ_OpenAssertion(unittest.TestCase):
             {'irq_number': IRQNumber.IRQ1, 'timeout': 6000, 'interrupt_type_rising': False, 'interrupt_type_falling': False, 'edge_count': invalid_edge_counts[1]},
         ]
 
-        for testcafe in testcases:
+        for testcase in testcases:
             with self.assertRaises(AssertionError):
                 button_irq = ButtonIRQ(irq_handler,
-                                       testcafe['irq_number'],
-                                       testcafe['timeout'],
-                                       testcafe['interrupt_type_rising'],
-                                       testcafe['interrupt_type_falling'],
-                                       testcafe['edge_count'])
+                                       testcase['irq_number'],
+                                       testcase['timeout'],
+                                       testcase['interrupt_type_rising'],
+                                       testcase['interrupt_type_falling'],
+                                       testcase['edge_count'])
