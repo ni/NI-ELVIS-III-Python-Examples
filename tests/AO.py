@@ -117,7 +117,7 @@ class Test_AnalogOutput_WriteSingleChannel(unittest.TestCase):
         AO0_in_bank_A.write(input_value, sample_rate)
         AO0_in_bank_A.close()
 
-    def test_WriteLargeNumberOfValuesWithOneThousandSampleRate_DoesnotShowAnyError(self):
+    def test_WriteLargeNumberOfValuesWithTenThousandSampleRate_DoesnotShowAnyError(self):
         sample_rate = 10000
         input_value = [3.3 for i in range(55555)]
         
