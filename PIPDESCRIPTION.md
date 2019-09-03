@@ -10,4 +10,4 @@
 </table>
 
 #### What's new:
- - Update Bitfile to NI ELVIS III 2.1
+ - Update bitfile to NI ELVIS III 2.1
