@@ -12,7 +12,7 @@ class ELVISIII(object):
     ResourceName = "RIO0"
 
     def __init__(self):
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'bitfile/ELVIS III v1.1 FPGA.lvbitx')
+        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'bitfile/ELVIS III v2.1 FPGA.lvbitx')
         self.session = Session(path, ELVISIII.ResourceName)
 
     def __enter__(self):
@@ -432,6 +432,7 @@ class AnalogInput(Analog):
 
 class AnalogOutput(Analog):
     dma = { 'A': None, 'B': None }
+    number_of_n_sample = { 'A': 0, 'B': 0 }
     
     """ NI ELVIS III Analog Output (AO) API. """
     def __init__(self, *configuration):
@@ -452,6 +453,7 @@ class AnalogOutput(Analog):
         self.dma_idl = { 'A': None, 'B': None }
         self.dma_cntr = { 'A': None, 'B': None }
         self.dma_ena = { 'A': None, 'B': None }
+        self.is_nsample_opened = { 'A': False, 'B': False }
 
         self.channel_list = []
         for configuration_details in configuration:
@@ -471,6 +473,7 @@ class AnalogOutput(Analog):
             self.dma_cntr[bank.value] = self.session.registers['AO.%s.DMA_CNTR' % bank.value]
             self.dma_ena[bank.value] = self.session.registers['AO.%s.DMA_ENA' % bank.value]
             
+        self.dma_sys_ready = self.session.registers['DMA.SYS.RDY']
         self.go = self.session.registers['AO.SYS.GO']
         self.stat = self.session.registers['AO.SYS.STAT']
         self.lsb_weights = 4882813.0 / 1E+9
@@ -580,6 +583,9 @@ class AnalogOutput(Analog):
 
         for channel in self.channel_list:
             bank = channel['bank']
+            if not self.is_nsample_opened[bank]:
+                self.is_nsample_opened[bank] = True
+                AnalogOutput.number_of_n_sample[bank] += 1
             if AnalogOutput.dma[bank] is None:
                 AnalogOutput.dma[bank] = self.session.fifos['AO.%s.DMA' % bank]
                 AnalogOutput.dma[bank].configure(maximum_samples * 20)
@@ -588,10 +594,15 @@ class AnalogOutput(Analog):
 
         count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate, minimum_sample_rate, maximum_sample_rate)
         
-        if AnalogOutput.dma[Bank.A.value]:
-            self.__write_multiple_points_to_specific_bank(Bank.A.value, count, values, bitmask[0])
-        if AnalogOutput.dma[Bank.B.value]:
-            self.__write_multiple_points_to_specific_bank(Bank.B.value, count, values, bitmask[1])
+        data = [ int(value * int('1000000000000000000000000000', 2)) for value in values ]
+
+        while not(self.dma_sys_ready.read() == True):
+            pass
+
+        if self.is_nsample_opened[Bank.A.value]:
+            self.__write_multiple_points_to_specific_bank(Bank.A.value, count, data, bitmask[0])
+        if self.is_nsample_opened[Bank.B.value]:
+            self.__write_multiple_points_to_specific_bank(Bank.B.value, count, data, bitmask[1])
 
     def __write_multiple_points_to_specific_bank(self, bank, count, data, channel_bitmask):
         """
@@ -646,6 +657,7 @@ class AnalogOutput(Analog):
             irq_number = { 'A': 31, 'B': 30 }
             irq_status = self.session.wait_on_irqs(irq_number[bank], -1)
             self.session.acknowledge_irqs(irq_status.irqs_asserted)
+            self.dma_ena[bank].write(0)
 
         irq_thread = threading.Thread(target=__write,
                                       args=(bank, count, data, channel_bitmask))
@@ -654,10 +666,17 @@ class AnalogOutput(Analog):
         irq_thread.join()
 
     def close(self):
-        for bank in Bank:
-            bank = bank.value
-            if AnalogOutput.dma[bank] != None:
+        def __update_number_of_opened_n_sample(bank):
+            if self.is_nsample_opened[bank]:
+                AnalogOutput.number_of_n_sample[bank] -= 1
+
+        def __clear_dma_reference(bank):
+            if AnalogOutput.number_of_n_sample[bank] == 0:
                 AnalogOutput.dma[bank] = None
+
+        for bank in Bank:
+            __update_number_of_opened_n_sample(bank.value)
+            __clear_dma_reference(bank.value)
 
         super(AnalogOutput, self).close()
 

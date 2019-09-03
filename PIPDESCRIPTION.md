@@ -10,4 +10,4 @@
 </table>
 
 #### What's new:
- - Analog Output N Samples
+ - Update bitfile to NI ELVIS III 2.1
