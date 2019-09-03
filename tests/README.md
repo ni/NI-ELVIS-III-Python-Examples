@@ -1,12 +1,27 @@
 #### To run the unittest, uploads /tests and /source folders to `/home/admin`, and executes the following commands:
 ```
-python -m unittest tests/filename.py
+$ python -m unittest tests/filename.py
 ```
 For example: use `python -m unittest tests/AI.py` to run AI unittest. You will see things like this when the unittest is run successfully.
 ```
 ........
 ----------------------------------------------------------------------
 Ran 8 tests in 15.529s
+
+OK
+```
+Passing the -v option to your test script to enable a higher level of verbosity, and produce the following output:
+``` script
+$ python -m unittest -v tests/filename.py
+```
+```
+test_OpenWithInvalidBank_ShowAssertion (tests.AO.Test_AnalogOutput_OpenAssertion) ... ok
+test_OpenWithInvalidChannel_ShowAssertion (tests.AO.Test_AnalogOutput_OpenAssertion) ... ok
+test_OpenWithoutBank_ShowAssertion (tests.AO.Test_AnalogOutput_OpenAssertion) ... ok
+test_OpenWithoutChannel_ShowAssertion (tests.AO.Test_AnalogOutput_OpenAssertion) ... ok
+test_PassSampleRateThatIsGreaterThanMax_ShowAssertion (tests.AO.Test_AnalogOutput_WriteAssertion) ... ok
+----------------------------------------------------------------------
+Ran 5 tests in 49.068s
 
 OK
 ```
