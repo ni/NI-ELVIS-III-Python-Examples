@@ -96,6 +96,7 @@ class AnalogInput(Analog):
         self.is_onesample_opened  = { 'A': False, 'B': False }
         self.is_nsample_opened = { 'A': False, 'B': False }
         self.dma_enabled = { 'A': None, 'B': None }
+        self.sync = { 'A': None, 'B': None }
         
         self.is_bank_A_n_sample_opened = False
         self.is_bank_B_n_sample_opened = False
@@ -109,6 +110,9 @@ class AnalogInput(Analog):
             self.stat[bank] = self.session.registers['AI.%s.STAT' % bank]
 
             self.dma_enabled[bank] = self.session.registers['AI.%s.DMA_ENA' % bank]
+
+            # continous
+            self.sync[bank] = self.session.registers['%s.SYNC' % bank]
 
         configuration_list = { 'A': [], 'B': [] }
 
@@ -229,6 +233,23 @@ class AnalogInput(Analog):
         else:
             raise TypeError('read() takes either 0 (single point) or 2 (multiple points) arguments, but given %d' % args_len)
 
+    def start(self, sample_rate):
+        number_of_channels = len(self.channel_list)
+
+        bank_A_configuration, bank_A_number_of_channels, bank_B_configuration, bank_B_number_of_channels = self.__calculate_multiple_points_cnfg_and_number_of_enabled_channels()
+
+        count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate * number_of_channels)
+
+        def __configureBank(bank, cnfg, count):
+            self.cnfg[bank].write(cnfg)
+            self.cnt[bank].write(0)
+            self.cntr[bank].write(count)
+
+        __configureBank('A', bank_A_configuration, count)
+        
+        AnalogInput.dma[bank].start()
+        AnalogInput.dma[bank].stop()
+
     def __read_single_point(self):
         """
         Reads values from AI channels in AI channel list and popluates the
@@ -289,6 +310,22 @@ class AnalogInput(Analog):
             return_value.append(float(channellist_details['value'].read()))
         return return_value
 
+    def __calculate_multiple_points_cnfg_and_number_of_enabled_channels(self):
+        bank_A_configuration = [0 for i in range(12)]
+        bank_B_configuration = [0 for i in range(12)]
+        bank_A_number_of_channels = 0
+        bank_B_number_of_channels = 0
+
+        for channel in self.channel_list:
+            if channel['bank'] == Bank.A.value:
+                bank_A_configuration[bank_A_number_of_channels] = channel['cnfgval']
+                bank_A_number_of_channels = bank_A_number_of_channels + 1
+            else:
+                bank_B_configuration[bank_B_number_of_channels] = channel['cnfgval']
+                bank_B_number_of_channels = bank_B_number_of_channels + 1
+
+        return bank_A_configuration, bank_A_number_of_channels, bank_B_configuration, bank_B_number_of_channels
+
     def __read_multiple_points(self, number_of_samples, sample_rate):
         """
         Reads values from AI channels in AI channel list and popluates the
@@ -319,18 +356,7 @@ class AnalogInput(Analog):
             assert 1 <= sample_rate <= 500000, 'If you select multiple channels, then the min sample rate is 1 and the shared max sample rate is 500KHz.'
         assert 0 <= number_of_samples <= max_samples
 
-        bank_A_configuration = [0 for i in range(12)]
-        bank_B_configuration = [0 for i in range(12)]
-        bank_A_number_of_channels = 0
-        bank_B_number_of_channels = 0
-
-        for channel in self.channel_list:
-            if channel['bank'] == Bank.A.value:
-                bank_A_configuration[bank_A_number_of_channels] = channel['cnfgval']
-                bank_A_number_of_channels = bank_A_number_of_channels + 1
-            else:
-                bank_B_configuration[bank_B_number_of_channels] = channel['cnfgval']
-                bank_B_number_of_channels = bank_B_number_of_channels + 1
+        bank_A_configuration, bank_A_number_of_channels, bank_B_configuration, bank_B_number_of_channels = self.__calculate_multiple_points_cnfg_and_number_of_enabled_channels()
 
         count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate * number_of_channels)
 

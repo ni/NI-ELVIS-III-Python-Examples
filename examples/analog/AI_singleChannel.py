@@ -56,7 +56,7 @@ with AnalogInput({'bank': ai_bank,
                   'range': ai_range,
                   'mode': ai_mode}) as AI_single_channel:
     # read from the AI channel and display the values 20 times
-    for i in range(0, 20):
+    for i in range(0, 1):
         # read the value
         value_array = AI_single_channel.read()
         # print the value
@@ -81,7 +81,7 @@ with AnalogInput({'bank': ai_bank,
     number_of_samples = 100
     sample_rate = 1000
     # read from the AI channel and display the values 20 times
-    for i in range(0, 20):
+    for i in range(0, 1):
         # read the value
         value_array = AI_single_channel.read(number_of_samples, sample_rate)
 
