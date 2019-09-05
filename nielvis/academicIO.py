@@ -57,6 +57,7 @@ class Analog(ELVISIII):
 class AnalogInput(Analog):
     number_of_n_sample = { 'A': 0, 'B': 0 }
     dma = { 'A': None, 'B': None }
+    is_continuous_started = { 'A': False, 'B': False }
 
     """ NI ELVIS III Analog Input (AI) API. """
     def __init__(self, *configuration):
@@ -93,13 +94,17 @@ class AnalogInput(Analog):
         self.cnfg = { 'A': None, 'B': None }
         self.cntr = { 'A': None, 'B': None }
         self.stat = { 'A': None, 'B': None }
-        self.is_onesample_opened  = { 'A': False, 'B': False }
+        self.is_onesample_opened = { 'A': False, 'B': False }
         self.is_nsample_opened = { 'A': False, 'B': False }
         self.dma_enabled = { 'A': None, 'B': None }
+        self.dma_full = { 'A': None, 'B': None }
         self.sync = { 'A': None, 'B': None }
+        self.is_continuous = { 'A': False, 'B': False }
         
         self.is_bank_A_n_sample_opened = False
         self.is_bank_B_n_sample_opened = False
+        
+        self.__max_samples = 10000
 
         def __set_registration_addresses(bank):
             # get registration addresses
@@ -112,6 +117,7 @@ class AnalogInput(Analog):
             self.dma_enabled[bank] = self.session.registers['AI.%s.DMA_ENA' % bank]
 
             # continous
+            self.dma_full[bank] = self.session.registers['AI.%s.DMA_FULL' % bank]
             self.sync[bank] = self.session.registers['%s.SYNC' % bank]
 
         configuration_list = { 'A': [], 'B': [] }
@@ -211,7 +217,7 @@ class AnalogInput(Analog):
         Args:
             If you want to read a single point of data at one time, do not
             pass any arguments.
-            If you want to read multiple points of data at one time, arguments
+            If you want to read multiple points (n samples) of data at one time, arguments
             should contain:
                 number_of_samples (number): 
                     Specifies the number of samples to read. Valid values are
@@ -219,6 +225,16 @@ class AnalogInput(Analog):
                 sample_rate (number):
                     Specifies the sampling frequency, in hertz, of the input
                     signal.
+            If you want to read multiple points (continuous mode) of data at one time, arguments
+                should contain:
+                    number_of_samples (number): 
+                    Specifies the number of samples to read. Valid values must be
+                    greater than 0. 
+                timeout (number):
+                    Specifies the period of time, in milliseconds, to wait for the
+                    acquisition to complete. If you set Timeout to -1, this
+                    function waits indefinitely. An error occurs if acquisition
+                    time is longer than timeout. 
 
         Returns:
             return_value (array):
@@ -229,26 +245,125 @@ class AnalogInput(Analog):
         if args_len == 0:
             return self.__read_single_point()
         elif args_len == 2:
-            return self.__read_multiple_points(args[0], args[1])
+            if self.is_continuous['A'] or self.is_continuous['B']:
+                return self.__read_multiple_points_continuous(args[0], args[1])
+            else:
+                return self.__read_multiple_points_n_samples(args[0], args[1])
         else:
             raise TypeError('read() takes either 0 (single point) or 2 (multiple points) arguments, but given %d' % args_len)
 
     def start(self, sample_rate):
+        """
+        Configures sample rate and starts the acquisition. 
+
+        Args:
+            sample_rate:
+                sample_rate (number):
+                Specifies the sampling frequency, in hertz, of the input
+                signal. 
+                If you select only one channel, the valid range for sample
+                rate is between 1 Hz and 1 MHz. 
+                If you select multiple channels, the valid range for sample
+                rate is between 1 Hz and 250 KHz. 
+        """
         number_of_channels = len(self.channel_list)
 
-        bank_A_configuration, bank_A_number_of_channels, bank_B_configuration, bank_B_number_of_channels = self.__calculate_multiple_points_cnfg_and_number_of_enabled_channels()
+        if number_of_channels == 1:
+            assert 1 <= sample_rate <= 1000000, 'If you select only 1 channel, then the min sample rate is 1 and the max sample rate can be 1MHz.'
+        else:
+            assert 1 <= sample_rate <= 250000, 'If you select multiple channels, then the min sample rate is 1 and the shared max sample rate is 250KHz.'
+
+        self.__sample_rate = sample_rate
+
+        configuration = self.__calculate_multiple_points_cnfg_and_number_of_enabled_channels()
 
         count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate * number_of_channels)
 
-        def __configureBank(bank, cnfg, count):
-            self.cnfg[bank].write(cnfg)
+        def __stop_ai_continuous(bank):
             self.cnt[bank].write(0)
-            self.cntr[bank].write(count)
+            self.dma_enabled[bank].write(False)
 
-        __configureBank('A', bank_A_configuration, count)
+            while not(self.stat[bank].read() == 0):
+                pass
+
+        def __initialize_bank(bank):
+            self.cnt[bank].write(0)
+            self.cnfg[bank].write(configuration[bank]['cnfg'])
+            self.cntr[bank].write(count)
+            self.dma_enabled[bank].write(True)
+
+            while not(self.cnt[bank].read() == 0 and self.cnfg[bank].read() == configuration[bank]['cnfg'] and self.cntr[bank].read() == count and self.dma_enabled[bank].read() == True):
+                pass
+
+            self.is_continuous[bank] = True
+
+        def __start_continuous_mode():
+            def __check_register_values_and_enable_continuous(bank):
+                while not(self.dma_enabled[bank].read() == True and self.cnt[bank].read() == configuration[bank]['numberOfChannels']):
+                    pass
+
+                AnalogInput.is_continuous_started[bank] = True
+
+            if self.is_continuous[Bank.A.value] and self.is_continuous[Bank.B.value]:
+                self.__register_and_configure_dma(Bank.A.value)
+                self.__register_and_configure_dma(Bank.B.value)
+
+                self.sync[Bank.A.value].write(True)
+                self.sync[Bank.B.value].write(True)
+
+                AnalogInput.dma[Bank.A.value].start()
+                AnalogInput.dma[Bank.A.value].stop()
+                AnalogInput.dma[Bank.B.value].start()
+                AnalogInput.dma[Bank.B.value].stop()
+
+                numberOfChannels = max(configuration[Bank.A.value]['numberOfChannels'], configuration[Bank.B.value]['numberOfChannels'])
+                self.cnt[Bank.A.value].write(numberOfChannels)
+                self.cnt[Bank.B.value].write(numberOfChannels)
+
+                self.dma_enabled[Bank.A.value].write(True)
+                self.dma_enabled[Bank.B.value].write(True)
+            
+                __check_register_values_and_enable_continuous(Bank.A.value)
+                __check_register_values_and_enable_continuous(Bank.B.value)
+
+                self.session.registers['SYNC'].write(True)
+            else:
+                bank = Bank.A.value if self.is_continuous[Bank.A.value] else Bank.B.value
+                self.__register_and_configure_dma(bank)
+                AnalogInput.dma[bank].start()
+                AnalogInput.dma[bank].stop()
+                self.dma_enabled[bank].write(True)
+                self.cnt[bank].write(configuration[bank]['numberOfChannels'])
+
+                __check_register_values_and_enable_continuous(bank)
+
+        for bank in Bank:
+            bank = bank.value
+            if configuration[bank]['numberOfChannels'] > 0:
+                assert not AnalogInput.is_continuous_started[bank], 'Cannot open the reference to channels on one bank using more than one Open function at the same time to perform continuous mode signal acquisition.'
+                __stop_ai_continuous(bank)
+                __initialize_bank(bank)
         
-        AnalogInput.dma[bank].start()
-        AnalogInput.dma[bank].stop()
+        __start_continuous_mode()
+
+    def stop(self):
+        """
+        Stops signal acquisition on the FPGA target.
+        """
+        def __reset_continuous_registers(bank):
+            self.is_continuous[bank] = False
+            AnalogInput.is_continuous_started[bank] = False
+            AnalogInput.dma[bank] = None
+            self.cnt[bank].write(0)
+            self.dma_enabled[bank].write(False)
+
+            while not(self.stat[bank].read() == 0):
+                pass
+
+        for bank in Bank:
+            bank = bank.value
+            if self.is_continuous[bank]:
+                __reset_continuous_registers(bank)
 
     def __read_single_point(self):
         """
@@ -311,22 +426,25 @@ class AnalogInput(Analog):
         return return_value
 
     def __calculate_multiple_points_cnfg_and_number_of_enabled_channels(self):
-        bank_A_configuration = [0 for i in range(12)]
-        bank_B_configuration = [0 for i in range(12)]
-        bank_A_number_of_channels = 0
-        bank_B_number_of_channels = 0
+        bank_A = {'cnfg': [0 for i in range(12)], 'numberOfChannels': 0}
+        bank_B = {'cnfg': [0 for i in range(12)], 'numberOfChannels': 0}
 
         for channel in self.channel_list:
             if channel['bank'] == Bank.A.value:
-                bank_A_configuration[bank_A_number_of_channels] = channel['cnfgval']
-                bank_A_number_of_channels = bank_A_number_of_channels + 1
+                bank_A['cnfg'][bank_A['numberOfChannels']] = channel['cnfgval']
+                bank_A['numberOfChannels'] += 1
             else:
-                bank_B_configuration[bank_B_number_of_channels] = channel['cnfgval']
-                bank_B_number_of_channels = bank_B_number_of_channels + 1
+                bank_B['cnfg'][bank_B['numberOfChannels']] = channel['cnfgval']
+                bank_B['numberOfChannels'] += 1
 
-        return bank_A_configuration, bank_A_number_of_channels, bank_B_configuration, bank_B_number_of_channels
+        return {'A': bank_A, 'B': bank_B}
 
-    def __read_multiple_points(self, number_of_samples, sample_rate):
+    def __register_and_configure_dma(self, bank):
+        if AnalogInput.dma[bank] is None:
+                AnalogInput.dma[bank] = self.session.fifos['AI.%s.DMA' % bank]
+                AnalogInput.dma[bank].configure(self.__max_samples * 100)
+
+    def __read_multiple_points_n_samples(self, number_of_samples, sample_rate):
         """
         Reads values from AI channels in AI channel list and popluates the
         output array (values) with the result. (n samples)
@@ -348,27 +466,29 @@ class AnalogInput(Analog):
                 the analog input channel that you select. The structure of the
                 returned values is [ [bank_A_values], [bank_B_values] ].
         """
-        max_samples = 10000
         number_of_channels = len(self.channel_list)
         if number_of_channels == 1:
             assert 1 <= sample_rate <= 1000000, 'If you select only 1 channel, then the min sample rate is 1 and the max sample rate can be 1MHz.'
         else:
             assert 1 <= sample_rate <= 500000, 'If you select multiple channels, then the min sample rate is 1 and the shared max sample rate is 500KHz.'
-        assert 0 <= number_of_samples <= max_samples
+        assert 0 <= number_of_samples <= self.__max_samples
 
-        bank_A_configuration, bank_A_number_of_channels, bank_B_configuration, bank_B_number_of_channels = self.__calculate_multiple_points_cnfg_and_number_of_enabled_channels()
+        configuration = self.__calculate_multiple_points_cnfg_and_number_of_enabled_channels()
 
         count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate * number_of_channels)
 
         return_value = []
-        if any(bank_A_configuration):
-            return_value.append(self.__read_multiple_points_from_specific_bank(Bank.A.value, bank_A_configuration, bank_A_number_of_channels, number_of_samples, count, max_samples))
-        if any(bank_B_configuration):
-            return_value.append(self.__read_multiple_points_from_specific_bank(Bank.B.value, bank_B_configuration, bank_B_number_of_channels, number_of_samples, count, max_samples))
+
+        def __read_values_if_has_enabled_channels(bank):
+            if configuration[bank]['numberOfChannels'] > 0:
+                return_value.append(self.__read_multiple_points_n_samples_from_specific_bank(bank, configuration[bank]['cnfg'], configuration[bank]['numberOfChannels'], number_of_samples, count))
+
+        __read_values_if_has_enabled_channels(Bank.A.value)
+        __read_values_if_has_enabled_channels(Bank.B.value)
 
         return return_value
 
-    def __read_multiple_points_from_specific_bank(self, bank, configuration, number_of_channels, number_of_samples, count, max_samples):
+    def __read_multiple_points_n_samples_from_specific_bank(self, bank, configuration, number_of_channels, number_of_samples, count):
         """
         Reads values from analog channels specified in the configuration using
         the DMA. (n samples)
@@ -395,9 +515,7 @@ class AnalogInput(Analog):
                 returned values is [ [first_channel_values],
                 [second_channel_values], ...].
         """
-        if AnalogInput.dma[bank] is None:
-            AnalogInput.dma[bank] = self.session.fifos['AI.%s.DMA' % bank]
-            AnalogInput.dma[bank].configure(max_samples * 100)
+        self.__register_and_configure_dma(bank)
 
         if not self.is_nsample_opened[bank]:
             self.is_nsample_opened[bank] = True
@@ -418,7 +536,7 @@ class AnalogInput(Analog):
         while not(self.cnt[bank].read() == number_of_channels):
             pass
 
-        max_readback_samples = max_samples
+        max_readback_samples = self.__max_samples
         number_of_expected_samples = number_of_channels * number_of_samples
         readvalue = []
         while number_of_expected_samples > max_readback_samples:
@@ -437,6 +555,73 @@ class AnalogInput(Analog):
             result.append(readvalue[index::number_of_channels])
         return result
 
+    def __read_multiple_points_continuous(self, number_of_samples, timeout):
+        """
+        Reads values from AI channels in AI channel list and popluates the
+        output array (values) with the result. (n samples)
+
+        Args:
+            number_of_samples (number): 
+                Specifies the number of samples to read. Valid values must be
+                greater than 0. 
+            timeout (number):
+                Specifies the period of time, in milliseconds, to wait for the
+                acquisition to complete. If you set Timeout to -1, this
+                function waits indefinitely. An error occurs if acquisition
+                time is longer than timeout. 
+        Returns:
+            return_value (array):
+                Returns the values, in volts, that this function reads from
+                the analog input channel that you select. The structure of the
+                returned values is [ [bank_A_values], [bank_B_values] ].
+        """
+        assert 0 <= number_of_samples
+        if timeout != -1:
+            assert timeout >= (number_of_samples / self.__sample_rate)
+
+        def __read_from_specific_bank(bank, number_of_channels):
+            assert self.cnt[bank].read() == number_of_channels, 'The continuous acquisition has not started. You must call the start() function before calling the read() function.'
+            assert not self.dma_full[bank].read(), 'The read buffer has overflowed. This error occurs when you does not call the read() function after the acquisition starts for a while. You must call the read() function before the buffer overflows. This error may also occur when you set a high sample rate, for example, 1 MHz. In this case, you can modify the number of samples to a value between 3,000 and 50,000 to fit the buffer size.'
+
+            read_timeout = timeout
+            max_readback_samples = self.__max_samples
+            number_of_expected_samples = number_of_channels * number_of_samples
+            readvalue = []
+
+            while number_of_expected_samples > max_readback_samples:
+                time_to_start_reading = time.time()
+                readvalue.extend(AnalogInput.dma[bank].read(max_readback_samples, timeout_ms=read_timeout)[0])
+                time_taken_to_read_once = time.time() - time_to_start_reading
+                number_of_expected_samples = number_of_expected_samples - max_readback_samples
+
+                if read_timeout != -1:
+                    read_timeout = 0 if read_timeout - time_taken_to_read_once < 0 else read_timeout - time_taken_to_read_once
+
+            readvalue.extend(AnalogInput.dma[bank].read(number_of_expected_samples, timeout_ms=read_timeout)[0])
+
+            result = []
+            for index in range(0, number_of_channels):
+                result.append(readvalue[index::number_of_channels])
+            return result
+
+        return_value = []
+
+        def __read_values_if_has_enabled_channels(bank, number_of_channel_per_bank):
+            if self.is_continuous[bank]:
+                return_value.append(__read_from_specific_bank(bank, number_of_channel_per_bank[bank]))
+        
+        def __get_number_of_channel_per_bank():
+            number_of_channel_per_bank = {'A': 0, 'B':0}
+            for channel in self.channel_list:
+                number_of_channel_per_bank[channel['bank']] += 1
+            return number_of_channel_per_bank
+
+        number_of_channel_per_bank =__get_number_of_channel_per_bank()
+        __read_values_if_has_enabled_channels(Bank.A.value, number_of_channel_per_bank)
+        __read_values_if_has_enabled_channels(Bank.B.value, number_of_channel_per_bank)
+
+        return return_value
+    
     def _toBinary(self, num):
         return bin(int(num))
 

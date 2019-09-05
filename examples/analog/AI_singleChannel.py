@@ -19,11 +19,11 @@ references the selected channel to another channel as indicated in this table:
    AI2: AI2 to AI6
    AI3: AI3 to AI7
 
-A time gap exists between the end of one signal acquisition and the start of
-the next signal acquisition when you specify n samples (reading multiple
-points) mode for Analog Input API. Refer to the following link for more
-information about the time gap.
-https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/NI_ELVIS_III_Understanding_Gaps.md
+The Python ELVIS III Analog Input API provides a function for you to perform
+three I/O modes of signal acquisition: 1 sample, n samples, and continuous. 
+Refer to the following link to understand the difference between 1 sample, n
+samples, and continuous mode.
+https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/1_Sample_N_Samples_and_Continuous_Modes.md
 
 This example uses:
     Bank A, Channel AI0, Range +/-10 V, Single-Ended Mode.
@@ -56,7 +56,7 @@ with AnalogInput({'bank': ai_bank,
                   'range': ai_range,
                   'mode': ai_mode}) as AI_single_channel:
     # read from the AI channel and display the values 20 times
-    for i in range(0, 1):
+    for i in range(0, 20):
         # read the value
         value_array = AI_single_channel.read()
         # print the value
@@ -69,8 +69,14 @@ with AnalogInput({'bank': ai_bank,
 # Section 2: Multiple Points (N samples)
 # Use the read function to read multiple points of data from the channel. The
 # hardware acquires a finite number of samples for a channel.
+#
+# A time gap exists between the end of one signal acquisition and the start of
+# the next signal acquisition when you specify n samples mode for Analog Input
+# API. Refer to the following link for more information about the time gap.
+# https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/NI_ELVIS_III_Understanding_Gaps.md
+#
 ##############################################################################
-print('Multiple Points, Single Channel')
+print('Multiple Points, Single Channel (N samples)')
 # configure the AI channel
 with AnalogInput({'bank': ai_bank,
                   'channel': ai_channel,
@@ -81,7 +87,7 @@ with AnalogInput({'bank': ai_bank,
     number_of_samples = 100
     sample_rate = 1000
     # read from the AI channel and display the values 20 times
-    for i in range(0, 1):
+    for i in range(0, 20):
         # read the value
         value_array = AI_single_channel.read(number_of_samples, sample_rate)
 
@@ -91,3 +97,41 @@ with AnalogInput({'bank': ai_bank,
 
         # add a short delay before acquiring the next data point
         time.sleep(0.001)
+
+##############################################################################
+# Section 3: Multiple Points (continuous)
+# Use the read function to read multiple points of data from the channel. The
+# hardware continuously acquires a finite number of samples for a channel
+# until the acquisition is stopped.
+##############################################################################
+print('Multiple Points, Single Channel (continuous)')
+# configure the AI channel
+with AnalogInput({'bank': ai_bank,
+                  'channel': ai_channel,
+                  'range': ai_range,
+                  'mode': ai_mode}) as AI_single_channel:
+    # specify the number of samples to read and the sampling frequency, in
+    # hertz, of the input signal
+    number_of_samples = 100
+    sample_rate = 1000
+    # specify the period of time, in milliseconds, to wait for the acquisition
+    # to complete
+    timeout = -1
+    
+    # configure sample rate and starts the acquisition
+    AI_single_channel.start(sample_rate)
+    
+    # read from the AI channel and display the values 20 times
+    for i in range(0, 20):
+        # read the value
+        value_array = AI_single_channel.read(number_of_samples, timeout)
+
+        # print the value
+        for value in value_array[0]:
+            print(value)
+
+        # add a short delay before acquiring the next data point
+        time.sleep(0.001)
+
+    # stop signal acquisition
+    AI_single_channel.stop()
