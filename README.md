@@ -33,7 +33,7 @@ In this section we will install the NI Measurement Live Support Files and set up
 
 1. Install the [NI Measurement Live Support Files](https://www.ni.com/en-us/support/downloads/software-products/download.measurements-live.html).
 2. Connect the NI ELVIS III to the Internet by using the [Ethernet](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connecting-device-via-ethernet/#GUID-816EF92E-4CB5-47AA-BDE3-7CF57758FB0E) or [Wireless Network](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connnecting-device-via-wireless-network/#GUID-14BF448A-CC19-4DF5-915E-6ED43E5B63E9) so that the Python libraries can be installed from the Internet. We recommend that you use Ethernet Port.
-3. Open **Internet Explorer**.
+3. Open **Internet Explorer**.<br/>
    ![](/docs/resource/open_ie.gif)
 4. Visit the NI ELVIS III Configuration website: \<IP Address of the NI ELVIS III\>/WIF.html<br/>
    ![](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/open_setup_page.gif)
@@ -128,7 +128,7 @@ In this section we will download the NI ELVIS III Python Examples.
 
 # Running the Example
 
-1. In the same directory where you upload your example folder to, enter the following command to go to the NI-ELVIS-III-Python example directory.
+1. Open Putty. In the same directory where you upload your example folder to, enter the following command to go to the NI-ELVIS-III-Python example directory.
    ```
    cd NI-ELVIS-III-Python-Examples-master/
    ```
