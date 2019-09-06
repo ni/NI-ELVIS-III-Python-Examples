@@ -128,7 +128,7 @@ In this section we will download the NI ELVIS III Python Examples.
 
 # Running the Example
 
-1. Open Putty. In the same directory where you upload your example folder to, enter the following command to go to the NI-ELVIS-III-Python example directory.
+1. Open PuTTY to run the example. In the same directory where you upload your example folder to, enter the following command to go to the NI-ELVIS-III-Python example directory.
    ```
    cd NI-ELVIS-III-Python-Examples-master/
    ```
