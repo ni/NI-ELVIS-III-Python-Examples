@@ -33,18 +33,20 @@ In this section we will install the NI Measurement Live Support Files and set up
 
 1. Install the [NI Measurement Live Support Files](https://www.ni.com/en-us/support/downloads/software-products/download.measurements-live.html).
 2. Connect the NI ELVIS III to the Internet by using the [Ethernet](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connecting-device-via-ethernet/#GUID-816EF92E-4CB5-47AA-BDE3-7CF57758FB0E) or [Wireless Network](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connnecting-device-via-wireless-network/#GUID-14BF448A-CC19-4DF5-915E-6ED43E5B63E9) so that the Python libraries can be installed from the Internet. We recommend that you use Ethernet Port.
-3. Open **Internet Explorer** and visit the NI ELVIS III Configuration website: \<IP Address of the NI ELVIS III\>/WIF.html<br/>
+3. Open **Internet Explorer**.<br/>
+   ![](/docs/resource/open_ie.gif)
+4. Visit the NI ELVIS III Configuration website: \<IP Address of the NI ELVIS III\>/WIF.html<br/>
    ![](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/open_setup_page.gif)
    *Note:* The IP Address can be found on the OLED display of the NI ELVIS III. Press [BUTTON 0](https://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/user-programmable-button/) until the IP address appears. Enter the IP address from the display.<br />
-4. Enable the **Secure Shell Server** and click **Restart** to restart the device.
+5. Enable the **Secure Shell Server** and click **Restart** to restart the device.
    ![](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/open_ssh.gif)
-5. Set up **Time Configuration**. Configure the **Date**, **Current time**, and **Time Zone** to your current local time.
+6. Set up **Time Configuration**. Configure the **Date**, **Current time**, and **Time Zone** to your current local time.
    ![](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/set_time_zone.gif)
    
    *Note:*
       - Make sure there is a blue mark at the date you selected.
       - You have to set the **Time Configuration** again after you restart the device.
-6. Install NI-VISA through **NI MAX** custom software installation if you want to run the UART example.
+7. Install NI-VISA through **NI MAX** custom software installation if you want to run the UART example.
 
 ## Installing Prerequisite Software for NI ELVIS III Python
 In this section we will install the software needed to execute the NI ELVIS III Python examples and the required packages to use the Python FPGA API.
@@ -126,7 +128,7 @@ In this section we will download the NI ELVIS III Python Examples.
 
 # Running the Example
 
-1. In the same directory where you upload your example folder to, enter the following command to go to the NI-ELVIS-III-Python example directory.
+1. Open PuTTY to run the example. In the same directory where you upload your example folder to, enter the following command to go to the NI-ELVIS-III-Python example directory.
    ```
    cd NI-ELVIS-III-Python-Examples-master/
    ```
