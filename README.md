@@ -92,12 +92,12 @@ In this section we will download the NI ELVIS III Python Examples.
     - Option 1: Transfer files through scp.
 
       ```
-      scp -r <folder_name> admin@<id_address>:/home/admin/
+      scp -r NI-ELVIS-III-Python-Examples-master/ admin@172.22.11.2:/home/admin/
       ```
 
-      For example: `scp -r NI-ELVIS-III-Python-Examples-master/ admin@172.22.11.2:/home/admin/`
-
-      *Note:* **Password**: (Blank. There is no password by default.)
+      *Note:*
+        - **Password**: (Blank. There is no password by default.)</br>
+        - Make sure your command is the same as the example. You may have some issues in the coming steps if your command is different, for example, if the folder name is `./NI-ELVIS-III-Python-Examples-master/`.
 
    - Option 2: Transfer files through FileZilla.
 
@@ -123,6 +123,13 @@ In this section we will download the NI ELVIS III Python Examples.
    ```
    cd NI-ELVIS-III-Python-Examples-master/
    ```
+   
+   *Note:* If you cannot change your current directory to `NI-ELVIS-III-Python-Examples-master/`, enter the following command to list the contents in the `/home/admin` directory. The displayed files should include **NI-ELVIS-III-Python-Examples-master/**.
+   
+   ```
+   ls
+   ```
+
 2. Run the example:
 
    ```
