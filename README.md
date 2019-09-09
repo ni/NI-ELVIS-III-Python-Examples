@@ -95,7 +95,7 @@ In this section we will download the NI ELVIS III Python Examples.
       scp -r <folder_name> admin@<id_address>:/home/admin/
       ```
 
-      For example: `scp -r NI-ELVIS-III-Python-Examples/ admin@172.22.11.2:/home/admin/`
+      For example: `scp -r NI-ELVIS-III-Python-Examples-master/ admin@172.22.11.2:/home/admin/`
 
       *Note:* **Password**: (Blank. There is no password by default.)
 
