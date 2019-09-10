@@ -34,7 +34,7 @@ In this section we will install the NI Measurement Live Support Files and set up
 1. Install the [NI Measurement Live Support Files](https://www.ni.com/en-us/support/downloads/software-products/download.measurements-live.html).
 2. Connect the NI ELVIS III to the Internet by using the [Ethernet](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connecting-device-via-ethernet/#GUID-816EF92E-4CB5-47AA-BDE3-7CF57758FB0E) or [Wireless Network](http://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/connnecting-device-via-wireless-network/#GUID-14BF448A-CC19-4DF5-915E-6ED43E5B63E9) so that the Python libraries can be installed from the Internet. We recommend that you use Ethernet Port.
 3. Open **Internet Explorer**.<br/>
-   ![](/docs/resource/open_ie.gif)
+   ![](/docs/resource/ie.png)
 4. Visit the NI ELVIS III Configuration website: \<IP Address of the NI ELVIS III\>/WIF.html<br/>
    ![](https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/resource/open_setup_page.gif)
    *Note:* The IP Address can be found on the OLED display of the NI ELVIS III. Press [BUTTON 0](https://www.ni.com/documentation/en/ni-elvis-iii/latest/getting-started/user-programmable-button/) until the IP address appears. Enter the IP address from the display.<br />
@@ -97,7 +97,7 @@ In this section we will download the NI ELVIS III Python Examples.
 
       *Note:*
         - **Password**: (Blank. There is no password by default.)</br>
-        - Make sure your command is the same as the example. You may have some issues in the coming steps if your command is different, for example, if the folder name is `./NI-ELVIS-III-Python-Examples-master/`.
+        - Make sure your command is the same as the example. You may have some issues in the coming steps if your command is different.
 
    - Option 2: Transfer files through FileZilla.
 
