@@ -97,7 +97,7 @@ In this section we will download the NI ELVIS III Python Examples.
 
       *Note:*
         - **Password**: (Blank. There is no password by default.)</br>
-        - Make sure your command is the same as the example name. Otherwise, you may encounter problems in the coming steps.
+        - Make sure your command is the same as the example (scp -r NI-ELVIS-III-Python-Examples-master/ admin@172.22.11.2:/home/admin/). Otherwise, you may encounter problems in the coming steps.
 
    - Option 2: Transfer files through FileZilla.
 
