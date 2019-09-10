@@ -124,7 +124,7 @@ In this section we will download the NI ELVIS III Python Examples.
    cd NI-ELVIS-III-Python-Examples-master/
    ```
    
-   *Note:* If you cannot change your current directory to `NI-ELVIS-III-Python-Examples-master/`, enter the following command to list the contents in the `/home/admin` directory. The displayed files should include **NI-ELVIS-III-Python-Examples-master/**.
+   *Note:* If you cannot change your current directory to `NI-ELVIS-III-Python-Examples-master/`, enter the following command to access the contents in the `/home/admin` directory. You should be able to find **NI-ELVIS-III-Python-Examples-master/** among the listed files.
    
    ```
    ls
