@@ -151,7 +151,7 @@ with AnalogInput({'bank': ai_bankA,           # define the first channel: AI0
         value_array = AI_multiple_channels.read(number_of_samples, timeout)
 
         # print the value
-        for value in value_array[0]:
+        for value in value_array:
             print(value)
 
         # add a short delay before acquiring the next data point
