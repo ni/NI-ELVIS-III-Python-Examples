@@ -275,29 +275,31 @@ class AnalogInput(Analog):
 
         self.__sample_rate = sample_rate
 
-        configuration = self.__calculate_multiple_points_cnfg_and_number_of_enabled_channels()
+        def __open_ai_continuous(configuration):
+            for bank in Bank:
+                bank = bank.value
+                if configuration[bank]['numberOfChannels'] > 0:
+                    assert not AnalogInput.is_continuous_started[bank], 'Cannot open the reference to channels on one bank using more than one Open function at the same time to perform continuous mode signal acquisition.'
+                    self.__register_and_configure_dma(bank)
+                    self.__stop_continuous(bank)
+                    self.is_continuous[bank] = True
 
-        count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate * number_of_channels)
+        def __start_ai_continuous(configuration):
+            count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate * number_of_channels)
 
-        def __stop_ai_continuous(bank):
-            self.cnt[bank].write(0)
-            self.dma_enabled[bank].write(False)
+            def __continuous_config_bank(bank):
+                self.cnt[bank].write(0)
+                self.cnfg[bank].write(configuration[bank]['cnfg'])
+                self.cntr[bank].write(count)
+                self.dma_enabled[bank].write(True)
 
-            while not(self.stat[bank].read() == 0):
-                pass
+                while not(self.cnt[bank].read() == 0 and self.cnfg[bank].read() == configuration[bank]['cnfg'] and self.cntr[bank].read() == count and self.dma_enabled[bank].read() == True):
+                    pass
 
-        def __initialize_bank(bank):
-            self.cnt[bank].write(0)
-            self.cnfg[bank].write(configuration[bank]['cnfg'])
-            self.cntr[bank].write(count)
-            self.dma_enabled[bank].write(True)
+            def __reset_buffer(bank_to_reset):
+                AnalogInput.dma[bank_to_reset].start()
+                AnalogInput.dma[bank_to_reset].stop()
 
-            while not(self.cnt[bank].read() == 0 and self.cnfg[bank].read() == configuration[bank]['cnfg'] and self.cntr[bank].read() == count and self.dma_enabled[bank].read() == True):
-                pass
-
-            self.is_continuous[bank] = True
-
-        def __start_continuous_mode():
             def __check_register_values_and_enable_continuous(bank):
                 while not(self.dma_enabled[bank].read() == True and self.cnt[bank].read() == configuration[bank]['numberOfChannels']):
                     pass
@@ -305,16 +307,14 @@ class AnalogInput(Analog):
                 AnalogInput.is_continuous_started[bank] = True
 
             if self.is_continuous[Bank.A.value] and self.is_continuous[Bank.B.value]:
-                self.__register_and_configure_dma(Bank.A.value)
-                self.__register_and_configure_dma(Bank.B.value)
+                __continuous_config_bank(Bank.A.value)
+                __continuous_config_bank(Bank.B.value)
 
                 self.sync[Bank.A.value].write(True)
                 self.sync[Bank.B.value].write(True)
 
-                AnalogInput.dma[Bank.A.value].start()
-                AnalogInput.dma[Bank.A.value].stop()
-                AnalogInput.dma[Bank.B.value].start()
-                AnalogInput.dma[Bank.B.value].stop()
+                __reset_buffer(Bank.A.value)
+                __reset_buffer(Bank.B.value)
 
                 numberOfChannels = max(configuration[Bank.A.value]['numberOfChannels'], configuration[Bank.B.value]['numberOfChannels'])
                 self.cnt[Bank.A.value].write(numberOfChannels)
@@ -329,22 +329,29 @@ class AnalogInput(Analog):
                 self.session.registers['SYNC'].write(True)
             else:
                 bank = Bank.A.value if self.is_continuous[Bank.A.value] else Bank.B.value
-                self.__register_and_configure_dma(bank)
-                AnalogInput.dma[bank].start()
-                AnalogInput.dma[bank].stop()
+                __continuous_config_bank(bank)
+                __reset_buffer(bank)
                 self.dma_enabled[bank].write(True)
                 self.cnt[bank].write(configuration[bank]['numberOfChannels'])
 
                 __check_register_values_and_enable_continuous(bank)
 
-        for bank in Bank:
-            bank = bank.value
-            if configuration[bank]['numberOfChannels'] > 0:
-                assert not AnalogInput.is_continuous_started[bank], 'Cannot open the reference to channels on one bank using more than one Open function at the same time to perform continuous mode signal acquisition.'
-                __stop_ai_continuous(bank)
-                __initialize_bank(bank)
-        
-        __start_continuous_mode()
+        configuration = self.__calculate_multiple_points_cnfg_and_number_of_enabled_channels()
+        __open_ai_continuous(configuration)
+        __start_ai_continuous(configuration)
+
+    def __stop_continuous(self, bank):
+        """
+        Reset the FPGA target.
+
+        bank (Bank):
+            Specifies the name of the bank to open a session.
+        """
+        self.cnt[bank].write(0)
+        self.dma_enabled[bank].write(False)
+
+        while not(self.stat[bank].read() == 0):
+            pass
 
     def stop(self):
         """
@@ -354,11 +361,7 @@ class AnalogInput(Analog):
             self.is_continuous[bank] = False
             AnalogInput.is_continuous_started[bank] = False
             AnalogInput.dma[bank] = None
-            self.cnt[bank].write(0)
-            self.dma_enabled[bank].write(False)
-
-            while not(self.stat[bank].read() == 0):
-                pass
+            self.__stop_continuous(bank)
 
         for bank in Bank:
             bank = bank.value
@@ -506,7 +509,7 @@ class AnalogInput(Analog):
             count (number):
                 Specifies the actual count for AI.
             max_samples (number):
-                Specifies the maximum number of samples for the AI N samples.
+                Specifies the maximum number of samples for the AI n samples.
 
         Returns:
             return_value (array):
@@ -828,7 +831,7 @@ class AnalogOutput(Analog):
                 Specifies the values, in volts, to write to the analog output
                 channels.
             channel_bitmask (number):
-                Specifies the channel. AO0 is 2 and AO1 is 1 for N samples.
+                Specifies the channel. AO0 is 2 and AO1 is 1 for n samples.
         """
         def __write(bank, count, data, channel_bitmask):
 

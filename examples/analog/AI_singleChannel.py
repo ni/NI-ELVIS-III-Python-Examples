@@ -66,7 +66,7 @@ with AnalogInput({'bank': ai_bank,
         time.sleep(0.001)
 
 ##############################################################################
-# Section 2: Multiple Points (N samples)
+# Section 2: Multiple Points (n samples)
 # Use the read function to read multiple points of data from the channel. The
 # hardware acquires a finite number of samples for a channel.
 #
@@ -76,7 +76,7 @@ with AnalogInput({'bank': ai_bank,
 # https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/NI_ELVIS_III_Understanding_Gaps.md
 #
 ##############################################################################
-print('Multiple Points, Single Channel (N samples)')
+print('Multiple Points, Single Channel (n samples)')
 # configure the AI channel
 with AnalogInput({'bank': ai_bank,
                   'channel': ai_channel,
