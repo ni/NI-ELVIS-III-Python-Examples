@@ -225,8 +225,8 @@ class AnalogInput(Analog):
                 sample_rate (number):
                     Specifies the sampling frequency, in hertz, of the input
                     signal.
-            If you want to read multiple points (continuous mode) of data at one time, arguments
-                should contain:
+            If you want to read multiple points (continuous) of data at one time, arguments
+            should contain:
                     number_of_samples (number): 
                     Specifies the number of samples to read. Valid values must be
                     greater than 0. 
@@ -254,7 +254,7 @@ class AnalogInput(Analog):
 
     def start_continuous_mode(self, sample_rate):
         """
-        Configures sample rate and starts the acquisition. 
+        Configure the sample rate and start the acquisition. 
 
         Args:
             sample_rate:
@@ -560,8 +560,8 @@ class AnalogInput(Analog):
 
     def __read_multiple_points_continuous(self, number_of_samples, timeout):
         """
-        Reads values from AI channels in AI channel list and popluates the
-        output array (values) with the result. (n samples)
+        Read values from AI channels in AI channel list and populate the
+        output array (values) with the result. (continuous)
 
         Args:
             number_of_samples (number): 
@@ -575,8 +575,8 @@ class AnalogInput(Analog):
         Returns:
             return_value (array):
                 Returns the values, in volts, that this function reads from
-                the analog input channel that you select. The structure of the
-                returned values is [ [bank_A_values], [bank_B_values] ].
+                the analog input channel that you select. 
+                The value is returned in the following format: [ [bank_A_values], [bank_B_values] ].
         """
         assert 0 <= number_of_samples
         if timeout != -1:

@@ -19,10 +19,10 @@ references the selected channel to another channel as indicated in this table:
    AI2: AI2 to AI6
    AI3: AI3 to AI7
 
-The Python ELVIS III Analog Input API provides functions for you to perform
-three I/O modes of signal acquisition: 1 sample, n samples, and continuous
-mode. Refer to the following link to understand the difference between 1
-sample, n samples, and continuous mode.
+You can use the Python ELVIS III Analog Input APIs to perform
+signal acquisition in three I/O modes: 1 sample, n samples, and continuous
+. Refer to the following link to understand the differences among 1
+sample, n samples, and continuous modes.
 https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/1_Sample_N_Samples_and_Continuous_Modes.md
 
 This example uses:
@@ -71,7 +71,7 @@ with AnalogInput({'bank': ai_bank,
 # hardware acquires a finite number of samples for a channel.
 #
 # A time gap exists between the end of one signal acquisition and the start of
-# the next signal acquisition when you specify n samples mode for Analog Input
+# the next signal acquisition when you specify n samples mode (reading multiple points) for Analog Input
 # API. Refer to the following link for more information about the time gap.
 # https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/NI_ELVIS_III_Understanding_Gaps.md
 #
@@ -101,7 +101,7 @@ with AnalogInput({'bank': ai_bank,
 ##############################################################################
 # Section 3: Multiple Points (continuous)
 # Use the start_continuous_mode, read, and stop_continuous_mode functions to read multiple points of data from
-# the channel. The hardware continuously acquires a finite number of samples
+# the channel. The hardware continuously acquires samples
 # for a channel until the acquisition is stopped.
 ##############################################################################
 print('Multiple Points, Single Channel (continuous)')
@@ -118,7 +118,7 @@ with AnalogInput({'bank': ai_bank,
     # to complete
     timeout = -1
     
-    # configure sample rate and starts the acquisition
+    # configure the sample rate and start the acquisition
     AI_single_channel.start_continuous_mode(sample_rate)
     
     # read from the AI channel and display the values 20 times
