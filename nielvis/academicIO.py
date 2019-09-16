@@ -252,7 +252,7 @@ class AnalogInput(Analog):
         else:
             raise TypeError('read() takes either 0 (single point) or 2 (multiple points) arguments, but given %d' % args_len)
 
-    def start(self, sample_rate):
+    def start_continuous_mode(self, sample_rate):
         """
         Configures sample rate and starts the acquisition. 
 
@@ -353,7 +353,7 @@ class AnalogInput(Analog):
         while not(self.stat[bank].read() == 0):
             pass
 
-    def stop(self):
+    def stop_continuous_mode(self):
         """
         Stops signal acquisition on the FPGA target.
         """
@@ -637,10 +637,12 @@ class AnalogInput(Analog):
             if AnalogInput.number_of_n_sample[bank] == 0:
                 AnalogInput.dma[bank] = None
 
+        self.stop_continuous_mode()
+
         for bank in Bank:
             __update_number_of_opened_n_sample(bank.value)
             __clear_dma_reference(bank.value)
-    
+
         super(AnalogInput, self).close()
 
 

@@ -19,10 +19,10 @@ references the selected channel to another channel as indicated in this table:
    AI2: AI2 to AI6
    AI3: AI3 to AI7
 
-The Python ELVIS III Analog Input API provides a function for you to perform
-three I/O modes of signal acquisition: 1 sample, n samples, and continuous. 
-Refer to the following link to understand the difference between 1 sample, n
-samples, and continuous mode.
+The Python ELVIS III Analog Input API provides functions for you to perform
+three I/O modes of signal acquisition: 1 sample, n samples, and continuous
+mode. Refer to the following link to understand the difference between 1
+sample, n samples, and continuous mode.
 https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/1_Sample_N_Samples_and_Continuous_Modes.md
 
 This example uses:
@@ -100,9 +100,9 @@ with AnalogInput({'bank': ai_bank,
 
 ##############################################################################
 # Section 3: Multiple Points (continuous)
-# Use the read function to read multiple points of data from the channel. The
-# hardware continuously acquires a finite number of samples for a channel
-# until the acquisition is stopped.
+# Use the start, read, and stop functions to read multiple points of data from
+# the channel. The hardware continuously acquires a finite number of samples
+# for a channel until the acquisition is stopped.
 ##############################################################################
 print('Multiple Points, Single Channel (continuous)')
 # configure the AI channel
@@ -119,7 +119,7 @@ with AnalogInput({'bank': ai_bank,
     timeout = -1
     
     # configure sample rate and starts the acquisition
-    AI_single_channel.start(sample_rate)
+    AI_single_channel.start_continuous_mode(sample_rate)
     
     # read from the AI channel and display the values 20 times
     for i in range(0, 20):
@@ -134,4 +134,4 @@ with AnalogInput({'bank': ai_bank,
         time.sleep(0.001)
 
     # stop signal acquisition
-    AI_single_channel.stop()
+    AI_single_channel.stop_continuous_mode()

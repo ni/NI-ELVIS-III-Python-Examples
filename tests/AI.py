@@ -75,9 +75,9 @@ class Test_AnalogInput_ReadSingleChannelFromBankA(unittest.TestCase):
         sample_rate = limits['sampleRate']['min']
         timeout = -1
         
-        self.AI_single_channel.start(sample_rate)
+        self.AI_single_channel.start_continuous_mode(sample_rate)
         value_array = self.AI_single_channel.read(number_of_samples, timeout)
-        self.AI_single_channel.stop()
+        self.AI_single_channel.stop_continuous_mode()
 
         self.checkMultiplePointsReadBackValues(value_array, number_of_samples)
 
@@ -86,9 +86,9 @@ class Test_AnalogInput_ReadSingleChannelFromBankA(unittest.TestCase):
         sample_rate = limits['sampleRate']['max']
         timeout = -1
         
-        self.AI_single_channel.start(sample_rate)
+        self.AI_single_channel.start_continuous_mode(sample_rate)
         value_array = self.AI_single_channel.read(number_of_samples, timeout)
-        self.AI_single_channel.stop()
+        self.AI_single_channel.stop_continuous_mode()
 
         self.checkMultiplePointsReadBackValues(value_array, number_of_samples)
 
@@ -97,9 +97,19 @@ class Test_AnalogInput_ReadSingleChannelFromBankA(unittest.TestCase):
         sample_rate = 5000
         timeout = 2100
         
-        self.AI_single_channel.start(sample_rate)
+        self.AI_single_channel.start_continuous_mode(sample_rate)
         value_array = self.AI_single_channel.read(number_of_samples, timeout)
-        self.AI_single_channel.stop()
+        self.AI_single_channel.stop_continuous_mode()
+
+        self.checkMultiplePointsReadBackValues(value_array, number_of_samples)
+
+    def test_ContinuousMode_ReadOnePointWithOneSampleRateAndCloseWithoutStop_ReturnExpectedReadBack(self):
+        number_of_samples = limits['numberOfSamples']['min']
+        sample_rate = limits['sampleRate']['min']
+        timeout = -1
+        
+        self.AI_single_channel.start_continuous_mode(sample_rate)
+        value_array = self.AI_single_channel.read(number_of_samples, timeout)
 
         self.checkMultiplePointsReadBackValues(value_array, number_of_samples)
 
@@ -121,9 +131,9 @@ class Test_AnalogInput_ReadSingleChannelFromBankB(unittest.TestCase):
         sample_rate = 1200
         timeout = -1
         
-        self.AI_single_channel.start(sample_rate)
+        self.AI_single_channel.start_continuous_mode(sample_rate)
         value_array = self.AI_single_channel.read(number_of_samples, timeout)
-        self.AI_single_channel.stop()
+        self.AI_single_channel.stop_continuous_mode()
 
         self.checkMultiplePointsReadBackValues(value_array, number_of_samples)
 
@@ -200,9 +210,9 @@ class Test_AnalogInput_ReadTwoChannelsFromBankA(unittest.TestCase):
         sample_rate = 250000
         timeout = -1
         
-        self.AI_multiple_channels.start(sample_rate)
+        self.AI_multiple_channels.start_continuous_mode(sample_rate)
         value_array = self.AI_multiple_channels.read(number_of_samples, sample_rate)
-        self.AI_multiple_channels.stop()
+        self.AI_multiple_channels.stop_continuous_mode()
         
         self.checkMultiplePointsReadBackValues(value_array, number_of_samples)
 
@@ -264,8 +274,8 @@ class Test_AnalogInput_OpenTwoContinuousAtTheSameTime(unittest.TestCase):
                                 {'bank': bankA, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL})
         second_ai = AnalogInput({'bank': bankB, 'channel': AIChannel.AI7, 'range': AIRange.PLUS_OR_MINUS_10V})
         
-        first_ai.start(sample_rate)
-        second_ai.start(sample_rate)
+        first_ai.start_continuous_mode(sample_rate)
+        second_ai.start_continuous_mode(sample_rate)
 
         first_ai_value_array = first_ai.read(number_of_samples, timeout)
         second_ai_value_array = first_ai.read(number_of_samples, timeout)
@@ -274,8 +284,8 @@ class Test_AnalogInput_OpenTwoContinuousAtTheSameTime(unittest.TestCase):
         self.checkReadbankValue(first_ai_value_array[0][1], -1.7, number_of_samples)
         self.checkReadbankValue(second_ai_value_array[0][0], 3.3, number_of_samples)
 
-        first_ai.stop()
-        second_ai.stop()
+        first_ai.stop_continuous_mode()
+        second_ai.stop_continuous_mode()
 
         first_ai.close()
         second_ai.close()
@@ -283,14 +293,14 @@ class Test_AnalogInput_OpenTwoContinuousAtTheSameTime(unittest.TestCase):
         first_ai = AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_10V},
                                     {'bank': bankA, 'channel': AIChannel.AI2, 'mode': AIMode.DIFFERENTIAL})
 
-        first_ai.start(sample_rate)
+        first_ai.start_continuous_mode(sample_rate)
 
         first_ai_value_array = first_ai.read(number_of_samples, timeout)
 
         self.checkReadbankValue(first_ai_value_array[0][0], 3.3, number_of_samples)
         self.checkReadbankValue(first_ai_value_array[0][1], -1.7, number_of_samples)
 
-        first_ai.stop()
+        first_ai.stop_continuous_mode()
 
         first_ai.close()
 
@@ -299,11 +309,11 @@ class Test_AnalogInput_OpenTwoContinuousAtTheSameTime(unittest.TestCase):
         first_ai = AnalogInput({'bank': bankA, 'channel': AIChannel.AI2, 'range': AIRange.PLUS_OR_MINUS_10V})
         second_ai = AnalogInput({'bank': bankA, 'channel': AIChannel.AI7, 'range': AIRange.PLUS_OR_MINUS_10V})
         
-        first_ai.start(sample_rate)
+        first_ai.start_continuous_mode(sample_rate)
         with self.assertRaises(AssertionError):
-            second_ai.start(sample_rate)
+            second_ai.start_continuous_mode(sample_rate)
 
-        first_ai.stop()
+        first_ai.stop_continuous_mode()
         first_ai.close()
         second_ai.close()
 
@@ -397,19 +407,19 @@ class Test_AnalogInput_StartAssertion(unittest.TestCase):
 
     def test_PassSampleRateThatLessThanMinToSingleChannel_ShowAssertion(self):
         with self.assertRaises(AssertionError):
-            self.AI_single_channel.start(limits['sampleRate']['min'] - 1)
+            self.AI_single_channel.start_continuous_mode(limits['sampleRate']['min'] - 1)
 
     def test_PassSampleRateThatGreaterThanMaxToSingleChannel_ShowAssertion(self):
         with self.assertRaises(AssertionError):
-            self.AI_single_channel.start(limits['sampleRate']['max'] + 1)
+            self.AI_single_channel.start_continuous_mode(limits['sampleRate']['max'] + 1)
 
     def test_PassSampleRateThatLessThanMinToTwoChannels_ShowAssertion(self):
         with self.assertRaises(AssertionError):
-            self.AI_multiple_channels.start(self.sample_rate_limits_for_multiple_channels['min'] - 1)
+            self.AI_multiple_channels.start_continuous_mode(self.sample_rate_limits_for_multiple_channels['min'] - 1)
 
     def test_PassSampleRateThatGreaterThanMaxToTwoChannels_ShowAssertion(self):
         with self.assertRaises(AssertionError):
-            self.AI_multiple_channels.start(self.sample_rate_limits_for_multiple_channels['max'] + 1)
+            self.AI_multiple_channels.start_continuous_mode(self.sample_rate_limits_for_multiple_channels['max'] + 1)
 
 class Test_AnalogInput_CalculateSampleRateToTicks(unittest.TestCase):
     @classmethod
