@@ -121,7 +121,7 @@ with AnalogInput({'bank': ai_bankA,           # define the first channel: AI0
 
 ##############################################################################
 # Section 3: Multiple Points (continuous)
-# Use the start, read, and stop functions to read multiple points of data from
+# Use the start_continuous_mode, read, and stop_continuous_mode functions to read multiple points of data from
 # the channel. The hardware continuously acquires a finite number of samples
 # for a channel until the acquisition is stopped.
 ##############################################################################
