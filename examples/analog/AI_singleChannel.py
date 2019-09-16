@@ -130,8 +130,5 @@ with AnalogInput({'bank': ai_bank,
         for value in value_array[0]:
             print(value)
 
-        # add a short delay before acquiring the next data point
-        time.sleep(0.001)
-
     # stop signal acquisition
     AI_single_channel.stop_continuous_mode()

@@ -154,8 +154,5 @@ with AnalogInput({'bank': ai_bankA,           # define the first channel: AI0
         for value in value_array:
             print(value)
 
-        # add a short delay before acquiring the next data point
-        time.sleep(0.001)
-
     # stop signal acquisition
     AI_multiple_channels.stop_continuous_mode()
