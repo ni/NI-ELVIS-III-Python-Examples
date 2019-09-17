@@ -278,7 +278,7 @@ class AnalogInput(Analog):
             for bank in Bank:
                 bank = bank.value
                 if configuration[bank]['numberOfChannels'] > 0:
-                    assert not AnalogInput.is_continuous_started[bank], 'Cannot open the reference to channels on one bank using more than one Open function at the same time to perform continuous mode signal acquisition.'
+                    assert not AnalogInput.is_continuous_started[bank], 'Cannot open the reference to channels on one bank using more than one open function at the same time to perform continuous signal acquisition.'
                     self.__register_and_configure_dma(bank)
                     self.__stop_continuous(bank)
                     self.is_continuous[bank] = True
