@@ -227,7 +227,7 @@ class AnalogInput(Analog):
                     signal.
             If you want to read multiple points (continuous) of data at one time, arguments
             should contain:
-                    number_of_samples (number): 
+                number_of_samples (number): 
                     Specifies the number of samples to read. Valid values must be
                     greater than 0. 
                 timeout (number):
@@ -257,8 +257,7 @@ class AnalogInput(Analog):
         Configure the sample rate and start the acquisition. 
 
         Args:
-            sample_rate:
-                sample_rate (number):
+            sample_rate (number):
                 Specifies the sampling frequency, in hertz, of the input
                 signal. 
                 If you select only one channel, the valid range for sample
