@@ -263,14 +263,14 @@ class AnalogInput(Analog):
                 If you select only one channel, the valid range for sample
                 rate is between 1 Hz and 1 MHz. 
                 If you select multiple channels, the valid range for sample
-                rate is between 1 Hz and 250 KHz. 
+                rate is between 1 Hz and 250 kHz. 
         """
         number_of_channels = len(self.channel_list)
 
         if number_of_channels == 1:
-            assert 1 <= sample_rate <= 1000000, 'If you select only 1 channel, then the valid range for sample rate is between 1 Hz and 1 MHz.'
+            assert 1 <= sample_rate <= 1000000, 'If you select only 1 channel, the valid range for sample rate is between 1 Hz and 1 MHz.'
         else:
-            assert 1 <= sample_rate <= 250000, 'If you select multiple channels, then tthe valid range for sample rate is between 1 Hz and 250 KHz.'
+            assert 1 <= sample_rate <= 250000, 'If you select multiple channels, then the valid range for sample rate is between 1 Hz and 250 kHz.'
 
         self.__sample_rate = sample_rate
 
@@ -278,7 +278,7 @@ class AnalogInput(Analog):
             for bank in Bank:
                 bank = bank.value
                 if configuration[bank]['numberOfChannels'] > 0:
-                    assert not AnalogInput.is_continuous_started[bank], 'Cannot open the reference to channels on one bank using more than one Open function at the same time to perform continuous mode signal acquisition.'
+                    assert not AnalogInput.is_continuous_started[bank], 'Cannot open the reference to channels on one bank using more than one open function at the same time to perform continuous signal acquisition.'
                     self.__register_and_configure_dma(bank)
                     self.__stop_continuous(bank)
                     self.is_continuous[bank] = True
@@ -473,7 +473,7 @@ class AnalogInput(Analog):
         if number_of_channels == 1:
             assert 1 <= sample_rate <= 1000000, 'If you select only 1 channel, then the valid range for sample rate is between 1 Hz and 1 MHz.'
         else:
-            assert 1 <= sample_rate <= 500000, 'If you select multiple channels, then the valid range for sample rate is between 1 Hz and 500 KHz.'
+            assert 1 <= sample_rate <= 500000, 'If you select multiple channels, then the valid range for sample rate is between 1 Hz and 500 kHz.'
         assert 0 <= number_of_samples <= self.__max_samples
 
         configuration = self.__calculate_multiple_points_cnfg_and_number_of_enabled_channels()
@@ -584,7 +584,7 @@ class AnalogInput(Analog):
 
         def __read_from_specific_bank(bank, number_of_channels):
             assert self.cnt[bank].read() == number_of_channels, 'The continuous acquisition has not started. You must call the start_continuous_mode() function before calling the read() function.'
-            assert not self.dma_full[bank].read(), 'The read buffer has overflowed. This error occurs when you does not call the read() function after the acquisition starts for a while. You must call the read() function before the buffer overflows. This error may also occur when you set a high sample rate, for example, 1 MHz. In this case, you can modify the number of samples to a value between 3,000 and 50,000 to fit the buffer size.'
+            assert not self.dma_full[bank].read(), 'The read buffer has overflowed. This error occurs when you do not call the read() function after the acquisition starts for a while. You must call the read() function before the buffer overflows. This error may also occur when you set a high sample rate, for example, 1 MHz. In this case, you can modify the number of samples to a value between 3,000 and 50,000 to fit the buffer size.'
 
             read_timeout = timeout
             max_readback_samples = self.__max_samples
