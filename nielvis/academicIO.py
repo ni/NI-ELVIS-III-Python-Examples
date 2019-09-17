@@ -263,7 +263,7 @@ class AnalogInput(Analog):
                 If you select only one channel, the valid range for sample
                 rate is between 1 Hz and 1 MHz. 
                 If you select multiple channels, the valid range for sample
-                rate is between 1 Hz and 250 KHz. 
+                rate is between 1 Hz and 250 kHz. 
         """
         number_of_channels = len(self.channel_list)
 
