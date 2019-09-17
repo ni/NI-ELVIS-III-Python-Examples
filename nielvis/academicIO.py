@@ -270,7 +270,7 @@ class AnalogInput(Analog):
         if number_of_channels == 1:
             assert 1 <= sample_rate <= 1000000, 'If you select only 1 channel, the valid range for sample rate is between 1 Hz and 1 MHz.'
         else:
-            assert 1 <= sample_rate <= 250000, 'If you select multiple channels, then tthe valid range for sample rate is between 1 Hz and 250 KHz.'
+            assert 1 <= sample_rate <= 250000, 'If you select multiple channels, then the valid range for sample rate is between 1 Hz and 250 kHz.'
 
         self.__sample_rate = sample_rate
 
