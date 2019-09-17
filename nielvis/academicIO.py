@@ -268,9 +268,9 @@ class AnalogInput(Analog):
         number_of_channels = len(self.channel_list)
 
         if number_of_channels == 1:
-            assert 1 <= sample_rate <= 1000000, 'If you select only 1 channel, then the min sample rate is 1 and the max sample rate can be 1MHz.'
+            assert 1 <= sample_rate <= 1000000, 'If you select only 1 channel, then the valid range for sample rate is between 1 Hz and 1 MHz.'
         else:
-            assert 1 <= sample_rate <= 250000, 'If you select multiple channels, then the min sample rate is 1 and the shared max sample rate is 250KHz.'
+            assert 1 <= sample_rate <= 250000, 'If you select multiple channels, then tthe valid range for sample rate is between 1 Hz and 250 KHz.'
 
         self.__sample_rate = sample_rate
 
