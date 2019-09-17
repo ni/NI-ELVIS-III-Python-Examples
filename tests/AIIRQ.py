@@ -1,4 +1,7 @@
 """
+Hardware setup:
+    1. Connect AO0 and AI0 on connector A.
+
 Output:
     The interrupt event occurs when a analog signal is inputed.
     The irq_handler funciton is called when the interrupt occured.
