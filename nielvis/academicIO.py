@@ -583,7 +583,7 @@ class AnalogInput(Analog):
             assert timeout >= (number_of_samples / self.__sample_rate)
 
         def __read_from_specific_bank(bank, number_of_channels):
-            assert self.cnt[bank].read() == number_of_channels, 'The continuous acquisition has not started. You must call the start() function before calling the read() function.'
+            assert self.cnt[bank].read() == number_of_channels, 'The continuous acquisition has not started. You must call the start_continuous_mode() function before calling the read() function.'
             assert not self.dma_full[bank].read(), 'The read buffer has overflowed. This error occurs when you does not call the read() function after the acquisition starts for a while. You must call the read() function before the buffer overflows. This error may also occur when you set a high sample rate, for example, 1 MHz. In this case, you can modify the number of samples to a value between 3,000 and 50,000 to fit the buffer size.'
 
             read_timeout = timeout
