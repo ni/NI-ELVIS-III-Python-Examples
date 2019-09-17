@@ -19,10 +19,10 @@ references the selected channel to another channel as indicated in this table:
    AI2: AI2 to AI6
    AI3: AI3 to AI7
 
-You can use the Python ELVIS III Analog Input APIs to perform
-signal acquisition in three I/O modes: 1 sample, n samples, and continuous
-. Refer to the following link to understand the differences among 1
-sample, n samples, and continuous modes.
+You can use the Python ELVIS III Analog Input APIs to perform signal
+acquisition in three I/O modes: 1 sample, n samples, and continuous. Refer to
+the following link to understand the differences among 1 sample, n samples,
+and continuous modes.
 https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/1_Sample_N_Samples_and_Continuous_Modes.md
 
 This example uses:
@@ -71,8 +71,9 @@ with AnalogInput({'bank': ai_bank,
 # hardware acquires a finite number of samples for a channel.
 #
 # A time gap exists between the end of one signal acquisition and the start of
-# the next signal acquisition when you specify n samples mode (reading multiple points) for Analog Input
-# API. Refer to the following link for more information about the time gap.
+# the next signal acquisition when you specify n samples mode (reading
+# multiple points) for Analog Input API. Refer to the following link for more
+# information about the time gap.
 # https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/NI_ELVIS_III_Understanding_Gaps.md
 #
 ##############################################################################
@@ -100,9 +101,9 @@ with AnalogInput({'bank': ai_bank,
 
 ##############################################################################
 # Section 3: Multiple Points (continuous)
-# Use the start_continuous_mode, read, and stop_continuous_mode functions to read multiple points of data from
-# the channel. The hardware continuously acquires samples
-# for a channel until the acquisition is stopped.
+# Use the start_continuous_mode, read, and stop_continuous_mode functions to
+# read multiple points of data from the channel. The hardware continuously
+# acquires samples for a channel until the acquisition is stopped.
 ##############################################################################
 print('Multiple Points, Single Channel (continuous)')
 # configure the AI channel

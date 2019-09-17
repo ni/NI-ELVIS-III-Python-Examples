@@ -217,24 +217,24 @@ class AnalogInput(Analog):
         Args:
             If you want to read a single point of data at one time, do not
             pass any arguments.
-            If you want to read multiple points (n samples) of data at one time, arguments
-            should contain:
+            If you want to read multiple points (n samples) of data at one
+            time, arguments should contain:
                 number_of_samples (number): 
                     Specifies the number of samples to read. Valid values are
                     between 0 and 10,000. 
                 sample_rate (number):
                     Specifies the sampling frequency, in hertz, of the input
                     signal.
-            If you want to read multiple points (continuous) of data at one time, arguments
-            should contain:
+            If you want to read multiple points (continuous) of data at one
+            time, arguments should contain:
                 number_of_samples (number): 
-                    Specifies the number of samples to read. Valid values must be
-                    greater than 0. 
+                    Specifies the number of samples to read. Valid values must
+                    be greater than 0. 
                 timeout (number):
-                    Specifies the period of time, in milliseconds, to wait for the
-                    acquisition to complete. If you set Timeout to -1, this
-                    function waits indefinitely. An error occurs if acquisition
-                    time is longer than timeout. 
+                    Specifies the period of time, in milliseconds, to wait for
+                    the acquisition to complete. If you set Timeout to -1,
+                    this function waits indefinitely. An error occurs if
+                    acquisition time is longer than timeout. 
 
         Returns:
             return_value (array):
@@ -405,7 +405,8 @@ class AnalogInput(Analog):
             while not(cnfg == self.cnfg[bank].read() and self.ready[bank].read()):
                 pass
 
-            # after the configuration is modified, wait 500 us before applying the AI registers. 12*1000/40 M = 300 us < 500 us
+            # after the configuration is modified, wait 500 us before applying
+            # the AI registers. 12*1000/40 M = 300 us < 500 us
             time.sleep(0.5)
 
         for bank in Bank:
