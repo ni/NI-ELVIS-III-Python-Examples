@@ -4,7 +4,6 @@ import logging
 import time
 import pyvisa
 import threading
-import warnings
 from nifpga import Session
 from .enums import *
 
@@ -1363,7 +1362,6 @@ class SPI(SysSelect):
 class IRQ(ELVISIII):
     def __init__(self):
         super(IRQ, self).__init__()
-        warnings.simplefilter("ignore")
 
     def irq_wait(self, timeout, irq_number=0):
         """
