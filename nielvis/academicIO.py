@@ -1825,14 +1825,19 @@ class AIIRQ(IRQ):
         assert type(hysteresis) == float or type(threshold) == int
         assert 0 <= hysteresis <= 1
         assert irq_type == AIIRQType.RISING or irq_type == AIIRQType.FALLING
+
         self.ai = AnalogInput({'bank': Bank.A, 'channel': channel})
+        self.ai.read()
+
         channel = channel.value
         irq_num = self.session.registers['IRQ.AI_A_' + str(channel) + '.NO']
         irq_hysteresis = self.session.registers['IRQ.AI_A_' + str(channel) + '.HYSTERESIS']
         irq_threshold = self.session.registers['IRQ.AI_A_' + str(channel) + '.THRESHOLD']
         cnfg = self.session.registers['IRQ.AI_A.CNFG']
+        
         irq_number = irq_number.value
         irq_type = irq_type.value
+
         irq_num.write(irq_number)
         irq_threshold.write(threshold)
         irq_hysteresis.write(hysteresis)
