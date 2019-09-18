@@ -10,4 +10,5 @@
 </table>
 
 #### What's new:
- - Update bitfile to NI ELVIS III 2.1
+ - Support Analog Input Continuous Samples
+ - Fix the Analog Input IRQ trigger issue
