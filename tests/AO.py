@@ -501,9 +501,12 @@ class Test_AnalogInput_StartAssertion(unittest.TestCase):
 
     def setUp(self):
         self.AO_single_channel = AnalogOutput({'bank': bank, 'channel': AOChannel.AO0})
+        self.AO_multiple_channels = AnalogOutput({'bank': bank, 'channel': AOChannel.AO0}, 
+                                                 {'bank': bank, 'channel': AOChannel.AO1})
 
     def tearDown(self):
         self.AO_single_channel.close()
+        self.AO_multiple_channels.close()
 
     def test_PassInvalidInputValues_ShowAssertion(self):
         wrong_values = [0, [], [[]]]
@@ -511,6 +514,13 @@ class Test_AnalogInput_StartAssertion(unittest.TestCase):
         for wrong_value in wrong_values:
             with self.assertRaises(AssertionError):
                 self.AO_single_channel.start_continuous_mode(wrong_value, self.expectedSampleRate, self.expectedTimeout)
+            
+    def test_PassInvalidNumberOfInputValues_ShowAssertion(self):
+        wrong_values = [[1], [[1]], [[1], ['a']]]
+
+        for wrong_value in wrong_values:
+            with self.assertRaises(AssertionError):
+                self.AO_multiple_channels.start_continuous_mode(wrong_value, self.expectedSampleRate, self.expectedTimeout)
                 
     def test_PassInvalidSampleRateToSingleChannel_ShowAssertion(self):
         limits = {'SampleRate': {'min': 1000, 'max': 1600000}}

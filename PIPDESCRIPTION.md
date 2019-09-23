@@ -10,5 +10,4 @@
 </table>
 
 #### What's new:
- - Support Analog Input Continuous Samples
- - Fix the Analog Input IRQ trigger issue
+ - Support Analog Output Continuous Samples

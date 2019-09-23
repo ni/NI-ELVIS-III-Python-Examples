@@ -888,6 +888,10 @@ class AnalogOutput(Analog):
             Specifies the name of the bank to reset.
         """
         self.dma_ena[bank].write(0)
+
+        if not AnalogOutput.dma[bank]:
+            return
+
         AnalogOutput.dma[bank].start()
         AnalogOutput.dma[bank].stop()
         
