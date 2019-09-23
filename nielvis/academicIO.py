@@ -344,7 +344,7 @@ class AnalogInput(Analog):
         Reset the FPGA target.
 
         bank (Bank):
-            Specifies the name of the bank to open a session.
+            Specifies the name of the bank to reset.
         """
         self.cnt[bank].write(0)
         self.dma_enabled[bank].write(False)
@@ -708,11 +708,8 @@ class AnalogOutput(Analog):
 
     def write(self, *args):
         """
-        Writes values to one or more analog output channels. Use the
-        write(value) function to write a single point of data to the channel. Use
-        the write(values, sample_rate) to write multiple points of data to the
-        channel. The function hangs until the write to physical I/O
-        operation completes.
+        Writes values to one or more analog output channels. The function
+        hangs until the write to physical I/O operation completes.
 
         Args:
             If you want to write a single point of data at one time, argument
@@ -723,8 +720,8 @@ class AnalogOutput(Analog):
                     specify a value that is invalid, this function coerces the
                     specified value to the nearest valid value when you execute
                     the program.
-            If you want to write multiple points of data at one time, arguments
-            should contain:
+            If you want to write multiple points (n samples) of data at one
+            time, arguments should contain:
                 values (list):
                     Specifies the values, in volts, to write to the analog output
                     channels. Values is a 2D array. The number of elements in each
@@ -733,6 +730,22 @@ class AnalogOutput(Analog):
                     than or equal to 10,000.
                 sample_rate (number):
                     Specifies the sampling frequency, in hertz, of the output signal.
+            If you want to write multiple points (continuous) of data at one
+            time, arguments should contain:
+                values (list):
+                    Specifies the values, in volts, to write to the analog output
+                    channels. The number of elements in each row represents the
+                    number of samples to write to each analog output channel. The
+                    order of the values corresponds to the order in which the
+                    function opens the analog output channels. You must assign a
+                    value for each channel that you specify in AO (continuous) open. 
+                timeout (number):
+                    Specifies the period of time, in milliseconds, to wait for
+                    pushing the remaining data to the buffer when the size of the
+                    remaining data is larger than the remaining buffer. If you set
+                    Timeout to -1, this function  waits indefinitely. An error
+                    occurs if the time to push the remaining data to the buffer
+                    is longer than timeout. 
         """
         args_len = len(args)
         if args_len == 1:
@@ -772,6 +785,30 @@ class AnalogOutput(Analog):
                 pass
     
     def start_continuous_mode(self, values, sample_rate, timeout):
+        """
+        Configure the sample rate and timeout, then start the signal generation.
+
+        Args:
+            values (list):
+                Specifies the values, in volts, to write to the analog output
+                channels. The number of elements in each row represents the
+                number of samples to write to each analog output channel. The
+                order of the values corresponds to the order in which the
+                function opens the analog output channels. You must assign a
+                value for each channel that you specify in AO (continuous) open. 
+            sample_rate (number):
+                Specifies the sampling frequency, in hertz, of the output
+                signal. The maximum aggregate sample rate is 1.6 MHz. For
+                example, when you open four channels, the valid sample rate for
+                each channel is between 1 kHz to 400 kHz.
+            timeout (number):
+                Specifies the period of time, in milliseconds, to wait for
+                pushing the remaining data to the buffer when the size of the
+                remaining data is larger than the remaining buffer. If you set
+                Timeout to -1, this function  waits indefinitely. An error
+                occurs if the time to push the remaining data to the buffer
+                is longer than timeout. 
+        """
         max_sample_rate = 1600000
         assert 1000 <= sample_rate <= (max_sample_rate/len(self.channel_list))
 
@@ -832,6 +869,9 @@ class AnalogOutput(Analog):
         __start_continuous_mode()
 
     def stop_continuous_mode(self):
+        """
+        Stops signal generation on the FPGA target.
+        """
         for bank in Bank:
             bank = bank.value
 
@@ -841,6 +881,12 @@ class AnalogOutput(Analog):
             self.__stop_continuous(bank)
 
     def __stop_continuous(self, bank):
+        """
+        Reset the FPGA target.
+
+        bank (Bank):
+            Specifies the name of the bank to reset.
+        """
         self.dma_ena[bank].write(0)
         AnalogOutput.dma[bank].start()
         AnalogOutput.dma[bank].stop()
@@ -971,6 +1017,25 @@ class AnalogOutput(Analog):
         irq_thread.join()
 
     def __write_multiple_points_continuous(self, values, timeout):
+        """
+        Writes output values to the specified AO channel on the FPGA.
+
+        Args:
+            values (list):
+                Specifies the values, in volts, to write to the analog output
+                channels. The number of elements in each row represents the
+                number of samples to write to each analog output channel. The
+                order of the values corresponds to the order in which the
+                function opens the analog output channels. You must assign a
+                value for each channel that you specify in AO (continuous) open. 
+            timeout (number):
+                Specifies the period of time, in milliseconds, to wait for
+                pushing the remaining data to the buffer when the size of the
+                remaining data is larger than the remaining buffer. If you set
+                Timeout to -1, this function  waits indefinitely. An error
+                occurs if the time to push the remaining data to the buffer
+                is longer than timeout. 
+        """
         assert type(values) == list
         assert len(values) == len(self.channel_list), 'The number of lists to write must match the number of channels that you specify for the write operation.'
         for value_per_list in values:
