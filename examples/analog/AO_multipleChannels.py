@@ -98,7 +98,7 @@ with AnalogOutput({'bank': bank,     # define first channel: AO0
     # define a list of floating-point numbers, the input value should be
     # defined in the format: [[values_for_first_channel],
     # [values_for_second_channel], ...]
-    input_value = [[1.0, 2.0, 3.0, 4.0, 5.0], [5.0, 4.0, 3.0, 2.0, 1.0]]
+    input_values = [[1.0, 2.0, 3.0, 4.0, 5.0], [5.0, 4.0, 3.0, 2.0, 1.0]]
     # specify the sampling frequency, in hertz, of the output signal
     sample_rate = 1000
     # specify the period of time, in milliseconds, to wait for pushing the
@@ -107,13 +107,13 @@ with AnalogOutput({'bank': bank,     # define first channel: AO0
     timeout = -1
 
     # configure the sample rate and timeout, then starts the signal generation
-    AO_multiple_channels.start_continuous_mode(input_value, sample_rate, timeout)
+    AO_multiple_channels.start_continuous_mode(input_values, sample_rate, timeout)
 
     # write to the AO channels 20 times
     for i in range(0, 20):
         # write [1.0, 2.0, 3.0, 4.0, 5.0] to AO0 on bank A
         # write [5.0, 4.0, 3.0, 2.0, 1.0] to AO1 on bank A
-        AO_multiple_channels.write(input_value, sample_rate)
+        AO_multiple_channels.write(input_values, sample_rate)
     
     # stop signal generation
     AO_multiple_channels.stop_continuous_mode()

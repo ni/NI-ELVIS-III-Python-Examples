@@ -809,8 +809,9 @@ class AnalogOutput(Analog):
                 occurs if the time to push the remaining data to the buffer
                 is longer than timeout. 
         """
-        max_sample_rate = 1600000
-        assert 1000 <= sample_rate <= (max_sample_rate/len(self.channel_list))
+        minimum_sample_rate = 1000
+        maximum_sample_rate = 1600000
+        assert 1000 <= sample_rate <= (maximum_sample_rate/len(self.channel_list))
 
         def __open_continuous_mode():
             for channel in self.channel_list:
@@ -826,8 +827,6 @@ class AnalogOutput(Analog):
             while not(self.dma_sys_ready.read() == True):
                 pass
 
-            minimum_sample_rate = 1000
-            maximum_sample_rate = 1600000
             count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate, minimum_sample_rate, maximum_sample_rate)
 
             bitmask = self.__calculate_bitmask()
@@ -949,7 +948,7 @@ class AnalogOutput(Analog):
 
         count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate, minimum_sample_rate, maximum_sample_rate)
         
-        data = self.__convert_write_values_from_float_to_int(values)
+        data = self.__convert_write_values_from_float_to_fixed_point(values)
 
         while not(self.dma_sys_ready.read() == True):
             pass
@@ -1069,7 +1068,7 @@ class AnalogOutput(Analog):
                 bank = self.channel_list[index]['bank']
             else:
                 bank = 'A' if self.is_continuous_opened[Bank.A.value] else 'B'
-            data[bank].append(self.__convert_write_values_from_float_to_int(values_per_channel))
+            data[bank].append(self.__convert_write_values_from_float_to_fixed_point(values_per_channel))
 
         def __format_written_data(bank):
             """
@@ -1094,7 +1093,10 @@ class AnalogOutput(Analog):
                     assert self.ele_num[bank].read() != 0, ' The sample rate is higher than the rate of filling data to the buffer. Increase the number of data or decrease the sample rate. For example, when the sample rate is 1.6 MHz, you can modify the number of samples to a value between 3,000 and 50,000.'               
                 AnalogOutput.dma[bank].write(data[bank], timeout_ms=timeout)
 
-    def __convert_write_values_from_float_to_int(self, values):
+    def __convert_write_values_from_float_to_fixed_point(self, values):
+        """
+        Convert float to fixed point.
+        """
         return [ int(value * int('1000000000000000000000000000', 2)) for value in values ]
 
     def close(self):
