@@ -11,7 +11,7 @@ The AO configuration consists of two parameters: bank and channel. There are
 two identical banks of AO channels (A and B). Each bank contains two analog
 output channels (0 and 1).
 
-You can use the Python ELVIS III Analog Input APIs to perform signal
+You can use the Python ELVIS III Analog Output APIs to perform signal
 generation in three I/O modes: 1 sample, n samples, and continuous. Refer to
 the following link to understand the differences among 1 sample, n samples,
 and continuous modes.
