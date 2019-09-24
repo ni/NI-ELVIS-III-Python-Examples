@@ -19,7 +19,7 @@ class ELVISIII(object):
         return self
 
     def close(self):
-        self.session.close()
+        self.session.close(True)
 
     def __exit__(self, exception_type, exception_val, trace):
         self.close()
@@ -771,6 +771,10 @@ class AnalogOutput(Analog):
                 the program.
         """
         assert type(value) == int or type(value) == float
+
+        while not(self.dma_sys_ready):
+            pass
+
         for channel in self.channel_list:
             bank = channel['bank']
             self.dma_ena[bank].write(0)
@@ -829,6 +833,9 @@ class AnalogOutput(Analog):
 
             count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate, minimum_sample_rate, maximum_sample_rate)
 
+            while not(self.dma_sys_ready):
+                pass
+
             bitmask = self.__calculate_bitmask()
 
             if self.is_continuous_opened[Bank.A.value] and self.is_continuous_opened[Bank.B.value]:
@@ -873,11 +880,10 @@ class AnalogOutput(Analog):
         """
         for bank in Bank:
             bank = bank.value
-
-            if not self.is_continuous_opened[bank]:
-                return
-
-            self.__stop_continuous(bank)
+            if self.is_continuous_opened[bank]:
+                self.__stop_continuous(bank)
+                self.is_continuous_opened[bank] = False
+                AnalogOutput.dma[bank] = None
 
     def __stop_continuous(self, bank):
         """
@@ -937,6 +943,9 @@ class AnalogOutput(Analog):
         assert type(sample_rate) == int or type(sample_rate) == float
         assert minimum_sample_rate <= sample_rate <= maximum_sample_rate
 
+        while not(self.dma_sys_ready):
+            pass
+
         for channel in self.channel_list:
             bank = channel['bank']
             if not self.is_nsample_opened[bank]:
@@ -974,7 +983,6 @@ class AnalogOutput(Analog):
                 Specifies the channel. AO0 is 2 and AO1 is 1 for n samples.
         """
         def __write(bank, count, data, channel_bitmask):
-
             def __write_and_return_remaining_data(data_to_write, max_write_samples):
                 AnalogOutput.dma[bank].write(data_to_write[:max_write_samples], timeout_ms=0)
                 return data_to_write[max_write_samples:]
@@ -1105,8 +1113,9 @@ class AnalogOutput(Analog):
                 AnalogOutput.number_of_n_sample[bank] -= 1
 
         def __clear_dma_reference(bank):
-            if AnalogOutput.number_of_n_sample[bank] == 0:
+            if self.is_nsample_opened[bank] and AnalogOutput.number_of_n_sample[bank] == 0:
                 AnalogOutput.dma[bank] = None
+                self.is_nsample_opened[bank] = False
 
         self.stop_continuous_mode()
 
