@@ -59,7 +59,7 @@ with AnalogOutput({'bank': bank,
 
 # A time gap exists between the end of one signal generation and the start of
 # the next signal generation when you specify n samples mode (reading
-# multiple points) for Analog Input API. Refer to the following link for more
+# multiple points) for Analog Output API. Refer to the following link for more
 # information about the time gap.
 # https://github.com/ni/NI-ELVIS-III-Python-Examples/blob/master/docs/NI_ELVIS_III_Understanding_Gaps.md
 
