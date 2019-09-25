@@ -2,7 +2,7 @@
 
 The Python ELVIS III API provides functions for you to perform three I/O modes of signal acquisition and generation: 1 sample, n samples, and continuous. Use the following table to learn about these modes.
 
-Note: N samples is available only for analog signals. Continuous mode is not available yet.
+Note: N samples and continuous modes are available only for analog signals.
 
 <table>
     <thead>

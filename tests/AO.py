@@ -2,6 +2,8 @@
 Hardware setup:
     1. Connect AI0 and AO0 on connector A.
     2. Connect AI3 and AO1 on connector A.
+    3. Connect AI0 and AO0 on connector B.
+    3. Connect AI3 and AO1 on connector B.
 """
 import unittest
 import time
@@ -22,88 +24,7 @@ class Test_AnalogOutput_WriteSingleChannel(unittest.TestCase):
         self.AO_single_channel.close()
         self.AI_single_channel.close()
 
-    def __start_thread(self, irq_thread):
-        irq_thread.start()
-        self.run = True
-        
-    def __close_thread(self, irq_thread):
-        self.run = False
-        irq_thread.join()
-
-    def __reading_thread(self, read_object, number_of_samples, sample_rate, expected_value):
-        value_array = None
-        while self.run:
-            value_array = read_object.read(number_of_samples, sample_rate)[0][0]
-
-        values = [ round(value) for value in value_array ]
-        print('%s should almost equal to %s' % (values, expected_value))
-
-    def test_WriteSinglePoint_ReturnExpectedReadBack(self):
-        input_value = 2.0       
-        self.AO_single_channel.write(input_value)
-        value_array = self.AI_single_channel.read()
-        for value in value_array:
-            self.assertEqual(value, pytest.approx(input_value, 0.1))
-
-    def test_WriteSinglePoint_ReturnDifferentValueFromEachChannel(self):
-        AO_multiple_channels = AnalogOutput({'bank': bank, 'channel': AOChannel.AO0}, 
-                                            {'bank': bank, 'channel': AOChannel.AO1})
-        AI_multiple_channels = AnalogInput({'bank': bank, 'channel': AIChannel.AI0},
-                                           {'bank': bank, 'channel': AIChannel.AI3})
-        input_value_for_single_channels = 2.5
-        input_value_for_multiple_channels = 3.3
-        AO_multiple_channels.write(input_value_for_multiple_channels)
-        self.AO_single_channel.write(input_value_for_single_channels)
-        value_array = AI_multiple_channels.read()
-        for index, value in enumerate(value_array):
-            if index == 0:
-                self.assertEqual(value, pytest.approx(input_value_for_single_channels, 0.1))
-            else:
-                self.assertEqual(value, pytest.approx(input_value_for_multiple_channels, 0.1))
-
-        AO_multiple_channels.close()
-        AI_multiple_channels.close()
-
-    def test_WriteTensPointWithOneThousandSampleRate_ReturnExpectedReadBack(self):
-        sample_rate = 1000
-        input_value = [1,1,2,2,3,3,4,4,5,5]
-        expected_value = '1,1,2,2,3,3,4,4,5,5'
-        irq_thread = threading.Thread(target=self.__reading_thread, args=(self.AI_single_channel, len(input_value), sample_rate, expected_value))
-        self.__start_thread(irq_thread)
-        
-        self.AO_single_channel.write(input_value, sample_rate)
-        
-        self.__close_thread(irq_thread)
-
-    def test_WriteTenPointsThenWriteSinglePointInBankB_ReturnExpectedReadBack(self):
-        AO0 = AnalogOutput({'bank': Bank.B, 'channel': AOChannel.AO0})
-        AI0 = AnalogInput({'bank': Bank.B, 'channel': AIChannel.AI0})
-
-        def __multipleWriteAndRead():
-            sample_rate = 1000
-            input_value = [7,7,7,7,7,7,7,5,5,10]
-            expected_value = '7,7,7,7,7,7,7,5,5,10'
-            irq_thread = threading.Thread(target=self.__reading_thread, args=(AI0, len(input_value), sample_rate, expected_value))
-            self.__start_thread(irq_thread)
-            
-            AO0.write(input_value, sample_rate)
-            
-            self.__close_thread(irq_thread)
-
-        def __singleWriteAndRead():
-            input_value = 3.2
-            AO0.write(input_value)
-            value = AI0.read()[0]
-
-            self.assertEqual(value, pytest.approx(input_value, 0.1))
-        
-        __multipleWriteAndRead()
-        __singleWriteAndRead()
-
-        AO0.close()
-        AI0.close()
-
-    def test_OpenReadMultiplePointsCloseRepeatedly_DoesnotShowAnyError(self):
+    def test_OpeWriteMultiplePointsCloseRepeatedly_DoesnotShowAnyError(self):
         sample_rate = 1000
         input_value = [1.1, 2.2]
         AO0_in_bank_A = AnalogOutput({'bank': Bank.A, 'channel': AOChannel.AO0})
@@ -122,57 +43,7 @@ class Test_AnalogOutput_WriteSingleChannel(unittest.TestCase):
         input_value = [3.3 for i in range(55555)]
         
         self.AO_single_channel.write(input_value, sample_rate)
-        
 
-class Test_AnalogOutput_WriteTwoChannels(unittest.TestCase):
-    def setUp(self):
-        self.AO_multiple_channels = AnalogOutput({'bank': bank, 'channel': AOChannel.AO0}, 
-                                                 {'bank': bank, 'channel': AOChannel.AO1})
-        self.AI_multiple_channels = AnalogInput({'bank': bank, 'channel': AIChannel.AI0},
-                                                {'bank': bank, 'channel': AIChannel.AI3})
-    
-    def tearDown(self):
-        self.AO_multiple_channels.close()
-        self.AI_multiple_channels.close()
-
-    def __start_thread(self, irq_thread):
-        irq_thread.start()
-        self.run = True
-
-    def __close_thread(self, irq_thread):
-        self.run = False
-        irq_thread.join()
-
-    def __reading_thread(self, number_of_samples, sample_rate, expected_value):
-        value_array = None
-        while self.run:
-            value_array = self.AI_multiple_channels.read(number_of_samples, sample_rate)
-
-        value_array_in_bank_A = value_array[0]
-        AI1_array = value_array_in_bank_A[0]
-        AI3_array = value_array_in_bank_A[1]
-        AI1_values = [ round(value) for value in AI1_array ]
-        AI3_values = [ round(value) for value in AI3_array ]
-        print('AO0 %s should almost equal to %s' % (AI1_values, expected_value))
-        print('AO3 %s should almost equal to %s' % (AI3_values, expected_value))
-
-    def test_WriteSinglePoint_ReturnExpectedReadBack(self):
-        input_value = 3.5
-        self.AO_multiple_channels.write(input_value)
-        value_array = self.AI_multiple_channels.read()
-        for value in value_array:
-            self.assertEqual(value, pytest.approx(input_value, 0.1))
-
-    def test_WriteSixteenPointsWithOneThousandSampleRate_ReturnExpectedReadBack(self):
-        sample_rate = 1000
-        input_value = [9,9,9,9,9,9,9,9,9,9,5,5,5,2,2,2]
-        expected_value = '9,9,9,9,9,9,9,9,9,9,5,5,5,2,2,2'
-        irq_thread = threading.Thread(target=self.__reading_thread, args=(len(input_value), sample_rate, expected_value))
-        self.__start_thread(irq_thread)
-        
-        self.AO_multiple_channels.write(input_value, sample_rate)
-        
-        self.__close_thread(irq_thread)
 
 class Test_AnalogOutput_OpenAssertion(unittest.TestCase):
     def test_OpenWithInvalidBank_ShowAssertion(self):
@@ -254,3 +125,42 @@ class Test_AnalogOutput_WriteAssertion(unittest.TestCase):
 
         with self.assertRaises(AssertionError):
             self.AO.write(values, limits['sampleRate']['min'] - 1)
+
+
+class Test_AnalogInput_StartAssertion(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.expectedInput = [[0,1]]
+        self.expectedSampleRate = 1000
+        self.expectedTimeout = -1
+
+    def setUp(self):
+        self.AO_single_channel = AnalogOutput({'bank': bank, 'channel': AOChannel.AO0})
+        self.AO_multiple_channels = AnalogOutput({'bank': bank, 'channel': AOChannel.AO0}, 
+                                                 {'bank': bank, 'channel': AOChannel.AO1})
+
+    def tearDown(self):
+        self.AO_single_channel.close()
+        self.AO_multiple_channels.close()
+
+    def test_PassInvalidInputValues_ShowAssertion(self):
+        wrong_values = [0, [], [[]]]
+
+        for wrong_value in wrong_values:
+            with self.assertRaises(AssertionError):
+                self.AO_single_channel.start_continuous_mode(wrong_value, self.expectedSampleRate, self.expectedTimeout)
+            
+    def test_PassInvalidNumberOfInputValues_ShowAssertion(self):
+        wrong_values = [[1], [[1]], [[1], ['a']]]
+
+        for wrong_value in wrong_values:
+            with self.assertRaises(AssertionError):
+                self.AO_multiple_channels.start_continuous_mode(wrong_value, self.expectedSampleRate, self.expectedTimeout)
+                
+    def test_PassInvalidSampleRateToSingleChannel_ShowAssertion(self):
+        limits = {'SampleRate': {'min': 1000, 'max': 1600000}}
+        wrong_sample_rates = [limits['SampleRate']['min'] - 1, limits['SampleRate']['max'] + 1]
+
+        for wrong_sample_rate in wrong_sample_rates:
+            with self.assertRaises(AssertionError):
+                self.AO_single_channel.start_continuous_mode(self.expectedInput, wrong_sample_rate, self.expectedTimeout)

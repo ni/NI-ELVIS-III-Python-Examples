@@ -19,7 +19,7 @@ class ELVISIII(object):
         return self
 
     def close(self):
-        self.session.close()
+        self.session.close(True)
 
     def __exit__(self, exception_type, exception_val, trace):
         self.close()
@@ -284,7 +284,8 @@ class AnalogInput(Analog):
                     self.is_continuous[bank] = True
 
         def __start_ai_continuous(configuration):
-            count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate * number_of_channels)
+            self.number_of_channels = max(configuration[Bank.A.value]['numberOfChannels'], configuration[Bank.B.value]['numberOfChannels'])
+            count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate * self.number_of_channels)
 
             def __continuous_config_bank(bank):
                 self.cnt[bank].write(0)
@@ -300,7 +301,7 @@ class AnalogInput(Analog):
                 AnalogInput.dma[bank_to_reset].stop()
 
             def __check_register_values_and_enable_continuous(bank):
-                while not(self.dma_enabled[bank].read() == True and self.cnt[bank].read() == configuration[bank]['numberOfChannels']):
+                while not(self.dma_enabled[bank].read() == True and self.cnt[bank].read() == self.number_of_channels):
                     pass
 
                 AnalogInput.is_continuous_started[bank] = True
@@ -315,9 +316,8 @@ class AnalogInput(Analog):
                 __reset_buffer(Bank.A.value)
                 __reset_buffer(Bank.B.value)
 
-                numberOfChannels = max(configuration[Bank.A.value]['numberOfChannels'], configuration[Bank.B.value]['numberOfChannels'])
-                self.cnt[Bank.A.value].write(numberOfChannels)
-                self.cnt[Bank.B.value].write(numberOfChannels)
+                self.cnt[Bank.A.value].write(self.number_of_channels)
+                self.cnt[Bank.B.value].write(self.number_of_channels)
 
                 self.dma_enabled[Bank.A.value].write(True)
                 self.dma_enabled[Bank.B.value].write(True)
@@ -331,7 +331,7 @@ class AnalogInput(Analog):
                 __continuous_config_bank(bank)
                 __reset_buffer(bank)
                 self.dma_enabled[bank].write(True)
-                self.cnt[bank].write(configuration[bank]['numberOfChannels'])
+                self.cnt[bank].write(self.number_of_channels)
 
                 __check_register_values_and_enable_continuous(bank)
 
@@ -344,7 +344,7 @@ class AnalogInput(Analog):
         Reset the FPGA target.
 
         bank (Bank):
-            Specifies the name of the bank to open a session.
+            Specifies the name of the bank to reset.
         """
         self.cnt[bank].write(0)
         self.dma_enabled[bank].write(False)
@@ -444,8 +444,8 @@ class AnalogInput(Analog):
 
     def __register_and_configure_dma(self, bank):
         if AnalogInput.dma[bank] is None:
-                AnalogInput.dma[bank] = self.session.fifos['AI.%s.DMA' % bank]
-                AnalogInput.dma[bank].configure(self.__max_samples * 100)
+            AnalogInput.dma[bank] = self.session.fifos['AI.%s.DMA' % bank]
+            AnalogInput.dma[bank].configure(self.__max_samples * 100)
 
     def __read_multiple_points_n_samples(self, number_of_samples, sample_rate):
         """
@@ -582,13 +582,13 @@ class AnalogInput(Analog):
         if timeout != -1:
             assert timeout >= (number_of_samples / self.__sample_rate)
 
-        def __read_from_specific_bank(bank, number_of_channels):
-            assert self.cnt[bank].read() == number_of_channels, 'The continuous acquisition has not started. You must call the start_continuous_mode() function before calling the read() function.'
+        def __read_from_specific_bank(bank):
+            assert self.cnt[bank].read() == self.number_of_channels, 'The continuous acquisition has not started. You must call the start_continuous_mode() function before calling the read() function.'
             assert not self.dma_full[bank].read(), 'The read buffer has overflowed. This error occurs when you do not call the read() function after the acquisition starts for a while. You must call the read() function before the buffer overflows. This error may also occur when you set a high sample rate, for example, 1 MHz. In this case, you can modify the number of samples to a value between 3,000 and 50,000 to fit the buffer size.'
 
             read_timeout = timeout
             max_readback_samples = self.__max_samples
-            number_of_expected_samples = number_of_channels * number_of_samples
+            number_of_expected_samples = self.number_of_channels * number_of_samples
             readvalue = []
 
             while number_of_expected_samples > max_readback_samples:
@@ -603,15 +603,16 @@ class AnalogInput(Analog):
             readvalue.extend(AnalogInput.dma[bank].read(number_of_expected_samples, timeout_ms=read_timeout)[0])
 
             result = []
+            number_of_channels = self.__calculate_multiple_points_cnfg_and_number_of_enabled_channels()[bank]['numberOfChannels']
             for index in range(0, number_of_channels):
-                result.append(readvalue[index::number_of_channels])
+                result.append(readvalue[index::self.number_of_channels])
             return result
 
         return_value = []
 
-        def __read_values_if_has_enabled_channels(bank, number_of_channel_per_bank):
+        def __read_values_if_has_enabled_channels(bank):
             if self.is_continuous[bank]:
-                return_value.append(__read_from_specific_bank(bank, number_of_channel_per_bank[bank]))
+                return_value.append(__read_from_specific_bank(bank))
         
         def __get_number_of_channel_per_bank():
             number_of_channel_per_bank = {'A': 0, 'B':0}
@@ -619,9 +620,8 @@ class AnalogInput(Analog):
                 number_of_channel_per_bank[channel['bank']] += 1
             return number_of_channel_per_bank
 
-        number_of_channel_per_bank =__get_number_of_channel_per_bank()
-        __read_values_if_has_enabled_channels(Bank.A.value, number_of_channel_per_bank)
-        __read_values_if_has_enabled_channels(Bank.B.value, number_of_channel_per_bank)
+        __read_values_if_has_enabled_channels(Bank.A.value)
+        __read_values_if_has_enabled_channels(Bank.B.value)
 
         return return_value
     
@@ -666,10 +666,15 @@ class AnalogOutput(Analog):
                     and AO1.
         """
         super(AnalogOutput, self).__init__()
+        self.maximum_samples = 10000
+
         self.dma_idl = { 'A': None, 'B': None }
         self.dma_cntr = { 'A': None, 'B': None }
         self.dma_ena = { 'A': None, 'B': None }
+        self.ele_num = { 'A': None, 'B': None }
+        self.bank_sync = { 'A': None, 'B': None }
         self.is_nsample_opened = { 'A': False, 'B': False }
+        self.is_continuous_opened = {'A': False, 'B': False}
 
         self.channel_list = []
         for configuration_details in configuration:
@@ -688,21 +693,23 @@ class AnalogOutput(Analog):
             self.dma_idl[bank.value] = self.session.registers['AO.%s.DMA_IDL' % bank.value]
             self.dma_cntr[bank.value] = self.session.registers['AO.%s.DMA_CNTR' % bank.value]
             self.dma_ena[bank.value] = self.session.registers['AO.%s.DMA_ENA' % bank.value]
+
+            # continuous
+            self.ele_num[bank.value] = self.session.registers['AO.%s.ELE_NUM' % bank.value]
+            self.bank_sync[bank.value] = self.session.registers['AO.%s.SYNC' % bank.value]
             
         self.dma_sys_ready = self.session.registers['DMA.SYS.RDY']
         self.go = self.session.registers['AO.SYS.GO']
         self.stat = self.session.registers['AO.SYS.STAT']
+        self.sync = self.session.registers['AO.SYNC']
         self.lsb_weights = 4882813.0 / 1E+9
         self.offset = 0.0 / 1E+9
         self.signed = True
 
     def write(self, *args):
         """
-        Writes values to one or more analog output channels. Use the
-        write(value) function to write a single point of data to the channel. Use
-        the write(values, sample_rate) to write multiple points of data to the
-        channel. The function hangs until the write to physical I/O
-        operation completes.
+        Writes values to one or more analog output channels. The function
+        hangs until the write to physical I/O operation completes.
 
         Args:
             If you want to write a single point of data at one time, argument
@@ -713,8 +720,8 @@ class AnalogOutput(Analog):
                     specify a value that is invalid, this function coerces the
                     specified value to the nearest valid value when you execute
                     the program.
-            If you want to write multiple points of data at one time, arguments
-            should contain:
+            If you want to write multiple points (n samples) of data at one
+            time, arguments should contain:
                 values (list):
                     Specifies the values, in volts, to write to the analog output
                     channels. Values is a 2D array. The number of elements in each
@@ -723,12 +730,31 @@ class AnalogOutput(Analog):
                     than or equal to 10,000.
                 sample_rate (number):
                     Specifies the sampling frequency, in hertz, of the output signal.
+            If you want to write multiple points (continuous) of data at one
+            time, arguments should contain:
+                values (list):
+                    Specifies the values, in volts, to write to the analog output
+                    channels. The number of elements in each row represents the
+                    number of samples to write to each analog output channel. The
+                    order of the values corresponds to the order in which the
+                    function opens the analog output channels. You must assign a
+                    value for each channel that you specify in AO (continuous) open. 
+                timeout (number):
+                    Specifies the period of time, in milliseconds, to wait for
+                    pushing the remaining data to the buffer when the size of the
+                    remaining data is larger than the remaining buffer. If you set
+                    Timeout to -1, this function  waits indefinitely. An error
+                    occurs if the time to push the remaining data to the buffer
+                    is longer than timeout. 
         """
         args_len = len(args)
         if args_len == 1:
             self.__write_single_point(args[0])
         elif args_len == 2:
-            self.__write_multiple_points(args[0], args[1])
+            if self.is_continuous_opened['A'] or self.is_continuous_opened['B']:
+                self.__write_multiple_points_continuous(args[0], args[1])
+            else:
+                self.__write_multiple_points(args[0], args[1])
         else:
             raise TypeError('write() takes either 1 (single point) or 2 (multiple points) arguments, but given %d' % args_len)
 
@@ -745,6 +771,10 @@ class AnalogOutput(Analog):
                 the program.
         """
         assert type(value) == int or type(value) == float
+
+        while not(self.dma_sys_ready):
+            pass
+
         for channel in self.channel_list:
             bank = channel['bank']
             self.dma_ena[bank].write(0)
@@ -758,6 +788,138 @@ class AnalogOutput(Analog):
             while not(self.stat.read() == stat_value):
                 pass
     
+    def start_continuous_mode(self, values, sample_rate, timeout):
+        """
+        Configure the sample rate and timeout, then start the signal generation.
+
+        Args:
+            values (list):
+                Specifies the values, in volts, to write to the analog output
+                channels. The number of elements in each row represents the
+                number of samples to write to each analog output channel. The
+                order of the values corresponds to the order in which the
+                function opens the analog output channels. You must assign a
+                value for each channel that you specify in AO (continuous) open. 
+            sample_rate (number):
+                Specifies the sampling frequency, in hertz, of the output
+                signal. The maximum aggregate sample rate is 1.6 MHz. For
+                example, when you open four channels, the valid sample rate for
+                each channel is between 1 kHz to 400 kHz.
+            timeout (number):
+                Specifies the period of time, in milliseconds, to wait for
+                pushing the remaining data to the buffer when the size of the
+                remaining data is larger than the remaining buffer. If you set
+                Timeout to -1, this function  waits indefinitely. An error
+                occurs if the time to push the remaining data to the buffer
+                is longer than timeout. 
+        """
+        minimum_sample_rate = 1000
+        maximum_sample_rate = 1600000
+        assert 1000 <= sample_rate <= (maximum_sample_rate/len(self.channel_list))
+
+        def __open_continuous_mode():
+            for channel in self.channel_list:
+                self.is_continuous_opened[channel['bank']] = True
+            
+            for bank in Bank:
+                bank = bank.value
+                if self.is_continuous_opened[bank]:
+                    self.__register_and_configure_dma(bank)
+                    self.__stop_continuous(bank)
+
+        def __start_continuous_mode():
+            while not(self.dma_sys_ready.read() == True):
+                pass
+
+            count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate, minimum_sample_rate, maximum_sample_rate)
+
+            while not(self.dma_sys_ready):
+                pass
+
+            bitmask = self.__calculate_bitmask()
+
+            if self.is_continuous_opened[Bank.A.value] and self.is_continuous_opened[Bank.B.value]:
+                def __assertion(bank):
+                    assert self.dma_ena[bank].read() == 0, 'The continuous generation has already started. Call the stop_continuous_mode API if you need to restart the generation.'
+                    assert self.ele_num[bank].read() != 0, 'Cannot start the generation without data in the buffer. You must call the write API before calling the start_continuous_mode API.'
+
+                __assertion(Bank.A.value)
+                __assertion(Bank.B.value)
+
+                self.bank_sync[Bank.A.value].write(True)
+                self.bank_sync[Bank.B.value].write(True)
+
+                self.dma_cntr[Bank.A.value].write(count)
+                self.dma_cntr[Bank.B.value].write(count)
+                while not(self.dma_cntr[Bank.A.value].read() == count and self.dma_cntr[Bank.B.value].read() == count):
+                    pass
+
+                self.dma_ena[Bank.A.value].write(bitmask[0])
+                self.dma_ena[Bank.B.value].write(bitmask[1])
+
+                self.sync.write(True)
+            else:
+                bank = 'A' if self.is_continuous_opened[Bank.A.value] else 'B'
+                bitmask = bitmask[0] if self.is_continuous_opened[Bank.A.value] else bitmask[1]
+                assert self.dma_ena[bank].read() == 0, 'The continuous generation has already started. Call the stop_continuous_mode API if you need to restart the generation.'
+                assert self.ele_num[bank].read() != 0, 'Cannot start the generation without data in the buffer. You must call the write API before calling the start_continuous_mode API.'
+
+                self.dma_cntr[bank].write(count)
+                while not(self.dma_cntr[bank].read() == count):
+                    pass
+
+                self.dma_ena[bank].write(bitmask)
+
+        __open_continuous_mode()
+        self.__write_multiple_points_continuous(values, timeout)
+        __start_continuous_mode()
+
+    def stop_continuous_mode(self):
+        """
+        Stops signal generation on the FPGA target.
+        """
+        for bank in Bank:
+            bank = bank.value
+            if self.is_continuous_opened[bank]:
+                self.__stop_continuous(bank)
+                self.is_continuous_opened[bank] = False
+                AnalogOutput.dma[bank] = None
+
+    def __stop_continuous(self, bank):
+        """
+        Reset the FPGA target.
+
+        bank (Bank):
+            Specifies the name of the bank to reset.
+        """
+        self.dma_ena[bank].write(0)
+
+        if not AnalogOutput.dma[bank]:
+            return
+
+        AnalogOutput.dma[bank].start()
+        AnalogOutput.dma[bank].stop()
+        
+    def __calculate_bitmask(self):
+        bitmask_array = [[False, False] for i in range(2)]
+        for channel in self.channel_list:
+            first_index = 0 if channel['bank'] == Bank.A.value else 1
+            second_index = 0 if channel['channel'] == AOChannel.AO0.value else 1
+            bitmask_array[first_index][second_index] = True
+
+        bitmask_in_int = []
+        for bitmask_for_bank in bitmask_array:
+            bitmask_for_channel = int('10', 2) if bitmask_for_bank[1] == True else int('00', 2)
+            bitmask_for_channel = (bitmask_for_channel | int('01', 2)) if bitmask_for_bank[0] == True else bitmask_for_channel
+            bitmask_in_int.append(bitmask_for_channel)
+
+        return bitmask_in_int
+
+    def __register_and_configure_dma(self, bank):
+        if AnalogOutput.dma[bank] is None:
+            AnalogOutput.dma[bank] = self.session.fifos['AO.%s.DMA' % bank]
+            AnalogOutput.dma[bank].configure(self.maximum_samples * 20)
+
     def __write_multiple_points(self, values, sample_rate):
         """
         Writes values to one or more analog output channels. (n samples)
@@ -776,41 +938,26 @@ class AnalogOutput(Analog):
         minimum_sample_rate = 1000
         maximum_sample_rate = 1600000
         minimum_samples = 1
-        maximum_samples = 10000
         assert type(values) == list
         assert all(type(value) == int or type(value) == float for value in values)
         assert type(sample_rate) == int or type(sample_rate) == float
         assert minimum_sample_rate <= sample_rate <= maximum_sample_rate
 
-        def __calculate_bitmask():
-            bitmask_array = [[False, False] for i in range(2)]
-            for channel in self.channel_list:
-                first_index = 0 if channel['bank'] == Bank.A.value else 1
-                second_index = 0 if channel['channel'] == AOChannel.AO0.value else 1
-                bitmask_array[first_index][second_index] = True
-
-            bitmask_in_int = []
-            for bitmask_for_bank in bitmask_array:
-                bitmask_for_channel = int('10', 2) if bitmask_for_bank[1] == True else int('00', 2)
-                bitmask_for_channel = (bitmask_for_channel | int('01', 2)) if bitmask_for_bank[0] == True else bitmask_for_channel
-                bitmask_in_int.append(bitmask_for_channel)
-
-            return bitmask_in_int
+        while not(self.dma_sys_ready):
+            pass
 
         for channel in self.channel_list:
             bank = channel['bank']
             if not self.is_nsample_opened[bank]:
                 self.is_nsample_opened[bank] = True
                 AnalogOutput.number_of_n_sample[bank] += 1
-            if AnalogOutput.dma[bank] is None:
-                AnalogOutput.dma[bank] = self.session.fifos['AO.%s.DMA' % bank]
-                AnalogOutput.dma[bank].configure(maximum_samples * 20)
+            self.__register_and_configure_dma(bank)
 
-        bitmask = __calculate_bitmask()
+        bitmask = self.__calculate_bitmask()
 
         count, actual_sample_rate = self.calculate_sample_rate_to_ticks(sample_rate, minimum_sample_rate, maximum_sample_rate)
         
-        data = [ int(value * int('1000000000000000000000000000', 2)) for value in values ]
+        data = self.__convert_write_values_from_float_to_fixed_point(values)
 
         while not(self.dma_sys_ready.read() == True):
             pass
@@ -836,7 +983,6 @@ class AnalogOutput(Analog):
                 Specifies the channel. AO0 is 2 and AO1 is 1 for n samples.
         """
         def __write(bank, count, data, channel_bitmask):
-
             def __write_and_return_remaining_data(data_to_write, max_write_samples):
                 AnalogOutput.dma[bank].write(data_to_write[:max_write_samples], timeout_ms=0)
                 return data_to_write[max_write_samples:]
@@ -881,14 +1027,97 @@ class AnalogOutput(Analog):
         __wait_until_write_done(bank)
         irq_thread.join()
 
+    def __write_multiple_points_continuous(self, values, timeout):
+        """
+        Writes output values to the specified AO channel on the FPGA.
+
+        Args:
+            values (list):
+                Specifies the values, in volts, to write to the analog output
+                channels. The number of elements in each row represents the
+                number of samples to write to each analog output channel. The
+                order of the values corresponds to the order in which the
+                function opens the analog output channels. You must assign a
+                value for each channel that you specify in AO (continuous) open. 
+            timeout (number):
+                Specifies the period of time, in milliseconds, to wait for
+                pushing the remaining data to the buffer when the size of the
+                remaining data is larger than the remaining buffer. If you set
+                Timeout to -1, this function  waits indefinitely. An error
+                occurs if the time to push the remaining data to the buffer
+                is longer than timeout. 
+        """
+        assert type(values) == list
+        assert len(values) == len(self.channel_list), 'The number of lists to write must match the number of channels that you specify for the write operation.'
+        for value_per_list in values:
+            assert all(type(value) == int or type(value) == float for value in value_per_list)
+
+        data = {'A': [], 'B': []}
+
+        def __find_max_list_length():
+            lists_length = [len(value_list) for value_list in values]
+            return max(lists_length)
+
+        list_length = __find_max_list_length()
+        values_with_same_length = []
+        for value_list in values:
+            needed_value_list =  [0 for i in range(list_length)]
+            if len(value_list) < list_length:
+                needed_value_list[:len(value_list)] = value_list
+                values_with_same_length.append(needed_value_list)
+            else:
+                values_with_same_length.append(value_list)
+        
+        values = values_with_same_length
+
+        for index, values_per_channel in enumerate(values):
+            bank = None
+            if self.is_continuous_opened[Bank.A.value] and self.is_continuous_opened[Bank.B.value]:
+                bank = self.channel_list[index]['bank']
+            else:
+                bank = 'A' if self.is_continuous_opened[Bank.A.value] else 'B'
+            data[bank].append(self.__convert_write_values_from_float_to_fixed_point(values_per_channel))
+
+        def __format_written_data(bank):
+            """
+            If bank A has two written lists in a bank: [[1,2], [3,4]], then fhe formatted list should be [1,3,2,4].
+            """
+            if len(data[bank]) == 1:
+                data[bank] = data[bank][0]
+            elif len(data[bank]) == 2:
+                formatted_data = []
+                formatted_data = [None]*(len(data[bank][0])+len(data[bank][1]))
+                formatted_data[::2] = data[bank][0]
+                formatted_data[1::2] = data[bank][1]
+                data[bank] = formatted_data
+            
+        __format_written_data(Bank.A.value)
+        __format_written_data(Bank.B.value)
+        for bank in Bank:
+            bank = bank.value
+            if self.is_continuous_opened[bank]:
+                is_generation_started = self.dma_ena[bank].read() != 0
+                if is_generation_started:
+                    assert self.ele_num[bank].read() != 0, ' The sample rate is higher than the rate of filling data to the buffer. Increase the number of data or decrease the sample rate. For example, when the sample rate is 1.6 MHz, you can modify the number of samples to a value between 3,000 and 50,000.'               
+                AnalogOutput.dma[bank].write(data[bank], timeout_ms=timeout)
+
+    def __convert_write_values_from_float_to_fixed_point(self, values):
+        """
+        Convert float to fixed point.
+        """
+        return [ int(value * int('1000000000000000000000000000', 2)) for value in values ]
+
     def close(self):
         def __update_number_of_opened_n_sample(bank):
             if self.is_nsample_opened[bank]:
                 AnalogOutput.number_of_n_sample[bank] -= 1
 
         def __clear_dma_reference(bank):
-            if AnalogOutput.number_of_n_sample[bank] == 0:
+            if self.is_nsample_opened[bank] and AnalogOutput.number_of_n_sample[bank] == 0:
                 AnalogOutput.dma[bank] = None
+                self.is_nsample_opened[bank] = False
+
+        self.stop_continuous_mode()
 
         for bank in Bank:
             __update_number_of_opened_n_sample(bank.value)
